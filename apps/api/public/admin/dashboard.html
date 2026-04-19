@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Dashboard · Swiss Bakery</title>
+    <link rel="stylesheet" href="/admin/admin.css" />
+    <link rel="icon" href="/favicon.svg" />
+  </head>
+  <body class="dashboard">
+    <header class="topbar">
+      <div class="brand-row">
+        <div class="cross" aria-hidden="true"></div>
+        <strong>Swiss Bakery</strong>
+        <span class="pill">Admin</span>
+      </div>
+      <div class="topbar-actions">
+        <a href="/" target="_blank" rel="noopener">View site ↗</a>
+        <button id="logout-btn" class="ghost">Sign out</button>
+      </div>
+    </header>
+
+    <nav class="tabs" role="tablist">
+      <button class="tab active" data-tab="products" role="tab">Products</button>
+      <button class="tab" data-tab="hero" role="tab">Hero banner</button>
+      <button class="tab" data-tab="notice" role="tab">Notice strip</button>
+      <button class="tab" data-tab="settings" role="tab">Site info</button>
+    </nav>
+
+    <main id="main">
+      <section id="tab-products" class="panel active">
+        <div class="panel-head">
+          <h2>Products</h2>
+          <button id="new-product-btn" class="primary">+ New product</button>
+        </div>
+        <div id="products-list" class="product-grid"></div>
+      </section>
+
+      <section id="tab-hero" class="panel">
+        <div class="panel-head">
+          <h2>Hero banner</h2>
+          <button id="new-hero-btn" class="primary">+ New banner</button>
+        </div>
+        <div id="hero-list" class="hero-list"></div>
+      </section>
+
+      <section id="tab-notice" class="panel">
+        <div class="panel-head"><h2>Notice strip</h2></div>
+        <form id="notice-form" class="stack">
+          <label>
+            <span>Message</span>
+            <textarea name="message" rows="3" maxlength="1000" required></textarea>
+          </label>
+          <div class="row">
+            <label>
+              <span>Level</span>
+              <select name="level">
+                <option value="info">Info</option>
+                <option value="promo">Promo</option>
+                <option value="alert">Alert</option>
+              </select>
+            </label>
+            <label class="check">
+              <input type="checkbox" name="isActive" />
+              <span>Show on site</span>
+            </label>
+          </div>
+          <div class="row">
+            <label>
+              <span>Starts at (optional)</span>
+              <input type="datetime-local" name="startsAt" />
+            </label>
+            <label>
+              <span>Ends at (optional)</span>
+              <input type="datetime-local" name="endsAt" />
+            </label>
+          </div>
+          <div class="actions">
+            <button type="submit" class="primary">Save notice</button>
+            <span class="hint" id="notice-status"></span>
+          </div>
+        </form>
+      </section>
+
+      <section id="tab-settings" class="panel">
+        <div class="panel-head"><h2>Site info</h2></div>
+        <form id="settings-form" class="stack">
+          <label><span>Address</span><input type="text" name="address" maxlength="300" /></label>
+          <label><span>Phone</span><input type="text" name="phone" maxlength="60" /></label>
+          <label><span>Email</span><input type="email" name="email" maxlength="120" /></label>
+          <label><span>Opening hours</span><textarea name="hours" rows="3" maxlength="600"></textarea></label>
+          <label><span>Google Map embed URL</span><input type="url" name="mapEmbedUrl" maxlength="1000" /></label>
+          <label><span>Facebook URL</span><input type="url" name="facebookUrl" maxlength="500" /></label>
+          <label><span>Instagram URL</span><input type="url" name="instagramUrl" maxlength="500" /></label>
+          <label><span>About text</span><textarea name="aboutText" rows="6" maxlength="3000"></textarea></label>
+          <label>
+            <span>GloriaFood script src (paste their <code>src=</code> URL here once ready)</span>
+            <input type="url" name="gloriaFoodScriptSrc" maxlength="500" />
+          </label>
+          <div class="actions">
+            <button type="submit" class="primary">Save site info</button>
+            <span class="hint" id="settings-status"></span>
+          </div>
+        </form>
+      </section>
+    </main>
+
+    <dialog id="product-dialog">
+      <form id="product-form" class="stack">
+        <h3 id="product-dialog-title">New product</h3>
+        <input type="hidden" name="id" />
+        <div class="row">
+          <label>
+            <span>Name</span>
+            <input type="text" name="name" required maxlength="200" />
+          </label>
+          <label>
+            <span>Slug</span>
+            <input type="text" name="slug" required maxlength="120" pattern="^[a-z0-9][a-z0-9-]*$" />
+          </label>
+        </div>
+        <div class="row">
+          <label>
+            <span>Category</span>
+            <select name="category" required>
+              <option value="Savoury">Savoury</option>
+              <option value="Bakery">Bakery</option>
+              <option value="Sweets">Sweets</option>
+              <option value="Beverages">Beverages</option>
+            </select>
+          </label>
+          <label>
+            <span>Unit</span>
+            <select name="unit">
+              <option value="piece">piece</option>
+              <option value="pack">pack</option>
+              <option value="kg">kg</option>
+              <option value="cup">cup</option>
+            </select>
+          </label>
+          <label>
+            <span>Price (AUD)</span>
+            <input type="number" name="priceAud" step="0.01" min="0" placeholder="leave empty = 'ask staff'" />
+          </label>
+        </div>
+        <label>
+          <span>Description</span>
+          <textarea name="description" rows="3" maxlength="1000"></textarea>
+        </label>
+        <label>
+          <span>Image</span>
+          <input type="file" name="imageFile" accept="image/jpeg,image/png,image/webp,image/gif" />
+          <input type="text" name="imagePath" placeholder="/uploads/..." maxlength="500" />
+        </label>
+        <div class="row">
+          <label class="check"><input type="checkbox" name="isFeatured" /> <span>Featured</span></label>
+          <label class="check"><input type="checkbox" name="isActive" checked /> <span>Active</span></label>
+          <label>
+            <span>Sort order</span>
+            <input type="number" name="sortOrder" value="0" />
+          </label>
+        </div>
+        <div class="actions">
+          <button type="button" class="ghost" data-close>Cancel</button>
+          <button type="button" class="danger" id="product-delete" hidden>Delete</button>
+          <button type="submit" class="primary">Save</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog id="hero-dialog">
+      <form id="hero-form" class="stack">
+        <h3 id="hero-dialog-title">New banner</h3>
+        <input type="hidden" name="id" />
+        <label><span>Heading</span><input type="text" name="heading" required maxlength="200" /></label>
+        <label><span>Subheading</span><input type="text" name="subheading" maxlength="300" /></label>
+        <div class="row">
+          <label><span>CTA label</span><input type="text" name="ctaLabel" maxlength="60" /></label>
+          <label><span>CTA link</span><input type="text" name="ctaHref" maxlength="500" /></label>
+        </div>
+        <label>
+          <span>Image</span>
+          <input type="file" name="imageFile" accept="image/jpeg,image/png,image/webp,image/gif" />
+          <input type="text" name="imagePath" placeholder="/uploads/..." maxlength="500" />
+        </label>
+        <div class="row">
+          <label class="check"><input type="checkbox" name="isActive" checked /> <span>Active</span></label>
+          <label><span>Sort order</span><input type="number" name="sortOrder" value="0" /></label>
+        </div>
+        <div class="actions">
+          <button type="button" class="ghost" data-close>Cancel</button>
+          <button type="button" class="danger" id="hero-delete" hidden>Delete</button>
+          <button type="submit" class="primary">Save</button>
+        </div>
+      </form>
+    </dialog>
+
+    <script type="module" src="/admin/admin.js"></script>
+    <script type="module">
+      import { boot } from "/admin/admin.js";
+      boot();
+    </script>
+  </body>
+</html>

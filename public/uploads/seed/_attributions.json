@@ -1,0 +1,230 @@
+{
+  "_license_note": "Images sourced from Wikimedia Commons via Wikipedia summary API. Most are CC-BY-SA 3.0/4.0; a few may be public domain. Each image's canonical licence lives on its Commons file page - visit the page_url listed for each entry to confirm before commercial launch. Attribution credit recommended in the site footer (e.g. 'Some product images courtesy Wikimedia Commons contributors, used under CC-BY-SA').",
+  "images": {
+    "chicken-patty": {
+      "source_article": "Jamaican patty",
+      "page_url": "https://en.wikipedia.org/wiki/Jamaican_patty",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/e/ef/Jamaican_patties_and_redstripe.jpg"
+    },
+    "paneer-patty": {
+      "source_article": "Jamaican patty",
+      "page_url": "https://en.wikipedia.org/wiki/Jamaican_patty",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/e/ef/Jamaican_patties_and_redstripe.jpg"
+    },
+    "beef-patty": {
+      "source_article": "Jamaican patty",
+      "page_url": "https://en.wikipedia.org/wiki/Jamaican_patty",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/e/ef/Jamaican_patties_and_redstripe.jpg"
+    },
+    "tuna-patty": {
+      "source_article": "Fishcake",
+      "page_url": "https://en.wikipedia.org/wiki/Fishcake",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/f/fb/Fish_cakes_food_dinner.jpg"
+    },
+    "vegetable-patty": {
+      "source_article": "Jamaican patty",
+      "page_url": "https://en.wikipedia.org/wiki/Jamaican_patty",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/e/ef/Jamaican_patties_and_redstripe.jpg"
+    },
+    "chicken-sandwich": {
+      "source_article": "Chicken sandwich",
+      "page_url": "https://en.wikipedia.org/wiki/Chicken_sandwich",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/1/1f/Chicken_salad_sandwich_01.jpg"
+    },
+    "tuna-sandwich": {
+      "source_article": "Tuna fish sandwich",
+      "page_url": "https://en.wikipedia.org/wiki/Tuna_fish_sandwich",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/b/b4/Tuna_fish_sandwiches_for_the_National_School_Lunch_Program.jpg"
+    },
+    "small-burger": {
+      "source_article": "Slider (sandwich)",
+      "page_url": "https://en.wikipedia.org/wiki/Slider_(sandwich)",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/d/d2/A_party_tray_of_sliders_at_a_restaurant.jpg"
+    },
+    "prawn-roll": {
+      "source_article": "Spring roll",
+      "page_url": "https://en.wikipedia.org/wiki/Spring_roll",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/1/1e/Spring_Rolls_%283357696061%29.jpg"
+    },
+    "chicken-roll": {
+      "source_article": "Kati roll",
+      "page_url": "https://en.wikipedia.org/wiki/Kati_roll",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/f/fc/Kolkata_Rolls.jpg"
+    },
+    "beef-roll": {
+      "source_article": "Kati roll",
+      "page_url": "https://en.wikipedia.org/wiki/Kati_roll",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/f/fc/Kolkata_Rolls.jpg"
+    },
+    "samosa": {
+      "source_article": "Samosa",
+      "page_url": "https://en.wikipedia.org/wiki/Samosa",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/c/cf/Samosa-and-Chatni.jpg"
+    },
+    "veg-singara": {
+      "source_article": "Samosa",
+      "page_url": "https://en.wikipedia.org/wiki/Samosa",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/c/cf/Samosa-and-Chatni.jpg"
+    },
+    "liver-singara": {
+      "source_article": "Samosa",
+      "page_url": "https://en.wikipedia.org/wiki/Samosa",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/c/cf/Samosa-and-Chatni.jpg"
+    },
+    "piyaju": {
+      "source_article": "Pakora",
+      "page_url": "https://en.wikipedia.org/wiki/Pakora",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/c/cf/Onion_pakora_-_a.jpg"
+    },
+    "dal-puri": {
+      "source_article": "Puri (food)",
+      "page_url": "https://en.wikipedia.org/wiki/Puri_(food)",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Fluffy_Poori_%28cropped%29.JPG/1920px-Fluffy_Poori_%28cropped%29.JPG"
+    },
+    "mughlai-paratha": {
+      "source_article": "Mughlai paratha",
+      "page_url": "https://en.wikipedia.org/wiki/Mughlai_paratha",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/3/30/Mughlai_Kheema_Paratha.JPG"
+    },
+    "popcorn-chicken": {
+      "source_article": "Popcorn chicken",
+      "page_url": "https://en.wikipedia.org/wiki/Popcorn_chicken",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/6/6c/KFC_Popcorn_Chicken_%2812956064765%29.jpg"
+    },
+    "swiss-short-bread": {
+      "source_article": "Shortbread",
+      "page_url": "https://en.wikipedia.org/wiki/Shortbread",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/b/b1/Shortbread_House_round_biscuit_.jpg"
+    },
+    "salty-cookies-nimki": {
+      "source_article": "Namak para",
+      "page_url": "https://en.wikipedia.org/wiki/Namak_para",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/48/Namak_paray_made_at_home.jpg/4032px-Namak_paray_made_at_home.jpg"
+    },
+    "butter-bun": {
+      "source_article": "Brioche",
+      "page_url": "https://en.wikipedia.org/wiki/Brioche",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/4/4a/Brioche.jpg"
+    },
+    "cream-roll": {
+      "source_article": "Cream horn",
+      "page_url": "https://en.wikipedia.org/wiki/Cream_horn",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/d/de/Cream_horns_%2815466292759%29.jpg"
+    },
+    "fruit-cake": {
+      "source_article": "Fruitcake",
+      "page_url": "https://en.wikipedia.org/wiki/Fruitcake",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/6/6a/Bara_Brith_%283320696816%29.jpg"
+    },
+    "baklava": {
+      "source_article": "Baklava",
+      "page_url": "https://en.wikipedia.org/wiki/Baklava",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/c/c7/Baklava%281%29.png"
+    },
+    "pakon-pitha": {
+      "source_article": "Pitha",
+      "page_url": "https://en.wikipedia.org/wiki/Pitha",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/1/1b/Pitha_for_Wedding-_Pakan%2C_Patishapta%2C_Bharandash.jpg"
+    },
+    "narikel-puli": {
+      "source_article": "Pitha",
+      "page_url": "https://en.wikipedia.org/wiki/Pitha",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/1/1b/Pitha_for_Wedding-_Pakan%2C_Patishapta%2C_Bharandash.jpg"
+    },
+    "laddu-three-varieties": {
+      "source_article": "Laddu",
+      "page_url": "https://en.wikipedia.org/wiki/Laddu",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/c/c1/Laddu_Sweet.JPG"
+    },
+    "monsor": {
+      "source_article": "Sandesh (confectionery)",
+      "page_url": "https://en.wikipedia.org/wiki/Sandesh_(confectionery)",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/9/9a/Bengali_Sandesh_-_1.jpg"
+    },
+    "kodom": {
+      "source_article": "Sandesh (confectionery)",
+      "page_url": "https://en.wikipedia.org/wiki/Sandesh_(confectionery)",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/9/9a/Bengali_Sandesh_-_1.jpg"
+    },
+    "balu-shai": {
+      "source_article": "Makhan Bada",
+      "page_url": "https://en.wikipedia.org/wiki/Makhan_Bada",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/2/24/Home_made_makkhan_bada.jpg"
+    },
+    "aflaton": {
+      "source_article": "Kalakand",
+      "page_url": "https://en.wikipedia.org/wiki/Kalakand",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/4/40/Koderma_Kalakand.jpg"
+    },
+    "pera": {
+      "source_article": "Peda",
+      "page_url": "https://en.wikipedia.org/wiki/Peda",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/9/91/Indian_Sweet_Dessert_Peda_in_a_white_bone_china_plate.jpg"
+    },
+    "bondia": {
+      "source_article": "Boondi",
+      "page_url": "https://en.wikipedia.org/wiki/Boondi",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/f/f8/Boondi_Mithai.jpg"
+    },
+    "halwa-chana-dal-hazelnut": {
+      "source_article": "Halva",
+      "page_url": "https://en.wikipedia.org/wiki/Halva",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/4/4f/Orient_sweets_%28special_halva%29_Samarkand%2C_Siyab.jpg"
+    },
+    "chana-mukhi": {
+      "source_article": "Chhena",
+      "page_url": "https://en.wikipedia.org/wiki/Chhena",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/a/aa/Chhena_Ball_-_Rasgulla_Preparation_-_Digha_-_East_Midnapore_-_2015-05-02_9555.JPG"
+    },
+    "rasgulla": {
+      "source_article": "Rasgulla",
+      "page_url": "https://en.wikipedia.org/wiki/Rasgulla",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/3/39/Rasgulla.jpg"
+    },
+    "cham-cham": {
+      "source_article": "Chomchom",
+      "page_url": "https://en.wikipedia.org/wiki/Chomchom",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/c/c5/BD_Porabarir_Chamcham.JPG"
+    },
+    "rosmalai": {
+      "source_article": "Ras malai",
+      "page_url": "https://en.wikipedia.org/wiki/Ras_malai",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/a/ae/Ras_Malai_2.JPG"
+    },
+    "hafsa": {
+      "source_article": "Barfi",
+      "page_url": "https://en.wikipedia.org/wiki/Barfi",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/f/f1/Almond_Khoa_based_burfi_Mumbai_India_%28cropped%29.jpg"
+    },
+    "firni": {
+      "source_article": "Phirni",
+      "page_url": "https://en.wikipedia.org/wiki/Phirni",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/7/7a/Firni_Or_Phirni.jpg"
+    },
+    "malai-cha": {
+      "source_article": "Masala chai",
+      "page_url": "https://en.wikipedia.org/wiki/Masala_chai",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/8/89/Chai_In_Sakora.jpg"
+    },
+    "poro-roti": {
+      "source_article": "Paratha",
+      "page_url": "https://en.wikipedia.org/wiki/Paratha",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/1/1e/Triangle_paratha_%28cropped%29.JPG"
+    },
+    "buttered-corn": {
+      "source_article": "Corn on the cob",
+      "page_url": "https://en.wikipedia.org/wiki/Corn_on_the_cob",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/f/f5/CookedCornOnTheCob.JPG"
+    },
+    "kaza": {
+      "source_article": "Khaja",
+      "page_url": "https://en.wikipedia.org/wiki/Khaja",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/3/35/Baleswari_khaja_pheni_Oriya_cuisine.jpg"
+    },
+    "patishapta": {
+      "source_article": "Pitha",
+      "page_url": "https://en.wikipedia.org/wiki/Pitha",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/1/1b/Pitha_for_Wedding-_Pakan%2C_Patishapta%2C_Bharandash.jpg"
+    }
+  }
+}

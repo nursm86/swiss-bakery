@@ -1,0 +1,45 @@
+---
+import { CATEGORY_ORDER, byCategory } from "../lib/seed";
+import ProductCard from "./ProductCard.astro";
+---
+<section id="menu" class="py-14 sm:py-20 bg-white">
+  <div class="container-x">
+    <div class="text-center max-w-2xl mx-auto">
+      <span class="chip chip-cream mb-3">Full menu</span>
+      <h2 class="section-title text-3xl sm:text-4xl">Baked, boxed, served warm</h2>
+      <p class="mt-4 text-[color:var(--color-muted)]">
+        Everything on the menu is made on-site. Bengali items come with a quick sensory note so newcomers know what to expect.
+      </p>
+    </div>
+
+    <nav class="mt-10 flex flex-wrap justify-center gap-2 text-sm">
+      {CATEGORY_ORDER.map((c) => (
+        <a
+          href={`#cat-${c.key.toLowerCase()}`}
+          class="px-4 py-2 rounded-full border border-[color:var(--color-cream-200)] hover:bg-[color:var(--color-cream)] transition text-[color:var(--color-navy)] font-medium"
+        >
+          {c.label}
+        </a>
+      ))}
+    </nav>
+
+    {CATEGORY_ORDER.map((c) => {
+      const items = byCategory(c.key);
+      if (items.length === 0) return null;
+      return (
+        <div id={`cat-${c.key.toLowerCase()}`} class="mt-16 scroll-mt-24">
+          <div class="flex items-end justify-between gap-3 flex-wrap">
+            <div>
+              <h3 class="font-[family-name:var(--font-display)] text-2xl sm:text-3xl text-[color:var(--color-navy)]">{c.label}</h3>
+              <p class="text-[color:var(--color-muted)] mt-1 max-w-xl">{c.blurb}</p>
+            </div>
+            <span class="text-xs uppercase tracking-[0.18em] text-[color:var(--color-muted)]">{items.length} items</span>
+          </div>
+          <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+            {items.map((p) => <ProductCard product={p} />)}
+          </div>
+        </div>
+      );
+    })}
+  </div>
+</section>

@@ -1,0 +1,46 @@
+---
+import type { SeedProduct } from "../lib/seed";
+import { formatPrice } from "../lib/seed";
+
+interface Props {
+  product: SeedProduct;
+  size?: "sm" | "md";
+}
+
+const { product, size = "md" } = Astro.props;
+const price = formatPrice(product);
+---
+<article
+  class:list={[
+    "card group flex flex-col",
+    size === "sm" ? "min-w-[260px] w-[260px]" : "",
+  ]}
+  data-slug={product.slug}
+>
+  <div class="relative aspect-square bg-[color:var(--color-cream-200)] overflow-hidden">
+    {product.imagePath ? (
+      <img
+        src={product.imagePath}
+        alt={product.name}
+        loading="lazy"
+        decoding="async"
+        class="h-full w-full object-cover transition duration-500 group-hover:scale-[1.04]"
+      />
+    ) : (
+      <div class="h-full w-full grid place-items-center text-[color:var(--color-gold)] font-[family-name:var(--font-display)] text-4xl">⚜</div>
+    )}
+    {product.isFeatured && (
+      <span class="absolute top-3 left-3 chip chip-gold">House favourite</span>
+    )}
+  </div>
+  <div class="p-4 flex flex-col gap-1.5 flex-1">
+    <h3 class="text-lg font-semibold text-[color:var(--color-navy)] leading-snug">{product.name}</h3>
+    {product.description && (
+      <p class="text-sm text-[color:var(--color-muted)] leading-relaxed line-clamp-3">{product.description}</p>
+    )}
+    <div class="mt-auto pt-3 flex items-center justify-between">
+      <span class="font-[family-name:var(--font-display)] text-lg text-[color:var(--color-navy)]">{price}</span>
+      <span class="text-xs uppercase tracking-[0.12em] text-[color:var(--color-muted)]">{product.unit}</span>
+    </div>
+  </div>
+</article>

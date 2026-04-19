@@ -1,0 +1,45 @@
+---
+---
+<header class="sticky top-0 z-40 backdrop-blur bg-[color:var(--color-cream)]/85 border-b border-[color:var(--color-cream-200)]">
+  <div class="container-x flex items-center justify-between py-3 sm:py-4">
+    <a href="#top" class="flex items-center gap-3">
+      <img src="/swiss_logo.png" alt="Swiss Bakery emblem" width="42" height="42" class="rounded-full shadow-sm" loading="eager" />
+      <span class="font-[family-name:var(--font-display)] text-lg sm:text-xl text-[color:var(--color-navy)] font-semibold tracking-tight">
+        Swiss <span class="swiss-cross inline-block align-middle" style="--s:14px;margin:0 4px 2px"></span> Bakery
+      </span>
+    </a>
+    <nav class="hidden md:flex items-center gap-7 text-sm font-medium text-[color:var(--color-navy)]">
+      <a href="#menu" class="hover:text-[color:var(--color-gold)] transition">Menu</a>
+      <a href="#featured" class="hover:text-[color:var(--color-gold)] transition">Featured</a>
+      <a href="#about" class="hover:text-[color:var(--color-gold)] transition">About</a>
+      <a href="#contact" class="hover:text-[color:var(--color-gold)] transition">Contact</a>
+    </nav>
+    <div class="flex items-center gap-2">
+      <a href="#contact" class="hidden sm:inline-flex btn-outline" style="padding:0.45rem 1rem;font-size:0.85rem">Order · Call</a>
+      <button id="nav-toggle" class="md:hidden w-10 h-10 grid place-items-center rounded-full border border-[color:var(--color-cream-200)]" aria-label="Menu" aria-expanded="false">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+          <path d="M3 5h14M3 10h14M3 15h14" stroke="#1a2a4f" stroke-width="1.8" stroke-linecap="round" />
+        </svg>
+      </button>
+    </div>
+  </div>
+  <div id="mobile-nav" class="md:hidden hidden border-t border-[color:var(--color-cream-200)]">
+    <nav class="container-x py-3 flex flex-col gap-1 text-[color:var(--color-navy)]">
+      <a href="#menu" class="py-2">Menu</a>
+      <a href="#featured" class="py-2">Featured</a>
+      <a href="#about" class="py-2">About</a>
+      <a href="#contact" class="py-2">Contact</a>
+    </nav>
+  </div>
+</header>
+<script>
+  const btn = document.getElementById("nav-toggle");
+  const panel = document.getElementById("mobile-nav");
+  btn?.addEventListener("click", () => {
+    const open = panel?.classList.toggle("hidden");
+    btn.setAttribute("aria-expanded", open ? "false" : "true");
+  });
+  document.querySelectorAll("#mobile-nav a").forEach((a) => {
+    a.addEventListener("click", () => panel?.classList.add("hidden"));
+  });
+</script>

@@ -1,0 +1,71 @@
+// Swiss Bakery - Prisma schema
+//
+// Provider: MySQL / MariaDB (cPanel-compatible).
+// @db.Text is used for free-form fields so long descriptions aren't truncated to VARCHAR(191).
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider          = "mysql"
+  url               = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+}
+
+model Product {
+  id          Int      @id @default(autoincrement())
+  slug        String   @unique
+  name        String
+  category    String
+  priceCents  Int?
+  unit        String   @default("piece")
+  description String?  @db.Text
+  imagePath   String?
+  isFeatured  Boolean  @default(false)
+  isActive    Boolean  @default(true)
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([category, sortOrder])
+  @@index([isFeatured])
+}
+
+model HeroBanner {
+  id         Int      @id @default(autoincrement())
+  heading    String
+  subheading String?
+  ctaLabel   String?
+  ctaHref    String?
+  imagePath  String?
+  isActive   Boolean  @default(true)
+  sortOrder  Int      @default(0)
+  updatedAt  DateTime @updatedAt
+}
+
+model Notice {
+  id        Int       @id @default(autoincrement())
+  message   String    @db.Text
+  level     String    @default("info")
+  isActive  Boolean   @default(false)
+  startsAt  DateTime?
+  endsAt    DateTime?
+  updatedAt DateTime  @updatedAt
+}
+
+model SiteSetting {
+  key       String   @id
+  value     String   @db.Text
+  updatedAt DateTime @updatedAt
+}
+
+model RefreshToken {
+  id        String   @id
+  subject   String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  revokedAt DateTime?
+
+  @@index([subject])
+}

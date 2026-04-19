@@ -1,0 +1,251 @@
+@import "tailwindcss";
+
+@theme {
+  --color-navy: #1a2a4f;
+  --color-navy-600: #24386a;
+  --color-navy-100: #d7dcea;
+  --color-gold: #c89a2b;
+  --color-gold-500: #d6ab3c;
+  --color-gold-100: #f0e3c0;
+  --color-cream: #f6efe0;
+  --color-cream-200: #ece3cf;
+  --color-red: #c8102e;
+  --color-ink: #0b1426;
+  --color-muted: #6a6a6a;
+
+  --font-display: "Playfair Display", Georgia, serif;
+  --font-sans:
+    "Montserrat", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+    "Helvetica Neue", sans-serif;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    color-scheme: light;
+  }
+  body {
+    background-color: var(--color-cream);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    color: var(--color-navy);
+    letter-spacing: -0.01em;
+  }
+  ::selection {
+    background: var(--color-gold);
+    color: var(--color-navy);
+  }
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+}
+
+@layer components {
+  .container-x {
+    @apply mx-auto w-full max-w-6xl px-5 sm:px-6 lg:px-8;
+  }
+  .btn-primary {
+    background: var(--color-navy);
+    color: #fff;
+    padding: 0.85rem 1.5rem;
+    border-radius: 999px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition:
+      transform 0.15s ease,
+      background 0.15s ease,
+      box-shadow 0.15s ease;
+  }
+  .btn-primary:hover {
+    background: var(--color-navy-600);
+    transform: translateY(-1px);
+    box-shadow: 0 10px 24px rgba(26, 42, 79, 0.2);
+  }
+  .btn-outline {
+    border: 1.5px solid var(--color-gold);
+    color: var(--color-navy);
+    padding: 0.85rem 1.5rem;
+    border-radius: 999px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition:
+      background 0.15s ease,
+      transform 0.15s ease;
+  }
+  .btn-outline:hover {
+    background: var(--color-gold);
+    color: var(--color-navy);
+    transform: translateY(-1px);
+  }
+  .card {
+    background: #fff;
+    border: 1px solid rgba(26, 42, 79, 0.08);
+    border-radius: 14px;
+    overflow: hidden;
+    transition:
+      transform 0.2s ease,
+      box-shadow 0.2s ease;
+  }
+  .card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 14px 36px rgba(11, 20, 38, 0.1);
+  }
+  .chip {
+    display: inline-block;
+    padding: 0.25rem 0.7rem;
+    border-radius: 999px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .chip-gold {
+    background: var(--color-gold);
+    color: var(--color-navy);
+  }
+  .chip-cream {
+    background: var(--color-cream-200);
+    color: var(--color-navy);
+  }
+  .section-title {
+    position: relative;
+    display: inline-block;
+    padding-bottom: 0.5rem;
+  }
+  .section-title::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 48px;
+    height: 3px;
+    background: var(--color-gold);
+    border-radius: 2px;
+  }
+}
+
+/* Swiss cross emblem - pure CSS */
+.swiss-cross {
+  --s: 42px;
+  width: var(--s);
+  height: var(--s);
+  background: var(--color-red);
+  position: relative;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+.swiss-cross::before,
+.swiss-cross::after {
+  content: "";
+  position: absolute;
+  background: #fff;
+  inset: 0;
+  margin: auto;
+}
+.swiss-cross::before {
+  width: 62%;
+  height: 18%;
+}
+.swiss-cross::after {
+  width: 18%;
+  height: 62%;
+}
+
+/* Hero placeholder - CSS-only per IMAGE_STRATEGY.md */
+.hero-placeholder {
+  background:
+    radial-gradient(
+      circle at 20% 20%,
+      rgba(200, 154, 43, 0.18),
+      transparent 55%
+    ),
+    radial-gradient(
+      circle at 80% 80%,
+      rgba(26, 42, 79, 0.15),
+      transparent 55%
+    ),
+    linear-gradient(
+      135deg,
+      rgba(26, 42, 79, 0.1) 0%,
+      rgba(200, 154, 43, 0.1) 100%
+    ),
+    var(--color-cream);
+}
+
+.hero-placeholder::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(
+      circle 1.5px,
+      rgba(26, 42, 79, 0.18) 1.5px,
+      transparent 2px
+    );
+  background-size: 24px 24px;
+  opacity: 0.35;
+  pointer-events: none;
+}
+
+/* Notice strip */
+.notice-strip {
+  background: linear-gradient(90deg, #1a2a4f 0%, #24386a 100%);
+  color: var(--color-gold);
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+.notice-strip.promo {
+  background: linear-gradient(90deg, #c89a2b 0%, #d6ab3c 100%);
+  color: var(--color-navy);
+}
+.notice-strip.alert {
+  background: linear-gradient(90deg, #c8102e 0%, #9b0a23 100%);
+  color: #fff;
+}
+
+/* Featured scroll */
+.scroll-x {
+  scroll-snap-type: x mandatory;
+  scrollbar-width: thin;
+}
+.scroll-x > * {
+  scroll-snap-align: start;
+}
+
+/* Reveal-on-scroll */
+.reveal {
+  opacity: 0;
+  transform: translateY(14px);
+  transition:
+    opacity 0.6s ease,
+    transform 0.6s ease;
+}
+.reveal.in {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+  .reveal {
+    opacity: 1;
+    transform: none;
+  }
+}

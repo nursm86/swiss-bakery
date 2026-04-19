@@ -1,0 +1,59 @@
+---
+import { DEFAULT_NOTICE } from "../lib/seed";
+const n = DEFAULT_NOTICE;
+---
+<div
+  id="notice-strip"
+  data-default-active={String(n.isActive)}
+  class:list={["notice-strip", n.level, !n.isActive && "hidden"]}
+>
+  <div class="container-x flex items-center justify-between gap-3 py-2 text-sm">
+    <span id="notice-message">{n.message}</span>
+    <button
+      id="notice-close"
+      class="shrink-0 rounded-full w-7 h-7 grid place-items-center hover:bg-black/10 transition"
+      aria-label="Dismiss notice"
+    >
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+        <path d="M3 3l8 8M11 3l-8 8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+      </svg>
+    </button>
+  </div>
+</div>
+<script>
+  const strip = document.getElementById("notice-strip");
+  const msg = document.getElementById("notice-message");
+  const close = document.getElementById("notice-close");
+
+  const KEY = "sb_notice_dismissed";
+  const isDismissed = (fingerprint: string) => sessionStorage.getItem(KEY) === fingerprint;
+
+  const show = (data: { message: string; level: string; isActive: boolean } | null) => {
+    if (!strip || !msg || !data || !data.isActive || !data.message.trim()) {
+      strip?.classList.add("hidden");
+      return;
+    }
+    const fp = `${data.level}:${data.message}`;
+    if (isDismissed(fp)) {
+      strip.classList.add("hidden");
+      return;
+    }
+    strip.dataset.fingerprint = fp;
+    strip.classList.remove("hidden", "info", "promo", "alert");
+    strip.classList.add(data.level || "info");
+    msg.textContent = data.message;
+  };
+
+  close?.addEventListener("click", () => {
+    const fp = strip?.dataset.fingerprint ?? "";
+    if (fp) sessionStorage.setItem(KEY, fp);
+    strip?.classList.add("hidden");
+  });
+
+  fetch("/api/notice")
+    .then((r) => (r.ok ? r.json() : null))
+    .then((data) => show(data?.notice ?? null))
+    .catch(() => {
+      /* API unreachable - keep the build-time default (currently hidden) */
+    });
+</script>

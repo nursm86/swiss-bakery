@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Admin · Swiss Bakery</title>
+    <link rel="stylesheet" href="/admin/admin.css" />
+    <link rel="icon" href="/favicon.svg" />
+  </head>
+  <body class="login">
+    <main class="card">
+      <div class="brand">
+        <div class="cross" aria-hidden="true"></div>
+        <h1>Swiss Bakery</h1>
+        <p>Admin sign in</p>
+      </div>
+      <form id="login-form" autocomplete="off" novalidate>
+        <label>
+          <span>Email</span>
+          <input type="email" name="email" required autocomplete="username" />
+        </label>
+        <label>
+          <span>Password</span>
+          <input type="password" name="password" required autocomplete="current-password" minlength="12" />
+        </label>
+        <button type="submit">Sign in</button>
+        <p class="error" id="error" role="alert" hidden></p>
+      </form>
+    </main>
+    <script type="module" src="/admin/admin.js"></script>
+    <script type="module">
+      import { login } from "/admin/admin.js";
+      document.getElementById("login-form").addEventListener("submit", login);
+    </script>
+  </body>
+</html>
