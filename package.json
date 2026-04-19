@@ -16,7 +16,11 @@
     "build": "npm run build --workspace=@swiss-bakery/web && npm run build --workspace=@swiss-bakery/api",
     "build:web": "npm run build --workspace=@swiss-bakery/web",
     "build:api": "npm run build --workspace=@swiss-bakery/api",
-    "start": "node --env-file=.env apps/api/dist/index.js",
+    "postinstall": "npm run build",
+    "start": "node apps/api/dist/index.js",
+    "start:local": "node --env-file=.env apps/api/dist/index.js",
+    "deploy:prisma": "npm run prisma:deploy --workspace=@swiss-bakery/api && npm run prisma:seed --workspace=@swiss-bakery/api",
+    "prisma:deploy": "npm run prisma:deploy --workspace=@swiss-bakery/api",
     "prisma:migrate": "npm run prisma:migrate --workspace=@swiss-bakery/api",
     "prisma:seed": "npm run prisma:seed --workspace=@swiss-bakery/api",
     "hash-password": "npm run hash-password --workspace=@swiss-bakery/api"

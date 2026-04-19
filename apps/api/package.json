@@ -8,18 +8,18 @@
   },
   "main": "dist/index.js",
   "scripts": {
-    "dev": "node --env-file=../../.env --watch --import tsx src/index.ts",
+    "dev": "node --env-file-if-exists=../../.env --watch --import tsx src/index.ts",
     "build": "tsc -p tsconfig.json && prisma generate",
-    "start": "node --env-file=../../.env dist/index.js",
+    "start": "node --env-file-if-exists=../../.env dist/index.js",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "prisma:deploy": "prisma migrate deploy",
-    "prisma:seed": "node --env-file=../../.env --import tsx prisma/seed.ts",
+    "prisma:seed": "node --env-file-if-exists=../../.env --import tsx prisma/seed.ts",
     "prisma:reset": "prisma migrate reset --force",
     "hash-password": "node --import tsx scripts/hash-password.ts"
   },
   "prisma": {
-    "seed": "node --env-file=../../.env --import tsx prisma/seed.ts"
+    "seed": "node --env-file-if-exists=../../.env --import tsx prisma/seed.ts"
   },
   "dependencies": {
     "@prisma/client": "^6.1.0",
