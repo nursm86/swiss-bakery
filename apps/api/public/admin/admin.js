@@ -432,7 +432,8 @@ const SETTING_KEYS = [
   "facebookUrl",
   "instagramUrl",
   "aboutText",
-  "gloriaFoodScriptSrc",
+  "gloriafoodCuid",
+  "gloriafoodRuid",
 ];
 
 const loadSettings = async () => {

@@ -1,4 +1,5 @@
 ---
+import OrderButton from "./OrderButton.astro";
 ---
 <header class="sticky top-0 z-40 backdrop-blur bg-[color:var(--color-cream)]/85 border-b border-[color:var(--color-cream-200)]">
   <div class="container-x flex items-center justify-between py-3 sm:py-4">
@@ -15,7 +16,7 @@
       <a href="#contact" class="hover:text-[color:var(--color-gold)] transition">Contact</a>
     </nav>
     <div class="flex items-center gap-2">
-      <a href="#contact" class="hidden sm:inline-flex btn-outline" style="padding:0.45rem 1rem;font-size:0.85rem">Order · Call</a>
+      <OrderButton label="Order" class="hidden sm:inline-flex" variant="gold" />
       <button id="nav-toggle" class="md:hidden w-10 h-10 grid place-items-center rounded-full border border-[color:var(--color-cream-200)]" aria-label="Menu" aria-expanded="false">
         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
           <path d="M3 5h14M3 10h14M3 15h14" stroke="#1a2a4f" stroke-width="1.8" stroke-linecap="round" />

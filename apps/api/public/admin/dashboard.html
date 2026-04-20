@@ -94,10 +94,12 @@
           <label><span>Facebook URL</span><input type="url" name="facebookUrl" maxlength="500" /></label>
           <label><span>Instagram URL</span><input type="url" name="instagramUrl" maxlength="500" /></label>
           <label><span>About text</span><textarea name="aboutText" rows="6" maxlength="3000"></textarea></label>
-          <label>
-            <span>GloriaFood script src (paste their <code>src=</code> URL here once ready)</span>
-            <input type="url" name="gloriaFoodScriptSrc" maxlength="500" />
-          </label>
+          <fieldset style="border:1px solid var(--border);border-radius:8px;padding:0.9rem 1rem;">
+            <legend style="padding:0 0.4rem;color:var(--navy);font-weight:600;font-size:0.9rem">GloriaFood ordering</legend>
+            <p class="hint" style="margin-top:0">Paste the two UUIDs from your GloriaFood snippet's <code>data-glf-cuid</code> and <code>data-glf-ruid</code> attributes. Leave blank to hide all order buttons.</p>
+            <label><span>GloriaFood CUID</span><input type="text" name="gloriafoodCuid" maxlength="60" placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" /></label>
+            <label><span>GloriaFood RUID</span><input type="text" name="gloriafoodRuid" maxlength="60" placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" /></label>
+          </fieldset>
           <div class="actions">
             <button type="submit" class="primary">Save site info</button>
             <span class="hint" id="settings-status"></span>

@@ -56,7 +56,8 @@ const settingKey = z.enum([
     "facebookUrl",
     "instagramUrl",
     "aboutText",
-    "gloriaFoodScriptSrc",
+    "gloriafoodCuid",
+    "gloriafoodRuid",
 ]);
 export const pageCreateSchema = z.object({
     slug: z
@@ -85,5 +86,6 @@ export const PUBLIC_SETTING_KEYS = [
     "facebookUrl",
     "instagramUrl",
     "aboutText",
-    "gloriaFoodScriptSrc",
+    "gloriafoodCuid",
+    "gloriafoodRuid",
 ];

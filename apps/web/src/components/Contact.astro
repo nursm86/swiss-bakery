@@ -1,5 +1,6 @@
 ---
 import { DEFAULT_SETTINGS } from "../lib/seed";
+import OrderButton from "./OrderButton.astro";
 const s = DEFAULT_SETTINGS;
 ---
 <section id="contact" class="py-14 sm:py-20 bg-[color:var(--color-navy)] text-white">
@@ -64,7 +65,8 @@ const s = DEFAULT_SETTINGS;
       </dl>
 
       <div class="mt-8 flex flex-wrap gap-3">
-        <a href={s.phoneHref} class="btn-primary" style="background:var(--color-gold);color:var(--color-navy)">Call now</a>
+        <OrderButton label="Order Online" variant="gold" />
+        <a href={s.phoneHref} class="btn-outline" style="border-color:rgba(255,255,255,0.4);color:#fff">Call shop</a>
         <a href={s.mapEmbedUrl.replace("&output=embed", "")} target="_blank" rel="noopener" class="btn-outline" style="border-color:rgba(255,255,255,0.4);color:#fff">Open in Maps ↗</a>
       </div>
     </div>
@@ -81,8 +83,6 @@ const s = DEFAULT_SETTINGS;
     </div>
   </div>
 
-  {/* GloriaFood widget mount point - drop-in script goes here later */}
-  <div id="gloriafood-widget" class="container-x mt-12"></div>
 </section>
 <script>
   fetch("/api/settings")
@@ -105,15 +105,13 @@ const s = DEFAULT_SETTINGS;
       if (s.hours && byId("c-hours")) byId("c-hours")!.textContent = s.hours;
       if (s.mapEmbedUrl && byId("c-map")) (byId("c-map") as HTMLIFrameElement).src = s.mapEmbedUrl;
 
-      if (s.gloriaFoodScriptSrc) {
-        const mount = document.getElementById("gloriafood-widget");
-        if (mount && !mount.dataset.loaded) {
-          const script = document.createElement("script");
-          script.src = s.gloriaFoodScriptSrc;
-          script.async = true;
-          mount.appendChild(script);
-          mount.dataset.loaded = "1";
-        }
+      // Apply admin-edited GloriaFood IDs to every .glf-button on the page.
+      // (The widget script reads these attributes on load.)
+      if (s.gloriafoodCuid && s.gloriafoodRuid) {
+        document.querySelectorAll<HTMLElement>(".glf-button").forEach((el) => {
+          el.dataset.glfCuid = s.gloriafoodCuid;
+          el.dataset.glfRuid = s.gloriafoodRuid;
+        });
       }
     })
     .catch(() => {});

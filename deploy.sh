@@ -14,7 +14,9 @@
 #
 # Safe to run every time — skips the expensive steps if nothing changed.
 
-set -euo pipefail
+set -eo pipefail
+# Note: no `set -u` — cPanel's nodevenv activate script references
+# CL_VIRTUAL_ENV before setting it, which trips nounset.
 
 REPO_DIR="$HOME/repositories/swiss-bakery"
 VENV_ACTIVATE="$HOME/nodevenv/repositories/swiss-bakery/20/bin/activate"
@@ -24,8 +26,8 @@ cd "$REPO_DIR"
 
 # Activate the Node.js virtualenv if not already active
 if [ -z "${CL_VIRTUAL_ENV:-}" ]; then
-  # shellcheck disable=SC1090
-  source "$VENV_ACTIVATE"
+  # shellcheck disable=SC1090,SC1091
+  . "$VENV_ACTIVATE"
 fi
 
 # Verify .env exists — bail loudly if missing (app would fail to start anyway)

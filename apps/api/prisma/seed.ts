@@ -35,7 +35,8 @@ const defaultSettings: Record<string, string> = {
   instagramUrl: "",
   aboutText:
     "Swiss Bakery brings Swiss-trained patisserie and traditional Bengali sweets to Minto. Every pastry, sweet and bread is baked on-site - flaky patties in the morning, warm singaras in the afternoon, rasgulla and firni set fresh daily. Handcrafted, never shortcut - Swiss soul, Bengali heart.",
-  gloriaFoodScriptSrc: "",
+  gloriafoodCuid: "d769dc4e-b638-45f8-9298-ef8f8f550bec",
+  gloriafoodRuid: "54e93b5e-2a23-4cad-b5c3-3fff8a2f5268",
 };
 
 const defaultPages = [

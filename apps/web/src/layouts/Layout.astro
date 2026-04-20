@@ -63,5 +63,8 @@ const canonical = new URL(Astro.url.pathname, Astro.site).toString();
   </head>
   <body>
     <slot />
+    <!-- GloriaFood ordering widget: scans the page for .glf-button elements
+         and wires them to open the order popup. -->
+    <script src="https://www.fbgcdn.com/embedder/js/ewm2.js" defer async></script>
   </body>
 </html>
