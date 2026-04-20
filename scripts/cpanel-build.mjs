@@ -1,14 +1,11 @@
 #!/usr/bin/env node
-// Build helper for cPanel deploy.
-// Invoked via `npm run cpanel:build` from cPanel's "Run JS Script" UI.
+// Build helper for Swiss Bakery, used for both local dev and cPanel deploy.
+// Invoked via `npm run build` (or `cpanel:build`, or `install:all --install-only`).
 //
-// cPanel's npm install + shell PATH handling inside workspaces is flaky:
-// .bin/ symlinks aren't always created, and nested `npm install` inside
-// an app says "up to date" without creating a local node_modules.
-//
-// Strategy: locate each tool's installed package directory (astro, prisma,
-// typescript), read its package.json's `bin` entry, and invoke the JS file
-// with `node` directly. No reliance on PATH or workspace linking.
+// Installs each app's deps standalone (no workspace hoisting — cPanel's
+// `npm install` at the repo root ignores workspace definitions), then runs
+// each build tool by resolving its bin entry from its own package.json and
+// invoking it via `node` (avoids PATH / .bin symlink issues on cPanel).
 
 import { spawnSync } from "node:child_process";
 import { existsSync, readFileSync } from "node:fs";
@@ -19,64 +16,71 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
 const APP_WEB = path.join(ROOT, "apps", "web");
 const APP_API = path.join(ROOT, "apps", "api");
+const NODE = process.execPath;
+const npmCmd = process.platform === "win32" ? "npm.cmd" : "npm";
 
-const run = (cmd, args, cwd) => {
+const INSTALL_ONLY = process.argv.includes("--install-only");
+
+const run = (cmd, args, cwd, extraEnv = {}) => {
   process.stdout.write(`\n▶ ${path.basename(cmd)} ${args.join(" ")}  (cwd: ${cwd})\n`);
-  const r = spawnSync(cmd, args, { cwd, stdio: "inherit", env: process.env });
+  const r = spawnSync(cmd, args, {
+    cwd,
+    stdio: "inherit",
+    env: { ...process.env, ...extraEnv },
+  });
   if (r.status !== 0) {
     process.stderr.write(`\n✗ command failed with exit ${r.status}\n`);
     process.exit(r.status ?? 1);
   }
 };
 
-const NODE = process.execPath;
-
-const findPackageJson = (pkgName) => {
-  // Search common locations for the installed package (workspace-hoisted
-  // or app-local).
-  const candidates = [
-    path.join(ROOT, "node_modules", pkgName, "package.json"),
-    path.join(APP_WEB, "node_modules", pkgName, "package.json"),
-    path.join(APP_API, "node_modules", pkgName, "package.json"),
-  ];
-  for (const p of candidates) {
-    if (existsSync(p)) return p;
+const installIfMissing = (appDir, testPkg) => {
+  const probe = path.join(appDir, "node_modules", testPkg, "package.json");
+  if (existsSync(probe)) {
+    process.stdout.write(`  ${testPkg} already present in ${appDir}/node_modules\n`);
+    return;
   }
-  return null;
+  process.stdout.write(`\n⟳ installing ${path.basename(appDir)} deps standalone…\n`);
+  run(npmCmd, ["install", "--no-audit", "--no-fund"], appDir);
+  if (!existsSync(probe)) {
+    process.stderr.write(`\n✗ install finished but ${testPkg} still missing in ${appDir}/node_modules\n`);
+    process.exit(1);
+  }
 };
 
-const resolveBinScript = (pkgName, binName) => {
-  const pjPath = findPackageJson(pkgName);
-  if (!pjPath) {
-    process.stderr.write(`\n✗ package "${pkgName}" not installed anywhere in the tree.\n`);
-    process.stderr.write("  Expected one of:\n");
-    [ROOT, APP_WEB, APP_API].forEach((d) =>
-      process.stderr.write(`    ${path.join(d, "node_modules", pkgName)}\n`),
-    );
+const resolveBinScript = (appDir, pkgName, binName) => {
+  const pjPath = path.join(appDir, "node_modules", pkgName, "package.json");
+  if (!existsSync(pjPath)) {
+    process.stderr.write(`\n✗ package "${pkgName}" not found at ${pjPath}\n`);
     process.exit(1);
   }
   const pkg = JSON.parse(readFileSync(pjPath, "utf-8"));
-  const pkgDir = path.dirname(pjPath);
   const bin = pkg.bin;
   let binRel = null;
-  if (typeof bin === "string") {
-    binRel = bin;
-  } else if (bin && typeof bin === "object") {
-    binRel = bin[binName] ?? Object.values(bin)[0];
-  }
+  if (typeof bin === "string") binRel = bin;
+  else if (bin && typeof bin === "object") binRel = bin[binName] ?? Object.values(bin)[0];
   if (!binRel) {
-    process.stderr.write(`\n✗ package "${pkgName}" has no bin entry for "${binName}".\n`);
+    process.stderr.write(`\n✗ package "${pkgName}" has no bin entry for "${binName}"\n`);
     process.exit(1);
   }
-  return path.resolve(pkgDir, binRel);
+  return path.resolve(path.dirname(pjPath), binRel);
 };
 
 process.stdout.write(`Swiss Bakery build — ROOT=${ROOT}\n`);
 process.stdout.write(`node=${NODE}\n`);
 
-const astro = resolveBinScript("astro", "astro");
-const prisma = resolveBinScript("prisma", "prisma");
-const tsc = resolveBinScript("typescript", "tsc");
+// Always ensure deps are installed per app
+installIfMissing(APP_WEB, "astro");
+installIfMissing(APP_API, "prisma");
+
+if (INSTALL_ONLY) {
+  process.stdout.write("\n✓ Install complete (build skipped).\n");
+  process.exit(0);
+}
+
+const astro = resolveBinScript(APP_WEB, "astro", "astro");
+const prisma = resolveBinScript(APP_API, "prisma", "prisma");
+const tsc = resolveBinScript(APP_API, "typescript", "tsc");
 
 process.stdout.write(`\n  astro   -> ${astro}`);
 process.stdout.write(`\n  prisma  -> ${prisma}`);

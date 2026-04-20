@@ -3,19 +3,14 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "workspaces": [
-    "apps/*"
-  ],
   "engines": {
     "node": ">=20.0.0"
   },
   "scripts": {
-    "dev": "npm run dev --workspaces --if-present",
-    "dev:api": "npm run dev --workspace=@swiss-bakery/api",
-    "dev:web": "npm run dev --workspace=@swiss-bakery/web",
-    "build": "cd apps/web && npm run build && cd ../api && npm run build",
-    "build:web": "cd apps/web && npm run build",
-    "build:api": "cd apps/api && npm run build",
+    "install:all": "node scripts/cpanel-build.mjs --install-only",
+    "dev:api": "cd apps/api && npm run dev",
+    "dev:web": "cd apps/web && npm run dev",
+    "build": "node scripts/cpanel-build.mjs",
     "cpanel:build": "node scripts/cpanel-build.mjs",
     "start": "node apps/api/dist/index.js",
     "start:local": "node --env-file=.env apps/api/dist/index.js",
