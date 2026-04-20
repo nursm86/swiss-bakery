@@ -31,7 +31,7 @@ const defaultSettings: Record<string, string> = {
   hours: "Tue–Sun 8:00 am – 8:00 pm · Mon closed",
   mapEmbedUrl:
     "https://www.google.com/maps?q=Shop+3%2F12+Minto+Rd%2C+Minto+NSW+2566&output=embed",
-  facebookUrl: "",
+  facebookUrl: "https://www.facebook.com/profile.php?id=61588443717316",
   instagramUrl: "",
   aboutText:
     "Swiss Bakery brings Swiss-trained patisserie and traditional Bengali sweets to Minto. Every pastry, sweet and bread is baked on-site - flaky patties in the morning, warm singaras in the afternoon, rasgulla and firni set fresh daily. Handcrafted, never shortcut - Swiss soul, Bengali heart.",
@@ -169,11 +169,14 @@ async function main() {
   }
 
   for (const [key, value] of Object.entries(defaultSettings)) {
-    await prisma.siteSetting.upsert({
-      where: { key },
-      create: { key, value },
-      update: {},
-    });
+    const existing = await prisma.siteSetting.findUnique({ where: { key } });
+    if (!existing) {
+      await prisma.siteSetting.create({ data: { key, value } });
+    } else if (existing.value.trim() === "" && value.trim() !== "") {
+      // Backfill previously-blank settings with new defaults; never clobber
+      // a value the admin has already set to something non-empty.
+      await prisma.siteSetting.update({ where: { key }, data: { value } });
+    }
   }
 
   const heroCount = await prisma.heroBanner.count();

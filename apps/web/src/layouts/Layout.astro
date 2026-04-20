@@ -7,11 +7,13 @@ interface Props {
 }
 
 const {
-  title = "Swiss Bakery · Minto NSW · Swiss patisserie & Bengali sweets",
-  description = "Handcrafted European pastries and traditional Bengali sweets, baked fresh daily at Shop 3/12 Minto Rd, Minto NSW 2566.",
+  title = "Swiss Bakery-Minto · Swiss patisserie & Bengali sweets · Minto NSW · Order online",
+  description = "Order online for pickup from Swiss Bakery-Minto. Handcrafted European patisserie, fresh patties, rolls and samosas, and traditional Bengali sweets — baked daily at Shop 3/12 Minto Rd, Minto NSW 2566.",
 } = Astro.props;
 
 const canonical = new URL(Astro.url.pathname, Astro.site).toString();
+const logoUrl = new URL("/swiss_logo.png", Astro.site).toString();
+const menuUrl = new URL("/#menu", Astro.site).toString();
 ---
 
 <!doctype html>
@@ -44,12 +46,21 @@ const canonical = new URL(Astro.url.pathname, Astro.site).toString();
       set:html={JSON.stringify({
         "@context": "https://schema.org",
         "@type": "Bakery",
-        name: "Swiss Bakery",
-        image: new URL("/swiss_logo.png", Astro.site).toString(),
+        "@id": `${Astro.site?.toString() ?? ""}#bakery`,
+        name: "Swiss Bakery-Minto",
+        alternateName: "Swiss Bakery",
+        image: logoUrl,
+        logo: logoUrl,
         url: Astro.site?.toString(),
         telephone: "+61 0452 626 232",
         email: "contact@swissbakery.com.au",
         priceRange: "$",
+        servesCuisine: ["Bakery", "Patisserie", "Bengali", "Swiss"],
+        menu: menuUrl,
+        hasMenu: menuUrl,
+        acceptsReservations: "False",
+        paymentAccepted: "Cash, Credit Card, Contactless",
+        currenciesAccepted: "AUD",
         address: {
           "@type": "PostalAddress",
           streetAddress: "Shop 3/12 Minto Rd",
@@ -58,6 +69,21 @@ const canonical = new URL(Astro.url.pathname, Astro.site).toString();
           postalCode: "2566",
           addressCountry: "AU",
         },
+        geo: {
+          "@type": "GeoCoordinates",
+          latitude: -33.9833,
+          longitude: 150.8500,
+        },
+        hasMap: "https://www.google.com/maps?q=Shop+3%2F12+Minto+Rd%2C+Minto+NSW+2566",
+        openingHoursSpecification: [
+          {
+            "@type": "OpeningHoursSpecification",
+            dayOfWeek: ["Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+            opens: "08:00",
+            closes: "20:00",
+          },
+        ],
+        sameAs: ["https://www.facebook.com/profile.php?id=61588443717316"],
       })}
     />
   </head>

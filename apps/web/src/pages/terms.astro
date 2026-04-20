@@ -2,19 +2,20 @@
 import Layout from "../layouts/Layout.astro";
 import Nav from "../components/Nav.astro";
 import Footer from "../components/Footer.astro";
+import OrderButton from "../components/OrderButton.astro";
 import { DEFAULT_TERMS, renderMd } from "../lib/terms-default";
 
 const renderedDefault = renderMd(DEFAULT_TERMS.content);
 ---
 <Layout
-  title="Terms & Conditions · Swiss Bakery"
-  description="Terms & Conditions for Swiss Bakery, Shop 3/12 Minto Rd, Minto NSW 2566."
+  title="Terms & Conditions · Swiss Bakery-Minto · Minto NSW"
+  description="Terms & Conditions for Swiss Bakery-Minto — retail bakery at Shop 3/12 Minto Rd, Minto NSW 2566. Ordering, pickup, catering, allergens, refunds under Australian Consumer Law."
 >
   <Nav />
   <main>
     <section class="py-14 sm:py-20 bg-white">
       <div class="container-x max-w-3xl">
-        <span class="chip chip-cream">Legal</span>
+        <span class="chip chip-cream">Legal · Swiss Bakery-Minto</span>
         <h1 id="terms-title" class="section-title text-3xl sm:text-4xl mt-3 text-[color:var(--color-navy)]">
           {DEFAULT_TERMS.title}
         </h1>
@@ -22,8 +23,9 @@ const renderedDefault = renderMd(DEFAULT_TERMS.content);
           Last updated: {DEFAULT_TERMS.lastUpdated}
         </p>
         <article id="terms-content" class="prose mt-6 text-[color:var(--color-navy)]/90 text-[0.97rem] sm:text-base" set:html={renderedDefault}></article>
-        <div class="mt-12 pt-8 border-t border-[color:var(--color-cream-200)]">
+        <div class="mt-12 pt-8 border-t border-[color:var(--color-cream-200)] flex flex-wrap gap-3">
           <a href="/" class="btn-outline">← Back to home</a>
+          <OrderButton label="Order Online" />
         </div>
       </div>
     </section>

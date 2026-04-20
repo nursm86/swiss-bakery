@@ -48,7 +48,7 @@ export const DEFAULT_SETTINGS = {
   hours: "Tue–Sun 8:00 am – 8:00 pm · Mon closed",
   mapEmbedUrl:
     "https://www.google.com/maps?q=Shop+3%2F12+Minto+Rd%2C+Minto+NSW+2566&output=embed",
-  facebookUrl: "",
+  facebookUrl: "https://www.facebook.com/profile.php?id=61588443717316",
   instagramUrl: "",
   aboutText:
     "Swiss Bakery brings Swiss-trained patisserie and traditional Bengali sweets to Minto. Every pastry, sweet and bread is baked on-site - flaky patties in the morning, warm singaras in the afternoon, rasgulla and firni set fresh daily. Handcrafted, never shortcut - Swiss soul, Bengali heart.",
