@@ -99,6 +99,11 @@ out
 # Nuxt.js build / generate output
 .nuxt
 dist
+# …but DO track built output for cPanel deploy (no build step on server):
+!apps/web/dist
+!apps/web/dist/**
+!apps/api/dist
+!apps/api/dist/**
 
 # Gatsby files
 .cache/
