@@ -239,6 +239,86 @@
   scroll-snap-align: start;
 }
 
+/* GloriaFood order button — override their injected defaults.
+   The fbgcdn.com embedder script ships its own CSS that sizes .glf-button
+   aggressively; we force our own design with !important. */
+.glf-button,
+.glf-button.glf-gold,
+.glf-button.glf-navy,
+.glf-button.glf-outline {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0.45rem !important;
+  padding: 0.55rem 1.1rem !important;
+  border-radius: 999px !important;
+  font-family: var(--font-sans) !important;
+  font-size: 0.88rem !important;
+  font-weight: 600 !important;
+  line-height: 1.2 !important;
+  letter-spacing: 0.02em !important;
+  cursor: pointer !important;
+  user-select: none !important;
+  text-decoration: none !important;
+  border: 1.5px solid transparent !important;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    background 0.15s ease !important;
+  box-shadow: none !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  width: auto !important;
+  max-width: 100% !important;
+  white-space: nowrap !important;
+}
+.glf-button svg {
+  width: 16px !important;
+  height: 16px !important;
+  flex-shrink: 0 !important;
+}
+.glf-button.glf-gold {
+  background: var(--color-gold) !important;
+  color: var(--color-navy) !important;
+}
+.glf-button.glf-gold:hover {
+  background: var(--color-gold-500) !important;
+  transform: translateY(-1px);
+}
+.glf-button.glf-navy {
+  background: var(--color-navy) !important;
+  color: #fff !important;
+}
+.glf-button.glf-navy:hover {
+  background: var(--color-navy-600) !important;
+  transform: translateY(-1px);
+}
+.glf-button.glf-outline {
+  background: transparent !important;
+  color: var(--color-navy) !important;
+  border-color: var(--color-gold) !important;
+}
+.glf-button.glf-outline:hover {
+  background: var(--color-gold) !important;
+  color: var(--color-navy) !important;
+}
+/* Slightly bigger for the hero CTA */
+.glf-button.glf-lg {
+  padding: 0.75rem 1.4rem !important;
+  font-size: 0.95rem !important;
+}
+.glf-button.glf-lg svg {
+  width: 18px !important;
+  height: 18px !important;
+}
+/* Mobile: a touch tighter on very small screens */
+@media (max-width: 380px) {
+  .glf-button {
+    font-size: 0.82rem !important;
+    padding: 0.5rem 0.9rem !important;
+  }
+}
+
 /* Reveal-on-scroll */
 .reveal {
   opacity: 0;

@@ -1,39 +1,40 @@
 ---
 // Renders a GloriaFood order trigger. The GloriaFood script (loaded once in
 // Layout.astro) scans for any .glf-button element and wires it to open the
-// ordering widget. We bake default cuid/ruid at build time; admin edits
-// trigger a rebuild to take effect.
+// ordering widget. We bake default cuid/ruid at build time; admin edits are
+// propagated by Contact.astro's runtime script.
+//
+// Styling lives entirely in global.css (.glf-button, .glf-gold, .glf-navy,
+// .glf-outline, .glf-lg) with !important overrides — GloriaFood's own
+// embedder injects aggressive styles we need to beat.
 import { DEFAULT_SETTINGS } from "../lib/seed";
 
 interface Props {
   label?: string;
-  variant?: "primary" | "outline" | "gold";
+  variant?: "gold" | "navy" | "outline";
+  size?: "md" | "lg";
   class?: string;
 }
 
-const { label = "See Menu & Order", variant = "primary", class: klass = "" } = Astro.props;
+const {
+  label = "See Menu & Order",
+  variant = "navy",
+  size = "md",
+  class: klass = "",
+} = Astro.props;
 const s = DEFAULT_SETTINGS;
-const styleMap = {
-  primary: "btn-primary",
-  outline: "btn-outline",
-  gold: "btn-primary",
-} as const;
-const styleClass = styleMap[variant];
-const extraStyle =
-  variant === "gold"
-    ? "background:var(--color-gold);color:var(--color-navy);"
-    : "";
+const variantClass = `glf-${variant}`;
+const sizeClass = size === "lg" ? "glf-lg" : "";
 ---
 {s.gloriafoodCuid && s.gloriafoodRuid && (
   <span
-    class:list={["glf-button", styleClass, klass]}
+    class:list={["glf-button", variantClass, sizeClass, klass]}
     data-glf-cuid={s.gloriafoodCuid}
     data-glf-ruid={s.gloriafoodRuid}
     role="button"
     tabindex="0"
-    style={`cursor:pointer;${extraStyle}`}
   >
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
       <path d="M3 6h18l-2 13H5L3 6z M8 6V4a4 4 0 0 1 8 0v2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>
     {label}

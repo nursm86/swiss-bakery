@@ -16,7 +16,7 @@ import OrderButton from "./OrderButton.astro";
       <a href="#contact" class="hover:text-[color:var(--color-gold)] transition">Contact</a>
     </nav>
     <div class="flex items-center gap-2">
-      <OrderButton label="Order" class="hidden sm:inline-flex" variant="gold" />
+      <OrderButton label="Order" variant="gold" class="hidden sm:inline-flex" />
       <button id="nav-toggle" class="md:hidden w-10 h-10 grid place-items-center rounded-full border border-[color:var(--color-cream-200)]" aria-label="Menu" aria-expanded="false">
         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
           <path d="M3 5h14M3 10h14M3 15h14" stroke="#1a2a4f" stroke-width="1.8" stroke-linecap="round" />
@@ -30,6 +30,9 @@ import OrderButton from "./OrderButton.astro";
       <a href="#featured" class="py-2">Featured</a>
       <a href="#about" class="py-2">About</a>
       <a href="#contact" class="py-2">Contact</a>
+      <div class="py-2">
+        <OrderButton label="Order Online" variant="gold" />
+      </div>
     </nav>
   </div>
 </header>
