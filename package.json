@@ -16,6 +16,7 @@
     "build": "cd apps/web && npm run build && cd ../api && npm run build",
     "build:web": "cd apps/web && npm run build",
     "build:api": "cd apps/api && npm run build",
+    "cpanel:build": "node scripts/cpanel-build.mjs",
     "start": "node apps/api/dist/index.js",
     "start:local": "node --env-file=.env apps/api/dist/index.js",
     "deploy:prisma": "cd apps/api && npm run prisma:deploy && npm run prisma:seed",
