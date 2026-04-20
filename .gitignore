@@ -150,3 +150,6 @@ dist
 .pnp.*
 /Other resource
 .DS_Store
+exports/gloriafood-cheatsheet.html
+exports/gloriafood-menu.csv
+exports/gloriafood-menu.txt

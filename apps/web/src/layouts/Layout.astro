@@ -14,6 +14,9 @@ const {
 const canonical = new URL(Astro.url.pathname, Astro.site).toString();
 const logoUrl = new URL("/swiss_logo.png", Astro.site).toString();
 const menuUrl = new URL("/#menu", Astro.site).toString();
+// Build marker — changes on every `astro build`, so we can confirm in the
+// browser console that a deploy has actually landed on the live site.
+const buildStamp = new Date().toISOString().replace("T", " ").slice(0, 19) + " UTC";
 ---
 
 <!doctype html>
@@ -88,6 +91,16 @@ const menuUrl = new URL("/#menu", Astro.site).toString();
     />
   </head>
   <body>
+    <!-- Build marker — visible in DevTools console on every page load.
+         If the stamp doesn't change after a deploy, the new build hasn't
+         reached the browser (check Cloudflare cache or Passenger restart). -->
+    <script is:inline define:vars={{ buildStamp }}>
+      console.log(
+        "%c Swiss Bakery %c build: " + buildStamp + " ",
+        "background:#1a2a4f;color:#c89a2b;padding:2px 6px;border-radius:3px 0 0 3px;font-weight:bold",
+        "background:#c89a2b;color:#1a2a4f;padding:2px 6px;border-radius:0 3px 3px 0;font-weight:bold",
+      );
+    </script>
     <slot />
     <!-- GloriaFood ordering widget: scans the page for .glf-button elements
          and wires them to open the order popup. -->
