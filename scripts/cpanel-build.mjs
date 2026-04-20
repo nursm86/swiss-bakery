@@ -71,7 +71,15 @@ for (const [name, p] of [["apps/web/dist", WEB_DIST], ["apps/api/dist", API_DIST
 }
 
 // Install API runtime deps (Prisma, Express, etc.)
-process.stdout.write(`\n⟳ installing apps/api runtime deps…\n`);
+// Force a clean install by removing any existing node_modules + lockfile.
+// cPanel's npm otherwise says "up to date in <1s" and installs nothing.
+process.stdout.write(`\n⟳ forcing clean install of apps/api deps…\n`);
+for (const p of [path.join(APP_API, "node_modules"), path.join(APP_API, "package-lock.json")]) {
+  if (existsSync(p)) {
+    process.stdout.write(`  ✗ removing ${p}\n`);
+    rmSync(p, { recursive: true, force: true });
+  }
+}
 run(npmCmd, ["install", "--no-audit", "--no-fund", "--omit=dev"], APP_API);
 
 // Generate the Prisma client for Linux using the prisma CLI that just installed
