@@ -57,6 +57,18 @@ app.use(
           "https://www.gloriafood.com",
           "https://www.fbgcdn.com",
           "https://www.foodbooking.com",
+          "https://static.cloudflareinsights.com",
+        ],
+        "script-src-elem": [
+          "'self'",
+          "'unsafe-inline'",
+          "https://www.google.com",
+          "https://www.gstatic.com",
+          "https://www.static-gloriafood.com",
+          "https://www.gloriafood.com",
+          "https://www.fbgcdn.com",
+          "https://www.foodbooking.com",
+          "https://static.cloudflareinsights.com",
         ],
         "style-src": [
           "'self'",
