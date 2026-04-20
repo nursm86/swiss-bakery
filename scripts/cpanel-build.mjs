@@ -8,7 +8,7 @@
 // invoking it via `node` (avoids PATH / .bin symlink issues on cPanel).
 
 import { spawnSync } from "node:child_process";
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync, readFileSync, rmSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -68,6 +68,17 @@ const resolveBinScript = (appDir, pkgName, binName) => {
 
 process.stdout.write(`Swiss Bakery build — ROOT=${ROOT}\n`);
 process.stdout.write(`node=${NODE}\n`);
+
+// Clean any leftover root-level install state from the previous
+// workspace-based layout. If these exist, `npm install` inside apps/*
+// walks up, finds them, and decides everything is "up to date" without
+// actually installing the app's deps.
+for (const p of [path.join(ROOT, "node_modules"), path.join(ROOT, "package-lock.json")]) {
+  if (existsSync(p)) {
+    process.stdout.write(`\n✗ removing stale ${p}\n`);
+    rmSync(p, { recursive: true, force: true });
+  }
+}
 
 // Always ensure deps are installed per app
 installIfMissing(APP_WEB, "astro");
