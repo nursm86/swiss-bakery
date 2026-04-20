@@ -1,7 +1,10 @@
 #!/usr/bin/env node
 // Build helper for cPanel deploy.
 // Invoked via `npm run cpanel:build` from cPanel's "Run JS Script" UI.
-// Uses absolute paths so it works regardless of the shell cwd cPanel picks.
+//
+// cPanel's shell doesn't add the workspace-hoisted node_modules/.bin to PATH
+// when `npm run build` is invoked inside apps/*. So we invoke each binary by
+// its absolute path in the root node_modules/.bin.
 
 import { spawnSync } from "node:child_process";
 import { existsSync } from "node:fs";
@@ -10,12 +13,19 @@ import { fileURLToPath } from "node:url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
-const APPS = [
-  { name: "web", dir: path.join(ROOT, "apps", "web") },
-  { name: "api", dir: path.join(ROOT, "apps", "api") },
-];
+const BIN = path.join(ROOT, "node_modules", ".bin");
+const APP_WEB = path.join(ROOT, "apps", "web");
+const APP_API = path.join(ROOT, "apps", "api");
 
-const npmCmd = process.platform === "win32" ? "npm.cmd" : "npm";
+const binPath = (name) => {
+  const p = path.join(BIN, name);
+  if (!existsSync(p)) {
+    process.stderr.write(`\n✗ binary not found: ${p}\n`);
+    process.stderr.write("  Run `npm install` from the repo root first.\n");
+    process.exit(1);
+  }
+  return p;
+};
 
 const run = (cmd, args, cwd) => {
   process.stdout.write(`\n▶ ${cmd} ${args.join(" ")}  (cwd: ${cwd})\n`);
@@ -28,16 +38,17 @@ const run = (cmd, args, cwd) => {
 
 process.stdout.write(`Swiss Bakery build — ROOT=${ROOT}\n`);
 
-for (const { name, dir } of APPS) {
-  if (!existsSync(dir)) {
-    process.stderr.write(`\n✗ missing app dir: ${dir}\n`);
-    process.exit(1);
-  }
-  if (!existsSync(path.join(dir, "node_modules"))) {
-    run(npmCmd, ["install", "--no-audit", "--no-fund"], dir);
-  }
-  run(npmCmd, ["run", "build"], dir);
-  process.stdout.write(`\n✓ built ${name}\n`);
-}
+const ASTRO = binPath("astro");
+const PRISMA = binPath("prisma");
+const TSC = binPath("tsc");
+
+// 1. Build Astro public site → apps/web/dist
+run(ASTRO, ["build"], APP_WEB);
+
+// 2. Generate Prisma client → node_modules/@prisma/client
+run(PRISMA, ["generate", "--schema", path.join(APP_API, "prisma", "schema.prisma")], APP_API);
+
+// 3. Compile API TypeScript → apps/api/dist
+run(TSC, ["-p", path.join(APP_API, "tsconfig.json")], APP_API);
 
 process.stdout.write("\n✓ All builds complete.\n");
