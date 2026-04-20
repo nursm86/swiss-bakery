@@ -150,3 +150,6 @@ dist
 .pnp.*
 /Other resource
 .DS_Store
+
+# Generated menu exports — regenerate with `npm run export:gloriafood`
+exports/

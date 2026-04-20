@@ -18,7 +18,8 @@
     "deploy:prisma": "prisma migrate deploy --schema apps/api/prisma/schema.prisma && node --import tsx apps/api/prisma/seed.ts",
     "prisma:deploy": "prisma migrate deploy --schema apps/api/prisma/schema.prisma",
     "prisma:seed": "node --import tsx apps/api/prisma/seed.ts",
-    "hash-password": "node --import tsx apps/api/scripts/hash-password.ts"
+    "hash-password": "node --import tsx apps/api/scripts/hash-password.ts",
+    "export:gloriafood": "node scripts/export-gloriafood.mjs"
   },
   "dependencies": {
     "@prisma/client": "^6.1.0",
