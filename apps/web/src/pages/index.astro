@@ -48,7 +48,7 @@ import Footer from "../components/Footer.astro";
       sortOrder: number;
     };
     const formatPrice = (p: ApiProduct) =>
-      p.priceCents == null ? "Ask staff" : `$${(p.priceCents / 100).toFixed(2)}`;
+      p.priceCents == null ? "Visit shop" : `$${(p.priceCents / 100).toFixed(2)}`;
 
     fetch("/api/products")
       .then((r) => (r.ok ? r.json() : null))

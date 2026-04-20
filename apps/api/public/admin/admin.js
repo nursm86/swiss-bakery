@@ -188,7 +188,7 @@ const productCard = (p) => {
   title.textContent = p.name;
   const meta = document.createElement("div");
   meta.className = "meta";
-  meta.innerHTML = `<span>${p.priceCents == null ? "Ask staff" : `$${(p.priceCents / 100).toFixed(2)} / ${p.unit}`}</span><span>${p.isFeatured ? `<span class="badge featured">Featured</span>` : ""} ${p.isActive ? "" : `<span class="badge inactive">Hidden</span>`}</span>`;
+  meta.innerHTML = `<span>${p.priceCents == null ? "Visit shop" : `$${(p.priceCents / 100).toFixed(2)} / ${p.unit}`}</span><span>${p.isFeatured ? `<span class="badge featured">Featured</span>` : ""} ${p.isActive ? "" : `<span class="badge inactive">Hidden</span>`}</span>`;
   el.append(thumb, title, meta);
   el.addEventListener("click", () => openProductDialog(p));
   return el;

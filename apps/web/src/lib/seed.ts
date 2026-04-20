@@ -37,7 +37,7 @@ export const byCategory = (cat: string): SeedProduct[] =>
     .sort((a, b) => a.sortOrder - b.sortOrder);
 
 export const formatPrice = (p: SeedProduct): string =>
-  p.priceCents == null ? "Ask staff" : `$${(p.priceCents / 100).toFixed(2)}`;
+  p.priceCents == null ? "Visit shop" : `$${(p.priceCents / 100).toFixed(2)}`;
 
 export const DEFAULT_SETTINGS = {
   address: "Shop 3/12 Minto Rd, Minto NSW 2566",
