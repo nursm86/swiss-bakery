@@ -38,7 +38,9 @@
       "Bash(curl -s http://localhost:3000/api/products)",
       "Bash(node -e \"const d=JSON.parse\\(require\\('fs'\\).readFileSync\\(0,'utf8'\\)\\);console.log\\('products from MySQL:',d.products.length\\);console.log\\('first:',d.products[0].name,'$'+\\(d.products[0].priceCents/100\\).toFixed\\(2\\)\\)\")",
       "Bash(curl -s -X POST http://localhost:3000/api/auth/login -H 'Content-Type: application/json' -d '{\"email\":\"owner@swissbakery.com.au\",\"password\":\"swissbakery-admin-dev\"}' -o /tmp/sb-login2.json -w \"login HTTP %{http_code}\\\\n\")",
-      "Bash(node -e \"const d=JSON.parse\\(require\\('fs'\\).readFileSync\\('/tmp/sb-login2.json'\\)\\);console.log\\('got access token, length', d.accessToken?.length\\);\")"
+      "Bash(node -e \"const d=JSON.parse\\(require\\('fs'\\).readFileSync\\('/tmp/sb-login2.json'\\)\\);console.log\\('got access token, length', d.accessToken?.length\\);\")",
+      "Bash(echo \"JWT_SECRET=$\\(node -e \"console.log\\(require\\('crypto'\\).randomBytes\\(48\\).toString\\('base64'\\)\\)\"\\)\")",
+      "Bash(echo \"JWT_REFRESH_SECRET=$\\(node -e \"console.log\\(require\\('crypto'\\).randomBytes\\(48\\).toString\\('base64'\\)\\)\"\\)\")"
     ]
   }
 }
