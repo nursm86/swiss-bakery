@@ -41,9 +41,13 @@ const s = DEFAULT_SETTINGS;
     </div>
   </div>
   <div class="border-t border-white/10">
-    <div class="container-x py-5 flex flex-col md:flex-row gap-3 justify-between text-xs text-white/50">
+    <div class="container-x py-5 flex flex-col md:flex-row gap-3 justify-between items-start md:items-center text-xs text-white/50">
       <span>© {year} Swiss Bakery · All rights reserved.</span>
-      <span>Some product imagery courtesy Wikimedia Commons contributors, used under CC-BY-SA 4.0.</span>
+      <div class="flex flex-wrap gap-x-5 gap-y-1 items-center">
+        <a href="/terms" class="hover:text-[color:var(--color-gold)]">Terms &amp; Conditions</a>
+        <span class="hidden md:inline">·</span>
+        <span>Some product imagery courtesy Wikimedia Commons contributors, used under CC-BY-SA 4.0.</span>
+      </div>
     </div>
   </div>
 </footer>

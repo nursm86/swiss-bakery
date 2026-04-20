@@ -1,0 +1,83 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Nav from "../components/Nav.astro";
+import Footer from "../components/Footer.astro";
+import { DEFAULT_TERMS, renderMd } from "../lib/terms-default";
+
+const renderedDefault = renderMd(DEFAULT_TERMS.content);
+---
+<Layout
+  title="Terms & Conditions · Swiss Bakery"
+  description="Terms & Conditions for Swiss Bakery, Shop 3/12 Minto Rd, Minto NSW 2566."
+>
+  <Nav />
+  <main>
+    <section class="py-14 sm:py-20 bg-white">
+      <div class="container-x max-w-3xl">
+        <span class="chip chip-cream">Legal</span>
+        <h1 id="terms-title" class="section-title text-3xl sm:text-4xl mt-3 text-[color:var(--color-navy)]">
+          {DEFAULT_TERMS.title}
+        </h1>
+        <p id="terms-updated" class="text-sm text-[color:var(--color-muted)] mt-3">
+          Last updated: {DEFAULT_TERMS.lastUpdated}
+        </p>
+        <article id="terms-content" class="prose mt-6 text-[color:var(--color-navy)]/90 text-[0.97rem] sm:text-base" set:html={renderedDefault}></article>
+        <div class="mt-12 pt-8 border-t border-[color:var(--color-cream-200)]">
+          <a href="/" class="btn-outline">← Back to home</a>
+        </div>
+      </div>
+    </section>
+  </main>
+  <Footer />
+</Layout>
+<script>
+  // Fetch latest admin-edited content and hot-swap it in.
+  const esc = (s: string) =>
+    s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  const inline = (s: string) =>
+    esc(s)
+      .replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>")
+      .replace(/\*([^*\n]+)\*/g, "<em>$1</em>")
+      .replace(
+        /\[([^\]]+)\]\(([^)]+)\)/g,
+        '<a href="$2" class="underline decoration-[color:var(--color-gold)] decoration-2 underline-offset-4 hover:opacity-70">$1</a>',
+      );
+  const renderMd = (md: string): string =>
+    md
+      .trim()
+      .split(/\n{2,}/)
+      .map((block) => {
+        const h2 = block.match(/^## (.+)/s);
+        if (h2) return `<h2 class="font-[family-name:var(--font-display)] text-2xl sm:text-3xl text-[color:var(--color-navy)] mt-10 mb-3">${inline(h2[1]!.split("\n").join(" "))}</h2>`;
+        const h3 = block.match(/^### (.+)/s);
+        if (h3) return `<h3 class="font-semibold text-lg text-[color:var(--color-navy)] mt-6 mb-2">${inline(h3[1]!.split("\n").join(" "))}</h3>`;
+        if (/^[-*] /.test(block)) {
+          const items = block.split("\n").map((l: string) => `<li>${inline(l.replace(/^[-*] /, ""))}</li>`).join("");
+          return `<ul class="list-disc pl-6 space-y-1 my-3">${items}</ul>`;
+        }
+        if (/^\d+\. /.test(block)) {
+          const items = block.split("\n").map((l: string) => `<li>${inline(l.replace(/^\d+\. /, ""))}</li>`).join("");
+          return `<ol class="list-decimal pl-6 space-y-1 my-3">${items}</ol>`;
+        }
+        return `<p class="leading-relaxed my-3">${inline(block).replace(/\n/g, "<br>")}</p>`;
+      })
+      .join("\n");
+
+  fetch("/api/pages/terms")
+    .then((r) => (r.ok ? r.json() : null))
+    .then((data) => {
+      const page = data?.page;
+      if (!page) return;
+      const title = document.getElementById("terms-title");
+      const updated = document.getElementById("terms-updated");
+      const content = document.getElementById("terms-content");
+      if (title && page.title) title.textContent = page.title;
+      if (updated && page.updatedAt) {
+        const d = new Date(page.updatedAt);
+        const fmt = d.toLocaleDateString("en-AU", { day: "numeric", month: "long", year: "numeric" });
+        updated.textContent = `Last updated: ${fmt}`;
+      }
+      if (content && page.content) content.innerHTML = renderMd(page.content);
+    })
+    .catch(() => {});
+</script>

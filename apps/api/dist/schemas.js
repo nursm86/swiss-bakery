@@ -58,6 +58,17 @@ const settingKey = z.enum([
     "aboutText",
     "gloriaFoodScriptSrc",
 ]);
+export const pageCreateSchema = z.object({
+    slug: z
+        .string()
+        .min(1)
+        .max(80)
+        .regex(/^[a-z0-9][a-z0-9-]*$/, "lowercase letters, digits and hyphens only"),
+    title: z.string().min(1).max(200),
+    content: z.string().max(50_000),
+    isPublished: z.boolean().default(true),
+});
+export const pageUpdateSchema = pageCreateSchema.partial();
 export const settingsUpdateSchema = z
     .array(z.object({
     key: settingKey,

@@ -25,6 +25,7 @@
       <button class="tab" data-tab="hero" role="tab">Hero banner</button>
       <button class="tab" data-tab="notice" role="tab">Notice strip</button>
       <button class="tab" data-tab="settings" role="tab">Site info</button>
+      <button class="tab" data-tab="pages" role="tab">Pages</button>
     </nav>
 
     <main id="main">
@@ -100,6 +101,44 @@
           <div class="actions">
             <button type="submit" class="primary">Save site info</button>
             <span class="hint" id="settings-status"></span>
+          </div>
+        </form>
+      </section>
+
+      <section id="tab-pages" class="panel">
+        <div class="panel-head">
+          <h2>Pages</h2>
+        </div>
+        <form id="pages-form" class="stack">
+          <label>
+            <span>Page</span>
+            <select name="slug" id="pages-select"></select>
+          </label>
+          <label>
+            <span>Title</span>
+            <input type="text" name="title" maxlength="200" required />
+          </label>
+          <label>
+            <span>Content (markdown)</span>
+            <textarea name="content" rows="22" maxlength="50000" required style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:0.88rem;line-height:1.5;"></textarea>
+          </label>
+          <details style="font-size:0.85rem;color:var(--muted)">
+            <summary style="cursor:pointer">Markdown tips</summary>
+            <div style="padding:0.5rem 0 0">
+              <p><code>## Heading</code> → section heading · <code>### Sub</code> → smaller heading</p>
+              <p><code>**bold**</code>, <code>*italic*</code>, <code>[link text](https://…)</code></p>
+              <p><code>- bullet</code> for lists · <code>1. item</code> for numbered lists</p>
+              <p>Leave a blank line between paragraphs.</p>
+            </div>
+          </details>
+          <label class="check">
+            <input type="checkbox" name="isPublished" checked />
+            <span>Published (visible on the site)</span>
+          </label>
+          <div class="actions">
+            <button type="submit" class="primary">Save page</button>
+            <a href="/terms" target="_blank" rel="noopener" class="hint" style="text-decoration:underline">Preview /terms ↗</a>
+            <span class="hint" id="pages-status"></span>
           </div>
         </form>
       </section>

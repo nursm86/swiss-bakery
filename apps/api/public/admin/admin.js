@@ -119,7 +119,8 @@ export const boot = async () => {
   wireHero();
   wireNotice();
   wireSettings();
-  await Promise.all([loadProducts(), loadHero(), loadNotice(), loadSettings()]);
+  wirePages();
+  await Promise.all([loadProducts(), loadHero(), loadNotice(), loadSettings(), loadPages()]);
 };
 
 const wireTabs = () => {
@@ -454,6 +455,67 @@ const wireSettings = () => {
         value: (form[key]?.value ?? "").trim(),
       }));
       await api("/api/settings", { method: "PATCH", body: items });
+      status.textContent = "Saved ✓";
+      setTimeout(() => (status.textContent = ""), 2000);
+    } catch (e) {
+      status.textContent = e.message || "Save failed";
+    }
+  });
+};
+
+/* ---------- Pages ---------- */
+let pagesCache = [];
+
+const loadPages = async () => {
+  const data = await api("/api/pages/all");
+  pagesCache = data.pages ?? [];
+  const sel = document.getElementById("pages-select");
+  if (!sel) return;
+  sel.innerHTML = "";
+  for (const p of pagesCache) {
+    const opt = document.createElement("option");
+    opt.value = p.slug;
+    opt.textContent = `${p.title}  (/${p.slug})`;
+    sel.appendChild(opt);
+  }
+  if (pagesCache.length > 0) {
+    sel.value = pagesCache[0].slug;
+    fillPageForm(pagesCache[0]);
+  }
+};
+
+const fillPageForm = (p) => {
+  const form = document.getElementById("pages-form");
+  form.title.value = p.title;
+  form.content.value = p.content;
+  form.isPublished.checked = !!p.isPublished;
+  form.dataset.slug = p.slug;
+};
+
+const wirePages = () => {
+  const sel = document.getElementById("pages-select");
+  sel?.addEventListener("change", () => {
+    const p = pagesCache.find((x) => x.slug === sel.value);
+    if (p) fillPageForm(p);
+  });
+  document.getElementById("pages-form")?.addEventListener("submit", async (ev) => {
+    ev.preventDefault();
+    const form = ev.target;
+    const slug = form.dataset.slug;
+    const status = document.getElementById("pages-status");
+    try {
+      const body = {
+        title: form.title.value.trim(),
+        content: form.content.value,
+        isPublished: form.isPublished.checked,
+      };
+      const data = await api(`/api/pages/${encodeURIComponent(slug)}`, {
+        method: "PATCH",
+        body,
+      });
+      // refresh cache
+      const idx = pagesCache.findIndex((x) => x.slug === slug);
+      if (idx >= 0) pagesCache[idx] = data.page;
       status.textContent = "Saved ✓";
       setTimeout(() => (status.textContent = ""), 2000);
     } catch (e) {

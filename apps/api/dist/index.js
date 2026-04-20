@@ -14,6 +14,7 @@ import { errorHandler } from "./middleware/errorHandler.js";
 import { authRouter } from "./routes/auth.js";
 import { heroRouter } from "./routes/hero.js";
 import { noticeRouter } from "./routes/notice.js";
+import { pagesRouter } from "./routes/pages.js";
 import { productsRouter } from "./routes/products.js";
 import { settingsRouter } from "./routes/settings.js";
 import { uploadsRouter } from "./routes/uploads.js";
@@ -83,6 +84,7 @@ app.use("/api/auth", authRouter);
 app.use("/api/products", productsRouter);
 app.use("/api/hero", heroRouter);
 app.use("/api/notice", noticeRouter);
+app.use("/api/pages", pagesRouter);
 app.use("/api/settings", settingsRouter);
 app.use("/api/uploads", uploadsRouter);
 app.use("/uploads", express.static(UPLOADS_DIR, {

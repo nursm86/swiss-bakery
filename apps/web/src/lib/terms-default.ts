@@ -1,48 +1,14 @@
-import { readFile } from "node:fs/promises";
-import path from "node:path";
-import { fileURLToPath } from "node:url";
-import { PrismaClient } from "@prisma/client";
+// Default Terms & Conditions content, used as the build-time fallback on the
+// Astro /terms page. Admin edits via the dashboard override this at runtime.
+// Written as markdown (see renderMd helper for the subset supported).
+//
+// NOTE: This is a starting template, not legal advice. The owner should have
+// a solicitor review before the site launches publicly.
 
-const prisma = new PrismaClient();
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const REPO_ROOT = path.resolve(__dirname, "..", "..", "..");
-const SEED_JSON = path.join(REPO_ROOT, "data", "products.seed.json");
-
-type SeedProduct = {
-  slug: string;
-  name: string;
-  category: "Savoury" | "Bakery" | "Sweets" | "Beverages";
-  priceCents: number | null;
-  unit: string;
-  description: string;
-  imagePath: string | null;
-  isFeatured: boolean;
-  isActive: boolean;
-  sortOrder: number;
-};
-
-type SeedFile = { products: SeedProduct[] };
-
-const defaultSettings: Record<string, string> = {
-  address: "Shop 3/12 Minto Rd, Minto NSW 2566",
-  phone: "+61 0452 626 232",
-  email: "contact@swissbakery.com.au",
-  hours: "Tue–Sun 8:00 am – 8:00 pm · Mon closed",
-  mapEmbedUrl:
-    "https://www.google.com/maps?q=Shop+3%2F12+Minto+Rd%2C+Minto+NSW+2566&output=embed",
-  facebookUrl: "",
-  instagramUrl: "",
-  aboutText:
-    "Swiss Bakery brings Swiss-trained patisserie and traditional Bengali sweets to Minto. Every pastry, sweet and bread is baked on-site - flaky patties in the morning, warm singaras in the afternoon, rasgulla and firni set fresh daily. Handcrafted, never shortcut - Swiss soul, Bengali heart.",
-  gloriaFoodScriptSrc: "",
-};
-
-const defaultPages = [
-  {
-    slug: "terms",
-    title: "Terms & Conditions",
-    content: `## 1. Who we are
+export const DEFAULT_TERMS = {
+  title: "Terms & Conditions",
+  lastUpdated: "20 April 2026",
+  content: `## 1. Who we are
 
 Swiss Bakery ("we", "us", "our") is a retail bakery at Shop 3/12 Minto Rd, Minto NSW 2566, Australia. You can reach us on +61 0452 626 232 or contact@swissbakery.com.au.
 
@@ -114,90 +80,58 @@ These Terms are governed by the laws of New South Wales, Australia. Any dispute 
 
 Questions about these Terms? Email contact@swissbakery.com.au or visit us at Shop 3/12 Minto Rd, Minto NSW 2566.
 `,
-    isPublished: true,
-  },
-];
-
-const defaultHero = {
-  heading: "Handcrafted daily · Swiss soul, Bengali heart",
-  subheading:
-    "European patisserie and traditional Bengali sweets, baked on-site in Minto since day one.",
-  ctaLabel: "View Menu",
-  ctaHref: "#menu",
-  imagePath: null,
-  isActive: true,
-  sortOrder: 0,
 };
 
-async function main() {
-  const raw = await readFile(SEED_JSON, "utf-8");
-  const data = JSON.parse(raw) as SeedFile;
+const escapeHtml = (s: string) =>
+  s
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
 
-  let created = 0;
-  let updated = 0;
-  for (const p of data.products) {
-    const existing = await prisma.product.findUnique({ where: { slug: p.slug } });
-    await prisma.product.upsert({
-      where: { slug: p.slug },
-      create: {
-        slug: p.slug,
-        name: p.name,
-        category: p.category,
-        priceCents: p.priceCents,
-        unit: p.unit,
-        description: p.description,
-        imagePath: p.imagePath,
-        isFeatured: p.isFeatured,
-        isActive: p.isActive,
-        sortOrder: p.sortOrder,
-      },
-      update: {
-        name: p.name,
-        category: p.category,
-        priceCents: p.priceCents,
-        unit: p.unit,
-        description: p.description,
-        imagePath: p.imagePath,
-        isFeatured: p.isFeatured,
-        isActive: p.isActive,
-        sortOrder: p.sortOrder,
-      },
-    });
-    if (existing) updated++;
-    else created++;
-  }
+const inlineMd = (s: string) =>
+  escapeHtml(s)
+    .replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>")
+    .replace(/\*([^*\n]+)\*/g, "<em>$1</em>")
+    .replace(
+      /\[([^\]]+)\]\(([^)]+)\)/g,
+      '<a href="$2" class="underline decoration-[color:var(--color-gold)] decoration-2 underline-offset-4 hover:opacity-70">$1</a>',
+    );
 
-  for (const [key, value] of Object.entries(defaultSettings)) {
-    await prisma.siteSetting.upsert({
-      where: { key },
-      create: { key, value },
-      update: {},
-    });
-  }
-
-  const heroCount = await prisma.heroBanner.count();
-  if (heroCount === 0) {
-    await prisma.heroBanner.create({ data: defaultHero });
-  }
-
-  for (const page of defaultPages) {
-    await prisma.page.upsert({
-      where: { slug: page.slug },
-      create: page,
-      update: {}, // don't clobber admin edits on re-seed
-    });
-  }
-
-  // eslint-disable-next-line no-console
-  console.log(
-    `Seeded ${data.products.length} products (${created} new, ${updated} updated), default hero + settings.`,
-  );
-}
-
-main()
-  .catch((e) => {
-    // eslint-disable-next-line no-console
-    console.error(e);
-    process.exit(1);
-  })
-  .finally(() => prisma.$disconnect());
+/**
+ * Minimal markdown renderer for the T&C / legal pages.
+ * Supports: ## and ### headings, paragraphs, unordered and ordered lists,
+ * **bold**, *italic*, and [text](url) links. Escapes all other HTML.
+ */
+export const renderMd = (md: string): string => {
+  const blocks = md.trim().split(/\n{2,}/);
+  return blocks
+    .map((block) => {
+      const h2 = block.match(/^## (.+)/s);
+      if (h2) {
+        const rest = h2[1]!.split("\n").join(" ");
+        return `<h2 class="font-[family-name:var(--font-display)] text-2xl sm:text-3xl text-[color:var(--color-navy)] mt-10 mb-3">${inlineMd(rest)}</h2>`;
+      }
+      const h3 = block.match(/^### (.+)/s);
+      if (h3) {
+        const rest = h3[1]!.split("\n").join(" ");
+        return `<h3 class="font-semibold text-lg text-[color:var(--color-navy)] mt-6 mb-2">${inlineMd(rest)}</h3>`;
+      }
+      if (/^[-*] /.test(block)) {
+        const items = block
+          .split("\n")
+          .map((l) => `<li>${inlineMd(l.replace(/^[-*] /, ""))}</li>`)
+          .join("");
+        return `<ul class="list-disc pl-6 space-y-1 my-3">${items}</ul>`;
+      }
+      if (/^\d+\. /.test(block)) {
+        const items = block
+          .split("\n")
+          .map((l) => `<li>${inlineMd(l.replace(/^\d+\. /, ""))}</li>`)
+          .join("");
+        return `<ol class="list-decimal pl-6 space-y-1 my-3">${items}</ol>`;
+      }
+      return `<p class="leading-relaxed my-3">${inlineMd(block).replace(/\n/g, "<br>")}</p>`;
+    })
+    .join("\n");
+};
