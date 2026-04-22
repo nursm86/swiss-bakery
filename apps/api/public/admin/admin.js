@@ -124,9 +124,9 @@ export const boot = async () => {
 };
 
 const wireTabs = () => {
-  document.querySelectorAll(".tab").forEach((btn) => {
+  document.querySelectorAll("button.tab").forEach((btn) => {
     btn.addEventListener("click", () => {
-      document.querySelectorAll(".tab").forEach((b) => b.classList.remove("active"));
+      document.querySelectorAll("button.tab").forEach((b) => b.classList.remove("active"));
       document.querySelectorAll(".panel").forEach((p) => p.classList.remove("active"));
       btn.classList.add("active");
       const id = `tab-${btn.dataset.tab}`;

@@ -1,6 +1,14 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
   <rect width="64" height="64" rx="14" fill="#1a2a4f" />
-  <rect x="10" y="10" width="44" height="44" rx="6" fill="#c8102e" />
-  <rect x="18" y="28" width="28" height="8" rx="1" fill="#fff" />
-  <rect x="28" y="18" width="8" height="28" rx="1" fill="#fff" />
+  <g fill="none" stroke="#d4a84a" stroke-width="3" stroke-linecap="round">
+    <line x1="32" y1="14" x2="32" y2="54" />
+    <path d="M32 22 Q24 22 22 18" />
+    <path d="M32 30 Q24 30 22 26" />
+    <path d="M32 38 Q24 38 22 34" />
+    <path d="M32 46 Q24 46 22 42" />
+    <path d="M32 22 Q40 22 42 18" />
+    <path d="M32 30 Q40 30 42 26" />
+    <path d="M32 38 Q40 38 42 34" />
+    <path d="M32 46 Q40 46 42 42" />
+  </g>
 </svg>
