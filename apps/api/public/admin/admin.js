@@ -120,7 +120,9 @@ export const boot = async () => {
   wireNotice();
   wireSettings();
   wirePages();
+  wireMenu();
   await Promise.all([loadProducts(), loadHero(), loadNotice(), loadSettings(), loadPages()]);
+  loadMenu();
 };
 
 const wireTabs = () => {
@@ -203,6 +205,15 @@ const wireProducts = () => {
   document.getElementById("product-delete").addEventListener("click", onProductDelete);
 };
 
+const slugify = (s) =>
+  String(s)
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, "_")
+    .replace(/[^a-z0-9_-]+/g, "")
+    .replace(/_+/g, "_")
+    .replace(/^[-_]+|[-_]+$/g, "");
+
 const openProductDialog = (p) => {
   const dlg = document.getElementById("product-dialog");
   const form = document.getElementById("product-form");
@@ -225,6 +236,30 @@ const openProductDialog = (p) => {
   } else {
     form.isActive.checked = true;
   }
+
+  // Auto-fill slug from name. Stops once user types in the slug field directly.
+  let autoSlug = !p; // only auto-fill for new products
+  const nameInput = form.name;
+  const slugInput = form.slug;
+  const onName = () => {
+    if (!autoSlug) return;
+    slugInput.value = slugify(nameInput.value);
+  };
+  const onSlug = () => {
+    autoSlug = false;
+  };
+  nameInput.addEventListener("input", onName);
+  slugInput.addEventListener("input", onSlug);
+  // Detach listeners when dialog closes so they don't stack across opens.
+  dlg.addEventListener(
+    "close",
+    () => {
+      nameInput.removeEventListener("input", onName);
+      slugInput.removeEventListener("input", onSlug);
+    },
+    { once: true },
+  );
+
   dlg.showModal();
 };
 
@@ -523,6 +558,491 @@ const wirePages = () => {
       status.textContent = e.message || "Save failed";
     }
   });
+};
+
+/* ---------- Menu builder ---------- */
+const MENU_KEY = "sb_menu_builder_v1";
+const MENU_PREVIEW_KEY = "sb_menu_preview_v1";
+const UNIT_OPTIONS = [
+  { value: "", label: "— inherit —" },
+  { value: "piece", label: "piece" },
+  { value: "kg", label: "kg" },
+  { value: "pack", label: "pack" },
+  { value: "cup", label: "cup" },
+];
+const CAT_DEFAULTS = {
+  Savoury: { title: "SAVOURY BITES", subtitle: "Per piece", defaultUnit: "" },
+  Bakery: { title: "BAKERY & BREADS", subtitle: "Freshly baked in-house", defaultUnit: "" },
+  Sweets: { title: "TRADITIONAL SWEETS", subtitle: "Priced by weight", defaultUnit: "kg" },
+  Beverages: { title: "BEVERAGES & SIDES", subtitle: "", defaultUnit: "" },
+};
+
+const defaultMenu = () => ({
+  v: 1,
+  doc: {
+    tagline: "Handcrafted daily · Swiss soul, Bengali heart",
+    strapline: "ALL PRICES AUD · DINE-IN & TAKEAWAY",
+    footer: "Baked fresh every morning",
+    location: "SWISS · BAKERY · MINTO",
+    showPhotos: false,
+  },
+  categories: [],
+});
+
+let menuConfig = defaultMenu();
+let menuSaveTimer = null;
+
+const loadMenuConfig = () => {
+  try {
+    const raw = localStorage.getItem(MENU_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (parsed && parsed.v === 1) menuConfig = parsed;
+    }
+  } catch {}
+};
+
+const saveMenuConfig = () => {
+  clearTimeout(menuSaveTimer);
+  menuSaveTimer = setTimeout(() => {
+    try {
+      localStorage.setItem(MENU_KEY, JSON.stringify(menuConfig));
+      const status = document.getElementById("menu-status");
+      if (status) {
+        status.textContent = "Saved ✓";
+        setTimeout(() => (status.textContent = ""), 1500);
+      }
+    } catch {}
+  }, 250);
+};
+
+const reconcileMenu = (cfg, products) => {
+  const byCat = new Map();
+  for (const p of products) {
+    if (!byCat.has(p.category)) byCat.set(p.category, []);
+    byCat.get(p.category).push(p);
+  }
+  for (const [, list] of byCat) list.sort((a, b) => a.sortOrder - b.sortOrder);
+  const seen = new Set();
+  const cats = [];
+  for (const c of cfg.categories) {
+    if (!byCat.has(c.key)) continue;
+    seen.add(c.key);
+    const items = byCat.get(c.key);
+    const have = new Set(c.products.map((e) => e.id));
+    const productEntries = c.products.filter((e) => items.some((p) => p.id === e.id));
+    for (const p of items) {
+      if (!have.has(p.id)) {
+        productEntries.push({
+          id: p.id,
+          included: p.isActive !== false,
+          priceCents: p.priceCents ?? null,
+          unitOverride: "",
+        });
+      }
+    }
+    cats.push({ ...c, products: productEntries });
+  }
+  for (const [key, items] of byCat) {
+    if (seen.has(key)) continue;
+    const def = CAT_DEFAULTS[key] ?? { title: key.toUpperCase(), subtitle: "", defaultUnit: "" };
+    cats.push({
+      key,
+      title: def.title,
+      subtitle: def.subtitle,
+      columns: 2,
+      showPhotos: false,
+      pageBreakBefore: false,
+      defaultUnit: def.defaultUnit,
+      collapsed: true,
+      products: items.map((p) => ({
+        id: p.id,
+        included: p.isActive !== false,
+        priceCents: p.priceCents ?? null,
+        unitOverride: "",
+      })),
+    });
+  }
+  for (const c of cats) {
+    if (typeof c.collapsed !== "boolean") c.collapsed = true;
+  }
+  return { ...cfg, categories: cats };
+};
+
+const wireMenu = () => {
+  document.getElementById("menu-tagline")?.addEventListener("input", (e) => {
+    menuConfig.doc.tagline = e.target.value;
+    saveMenuConfig();
+  });
+  document.getElementById("menu-strapline")?.addEventListener("input", (e) => {
+    menuConfig.doc.strapline = e.target.value;
+    saveMenuConfig();
+  });
+  document.getElementById("menu-footer")?.addEventListener("input", (e) => {
+    menuConfig.doc.footer = e.target.value;
+    saveMenuConfig();
+  });
+  document.getElementById("menu-location")?.addEventListener("input", (e) => {
+    menuConfig.doc.location = e.target.value;
+    saveMenuConfig();
+  });
+  document.getElementById("menu-show-photos")?.addEventListener("change", (e) => {
+    menuConfig.doc.showPhotos = e.target.checked;
+    saveMenuConfig();
+  });
+  document.getElementById("menu-reset-btn")?.addEventListener("click", () => {
+    if (!confirm("Reset menu builder to defaults? Your current customisations will be lost.")) return;
+    menuConfig = defaultMenu();
+    menuConfig = reconcileMenu(menuConfig, state.products);
+    saveMenuConfig();
+    renderMenuBuilder();
+  });
+  document.getElementById("menu-resync-btn")?.addEventListener("click", () => {
+    for (const c of menuConfig.categories) {
+      const cur = state.products.filter((p) => p.category === c.key);
+      const map = new Map(cur.map((p) => [p.id, p]));
+      for (const e of c.products) {
+        const p = map.get(e.id);
+        if (p) e.priceCents = p.priceCents ?? null;
+      }
+    }
+    saveMenuConfig();
+    renderMenuBuilder();
+    const status = document.getElementById("menu-status");
+    if (status) {
+      status.textContent = "Prices resynced ✓";
+      setTimeout(() => (status.textContent = ""), 1800);
+    }
+  });
+  document.getElementById("menu-preview-btn")?.addEventListener("click", openMenuPreview);
+  document.getElementById("menu-toggle-all-btn")?.addEventListener("click", () => {
+    const anyCollapsed = menuConfig.categories.some((c) => c.collapsed);
+    for (const c of menuConfig.categories) c.collapsed = !anyCollapsed;
+    saveMenuConfig();
+    renderMenuBuilder();
+  });
+};
+
+const loadMenu = () => {
+  loadMenuConfig();
+  menuConfig = reconcileMenu(menuConfig, state.products);
+  saveMenuConfig();
+  const d = menuConfig.doc;
+  document.getElementById("menu-tagline").value = d.tagline ?? "";
+  document.getElementById("menu-strapline").value = d.strapline ?? "";
+  document.getElementById("menu-footer").value = d.footer ?? "";
+  document.getElementById("menu-location").value = d.location ?? "";
+  document.getElementById("menu-show-photos").checked = !!d.showPhotos;
+  renderMenuBuilder();
+};
+
+const renderMenuBuilder = () => {
+  const root = document.getElementById("menu-categories");
+  if (!root) return;
+  root.innerHTML = "";
+  if (menuConfig.categories.length === 0) {
+    root.innerHTML = `<p class="hint">Add some products on the Products tab first.</p>`;
+    return;
+  }
+  const productsById = new Map(state.products.map((p) => [p.id, p]));
+  menuConfig.categories.forEach((cat, catIdx) => {
+    root.appendChild(renderCategoryCard(cat, catIdx, productsById));
+  });
+  const toggleBtn = document.getElementById("menu-toggle-all-btn");
+  if (toggleBtn) {
+    const anyCollapsed = menuConfig.categories.some((c) => c.collapsed);
+    toggleBtn.textContent = anyCollapsed ? "⇅ Expand all" : "⇅ Collapse all";
+  }
+};
+
+const renderCategoryCard = (cat, catIdx, productsById) => {
+  const card = document.createElement("section");
+  card.className = "menu-cat-card" + (cat.collapsed ? " collapsed" : "");
+
+  const head = document.createElement("div");
+  head.className = "menu-cat-head";
+
+  const chevron = document.createElement("button");
+  chevron.type = "button";
+  chevron.className = "menu-chevron";
+  chevron.setAttribute("aria-label", "Toggle category");
+  chevron.setAttribute("aria-expanded", String(!cat.collapsed));
+  chevron.textContent = cat.collapsed ? "▸" : "▾";
+  chevron.addEventListener("click", () => {
+    cat.collapsed = !cat.collapsed;
+    saveMenuConfig();
+    renderMenuBuilder();
+  });
+
+  const titleWrap = document.createElement("label");
+  titleWrap.className = "menu-cat-title-label";
+  if (!cat.collapsed) {
+    titleWrap.innerHTML = `<span>Category title (printed)</span>`;
+  }
+  const titleInput = document.createElement("input");
+  titleInput.type = "text";
+  titleInput.maxLength = 80;
+  titleInput.value = cat.title;
+  titleInput.addEventListener("input", () => {
+    cat.title = titleInput.value;
+    saveMenuConfig();
+    const badge = card.querySelector(".menu-cat-summary");
+    if (badge) badge.dataset.title = titleInput.value;
+  });
+  titleWrap.appendChild(titleInput);
+
+  const included = cat.products.filter((e) => e.included).length;
+  const total = cat.products.length;
+  const summary = document.createElement("span");
+  summary.className = "menu-cat-summary";
+  summary.title = `${included} of ${total} products included`;
+  summary.innerHTML = `<strong>${included}</strong><span class="dim">/${total}</span>`;
+
+  const orderBtns = document.createElement("div");
+  orderBtns.className = "menu-order-btns";
+  const upBtn = mkBtn("⤒ Top", "ghost small", () => moveCategoryToTop(catIdx));
+  const downBtn = mkBtn("⤓ Bottom", "ghost small", () => moveCategoryToBottom(catIdx));
+  upBtn.disabled = catIdx === 0;
+  downBtn.disabled = catIdx === menuConfig.categories.length - 1;
+  orderBtns.append(upBtn, downBtn);
+  head.append(chevron, titleWrap, summary, orderBtns);
+
+  // Allow clicking blank space on the head to toggle (but not the input or buttons).
+  head.addEventListener("click", (ev) => {
+    if (ev.target.closest("input, button, select, textarea, label")) return;
+    cat.collapsed = !cat.collapsed;
+    saveMenuConfig();
+    renderMenuBuilder();
+  });
+
+  if (cat.collapsed) {
+    card.appendChild(head);
+    return card;
+  }
+
+  const subWrap = document.createElement("label");
+  subWrap.innerHTML = `<span>Subtitle (italic)</span>`;
+  const subInput = document.createElement("input");
+  subInput.type = "text";
+  subInput.maxLength = 120;
+  subInput.value = cat.subtitle ?? "";
+  subInput.addEventListener("input", () => {
+    cat.subtitle = subInput.value;
+    saveMenuConfig();
+  });
+  subWrap.appendChild(subInput);
+
+  const optsRow = document.createElement("div");
+  optsRow.className = "menu-cat-opts";
+
+  const colsLabel = document.createElement("label");
+  colsLabel.innerHTML = `<span>Columns</span>`;
+  const colsRow = document.createElement("div");
+  colsRow.className = "menu-cols-row";
+  for (const n of [1, 2, 3, 4]) {
+    const id = `menu-cols-${cat.key}-${n}`;
+    const input = document.createElement("input");
+    input.type = "radio";
+    input.name = `cols-${cat.key}`;
+    input.id = id;
+    input.value = String(n);
+    input.checked = (cat.columns ?? 2) === n;
+    input.addEventListener("change", () => {
+      cat.columns = n;
+      saveMenuConfig();
+    });
+    const lbl = document.createElement("label");
+    lbl.htmlFor = id;
+    lbl.textContent = String(n);
+    lbl.className = "menu-cols-pill";
+    colsRow.append(input, lbl);
+  }
+  colsLabel.appendChild(colsRow);
+
+  const unitLabel = document.createElement("label");
+  unitLabel.innerHTML = `<span>Default price unit</span>`;
+  const unitSel = document.createElement("select");
+  for (const o of UNIT_OPTIONS) {
+    const opt = document.createElement("option");
+    opt.value = o.value;
+    opt.textContent = o.value === "" ? "— use product's own —" : o.label;
+    unitSel.appendChild(opt);
+  }
+  unitSel.value = cat.defaultUnit ?? "";
+  unitSel.addEventListener("change", () => {
+    cat.defaultUnit = unitSel.value;
+    saveMenuConfig();
+  });
+  unitLabel.appendChild(unitSel);
+
+  const photoCheck = document.createElement("label");
+  photoCheck.className = "check";
+  photoCheck.innerHTML = `<input type="checkbox" /> <span>Show product photos in this category</span>`;
+  photoCheck.querySelector("input").checked = !!cat.showPhotos;
+  photoCheck.querySelector("input").addEventListener("change", (e) => {
+    cat.showPhotos = e.target.checked;
+    saveMenuConfig();
+  });
+
+  const pageCheck = document.createElement("label");
+  pageCheck.className = "check";
+  pageCheck.innerHTML = `<input type="checkbox" /> <span>Start on a new page</span>`;
+  pageCheck.querySelector("input").checked = !!cat.pageBreakBefore;
+  pageCheck.querySelector("input").addEventListener("change", (e) => {
+    cat.pageBreakBefore = e.target.checked;
+    saveMenuConfig();
+  });
+
+  optsRow.append(colsLabel, unitLabel, photoCheck, pageCheck);
+
+  const list = document.createElement("div");
+  list.className = "menu-prod-list";
+  cat.products.forEach((entry, idx) => {
+    const p = productsById.get(entry.id);
+    if (!p) return;
+    list.appendChild(renderProductRow(cat, entry, idx, p));
+  });
+
+  const body = document.createElement("div");
+  body.className = "menu-cat-body";
+  body.append(subWrap, optsRow, list);
+  card.append(head, body);
+  return card;
+};
+
+const renderProductRow = (cat, entry, idx, p) => {
+  const row = document.createElement("div");
+  row.className = "menu-prod-row" + (entry.included ? "" : " excluded");
+
+  const cb = document.createElement("input");
+  cb.type = "checkbox";
+  cb.checked = !!entry.included;
+  cb.title = "Include in menu";
+  cb.addEventListener("change", () => {
+    entry.included = cb.checked;
+    row.classList.toggle("excluded", !cb.checked);
+    saveMenuConfig();
+  });
+
+  const name = document.createElement("div");
+  name.className = "menu-prod-name";
+  name.textContent = p.name;
+
+  const priceWrap = document.createElement("div");
+  priceWrap.className = "menu-prod-price";
+  const priceInput = document.createElement("input");
+  priceInput.type = "text";
+  priceInput.placeholder = "ask staff";
+  priceInput.value = entry.priceCents == null ? "" : (entry.priceCents / 100).toFixed(2);
+  priceInput.inputMode = "decimal";
+  priceInput.addEventListener("input", () => {
+    const v = priceInput.value.trim();
+    if (v === "") {
+      entry.priceCents = null;
+    } else {
+      const n = parseFloat(v);
+      entry.priceCents = isFinite(n) && n >= 0 ? Math.round(n * 100) : null;
+    }
+    saveMenuConfig();
+  });
+  const priceDollar = document.createElement("span");
+  priceDollar.textContent = "$";
+  priceDollar.className = "menu-prod-dollar";
+  priceWrap.append(priceDollar, priceInput);
+
+  const unitSel = document.createElement("select");
+  for (const o of UNIT_OPTIONS) {
+    const opt = document.createElement("option");
+    opt.value = o.value;
+    opt.textContent = o.label;
+    unitSel.appendChild(opt);
+  }
+  unitSel.value = entry.unitOverride ?? "";
+  unitSel.title = "Unit override (overrides category & product)";
+  unitSel.addEventListener("change", () => {
+    entry.unitOverride = unitSel.value;
+    saveMenuConfig();
+  });
+
+  const orderWrap = document.createElement("div");
+  orderWrap.className = "menu-order-btns small";
+  const top = mkBtn("⤒", "ghost small icon", () => moveProductToTop(cat, idx));
+  const bot = mkBtn("⤓", "ghost small icon", () => moveProductToBottom(cat, idx));
+  top.title = "Move to top of category";
+  bot.title = "Move to bottom of category";
+  top.disabled = idx === 0;
+  bot.disabled = idx === cat.products.length - 1;
+  orderWrap.append(top, bot);
+
+  row.append(cb, name, priceWrap, unitSel, orderWrap);
+  return row;
+};
+
+const mkBtn = (text, cls, onClick) => {
+  const b = document.createElement("button");
+  b.type = "button";
+  b.className = cls;
+  b.textContent = text;
+  b.addEventListener("click", onClick);
+  return b;
+};
+
+const moveCategoryToTop = (idx) => {
+  if (idx <= 0) return;
+  const [c] = menuConfig.categories.splice(idx, 1);
+  menuConfig.categories.unshift(c);
+  saveMenuConfig();
+  renderMenuBuilder();
+};
+const moveCategoryToBottom = (idx) => {
+  if (idx >= menuConfig.categories.length - 1) return;
+  const [c] = menuConfig.categories.splice(idx, 1);
+  menuConfig.categories.push(c);
+  saveMenuConfig();
+  renderMenuBuilder();
+};
+const moveProductToTop = (cat, idx) => {
+  if (idx <= 0) return;
+  const [e] = cat.products.splice(idx, 1);
+  cat.products.unshift(e);
+  saveMenuConfig();
+  renderMenuBuilder();
+};
+const moveProductToBottom = (cat, idx) => {
+  if (idx >= cat.products.length - 1) return;
+  const [e] = cat.products.splice(idx, 1);
+  cat.products.push(e);
+  saveMenuConfig();
+  renderMenuBuilder();
+};
+
+const openMenuPreview = () => {
+  const productsById = new Map(state.products.map((p) => [p.id, p]));
+  const payload = {
+    doc: menuConfig.doc,
+    categories: menuConfig.categories
+      .map((c) => {
+        const items = c.products
+          .filter((e) => e.included)
+          .map((e) => {
+            const p = productsById.get(e.id);
+            if (!p) return null;
+            return {
+              name: p.name,
+              imagePath: p.imagePath,
+              priceCents: e.priceCents,
+              unit: e.unitOverride || c.defaultUnit || p.unit || "",
+            };
+          })
+          .filter(Boolean);
+        return { ...c, items };
+      })
+      .filter((c) => c.items.length > 0),
+  };
+  try {
+    localStorage.setItem(MENU_PREVIEW_KEY, JSON.stringify({ at: Date.now(), payload }));
+  } catch {}
+  window.open("/admin/menu-preview.html", "_blank", "noopener");
 };
 
 /* ---------- Uploads ---------- */

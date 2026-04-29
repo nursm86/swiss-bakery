@@ -26,6 +26,7 @@
       <button class="tab" data-tab="notice" role="tab">Notice strip</button>
       <button class="tab" data-tab="settings" role="tab">Site info</button>
       <button class="tab" data-tab="pages" role="tab">Pages</button>
+      <button class="tab" data-tab="menu" role="tab">Menu builder</button>
       <a class="tab" href="https://www.gloriafood.com/admin/" target="_blank" rel="noopener" style="text-decoration:none;display:inline-flex;align-items:center">GloriaFood ↗</a>
     </nav>
 
@@ -145,6 +146,35 @@
           </div>
         </form>
       </section>
+      <section id="tab-menu" class="panel">
+        <div class="panel-head">
+          <h2>Menu builder</h2>
+          <div class="menu-head-actions">
+            <button id="menu-resync-btn" class="ghost" title="Pull latest prices and any new products from the Products tab">↻ Resync prices</button>
+            <button id="menu-toggle-all-btn" class="ghost" title="Expand or collapse all categories">⇅ Expand all</button>
+            <button id="menu-reset-btn" class="ghost">Reset to defaults</button>
+            <button id="menu-preview-btn" class="primary">Preview &amp; save as PDF →</button>
+          </div>
+        </div>
+        <p class="hint">Build the printable menu. Tick which products show, set the column count, photos, price units, and category order. Click <em>Preview</em> to open the print-ready PDF view. <span id="menu-status"></span></p>
+
+        <div class="menu-builder">
+          <div class="menu-doc-card">
+            <h3>Document</h3>
+            <div class="row">
+              <label><span>Tagline (italic)</span><input type="text" id="menu-tagline" maxlength="200" /></label>
+              <label><span>Strapline (caps)</span><input type="text" id="menu-strapline" maxlength="200" /></label>
+            </div>
+            <div class="row">
+              <label><span>Footer note</span><input type="text" id="menu-footer" maxlength="200" /></label>
+              <label><span>Footer location</span><input type="text" id="menu-location" maxlength="200" /></label>
+              <label class="check" style="align-self:end"><input type="checkbox" id="menu-show-photos" /> <span>Show product photos by default</span></label>
+            </div>
+          </div>
+
+          <div id="menu-categories" class="menu-cats"></div>
+        </div>
+      </section>
     </main>
 
     <dialog id="product-dialog">
@@ -158,7 +188,7 @@
           </label>
           <label>
             <span>Slug</span>
-            <input type="text" name="slug" required maxlength="120" pattern="^[a-z0-9][a-z0-9-]*$" />
+            <input type="text" name="slug" required maxlength="120" pattern="^[a-z0-9][a-z0-9_-]*$" title="lowercase letters, digits, hyphens or underscores; auto-filled from name" />
           </label>
         </div>
         <div class="row">

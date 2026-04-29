@@ -153,3 +153,5 @@ dist
 exports/gloriafood-cheatsheet.html
 exports/gloriafood-menu.csv
 exports/gloriafood-menu.txt
+scripts/build_menu_docx.py
+run-dev.command

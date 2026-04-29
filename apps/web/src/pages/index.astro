@@ -51,21 +51,74 @@ import Footer from "../components/Footer.astro";
     const formatPrice = (p: ApiProduct) =>
       p.priceCents == null ? "Visit shop" : `$${(p.priceCents / 100).toFixed(2)}`;
 
+    const buildCard = (p: ApiProduct, size: "sm" | "md" = "md"): HTMLElement => {
+      const card = document.createElement("article");
+      card.className = "card group flex flex-col" + (size === "sm" ? " min-w-[260px] w-[260px]" : "");
+      card.dataset.slug = p.slug;
+
+      const top = document.createElement("div");
+      top.className = "relative aspect-square bg-[color:var(--color-cream-200)] overflow-hidden";
+      if (p.imagePath) {
+        const img = document.createElement("img");
+        img.src = p.imagePath;
+        img.alt = p.name;
+        img.loading = "lazy";
+        img.decoding = "async";
+        img.className = "h-full w-full object-cover transition duration-500 group-hover:scale-[1.04]";
+        top.appendChild(img);
+      } else {
+        const ph = document.createElement("div");
+        ph.className =
+          "h-full w-full grid place-items-center text-[color:var(--color-gold)] font-[family-name:var(--font-display)] text-4xl";
+        ph.textContent = "⚜";
+        top.appendChild(ph);
+      }
+      if (p.isFeatured) {
+        const chip = document.createElement("span");
+        chip.className = "absolute top-3 left-3 chip chip-gold";
+        chip.textContent = "House favourite";
+        top.appendChild(chip);
+      }
+
+      const body = document.createElement("div");
+      body.className = "p-4 flex flex-col gap-1.5 flex-1";
+      const h3 = document.createElement("h3");
+      h3.className = "text-lg font-semibold text-[color:var(--color-navy)] leading-snug";
+      h3.textContent = p.name;
+      body.appendChild(h3);
+      if (p.description) {
+        const desc = document.createElement("p");
+        desc.className = "text-sm text-[color:var(--color-muted)] leading-relaxed line-clamp-3";
+        desc.textContent = p.description;
+        body.appendChild(desc);
+      }
+      const meta = document.createElement("div");
+      meta.className = "mt-auto pt-3 flex items-center justify-between";
+      const priceSpan = document.createElement("span");
+      priceSpan.className = "font-[family-name:var(--font-display)] text-lg text-[color:var(--color-navy)]";
+      priceSpan.textContent = formatPrice(p);
+      const unitSpan = document.createElement("span");
+      unitSpan.className = "text-xs uppercase tracking-[0.12em] text-[color:var(--color-muted)]";
+      unitSpan.textContent = p.unit;
+      meta.append(priceSpan, unitSpan);
+      body.appendChild(meta);
+
+      card.append(top, body);
+      return card;
+    };
+
     fetch("/api/products")
       .then((r) => (r.ok ? r.json() : null))
       .then((data) => {
         if (!data?.products) return;
-        const map = new Map<string, ApiProduct>(
-          data.products.map((p: ApiProduct) => [p.slug, p]),
-        );
+        const apiList = data.products as ApiProduct[];
+        const map = new Map<string, ApiProduct>(apiList.map((p) => [p.slug, p]));
+
+        // 1. Patch or remove existing static cards.
         document.querySelectorAll<HTMLElement>("article.card[data-slug]").forEach((card) => {
           const slug = card.dataset.slug!;
           const p = map.get(slug);
-          if (!p) {
-            card.remove();
-            return;
-          }
-          if (!p.isActive) {
+          if (!p || !p.isActive) {
             card.remove();
             return;
           }
@@ -80,6 +133,41 @@ import Footer from "../components/Footer.astro";
             (img as HTMLImageElement).src = p.imagePath;
             (img as HTMLImageElement).alt = p.name;
           }
+        });
+
+        // 2. Append cards for products that weren't in the static build.
+        const presentInMenu = new Set<string>();
+        document.querySelectorAll<HTMLElement>('[id^="cat-"] article.card[data-slug]').forEach((c) =>
+          presentInMenu.add(c.dataset.slug!),
+        );
+        const presentInFeatured = new Set<string>();
+        document
+          .querySelectorAll<HTMLElement>("#featured-scroll article.card[data-slug]")
+          .forEach((c) => presentInFeatured.add(c.dataset.slug!));
+
+        for (const p of apiList) {
+          if (!p.isActive) continue;
+          if (!presentInMenu.has(p.slug)) {
+            const grid = document.querySelector<HTMLElement>(
+              `#cat-${p.category.toLowerCase()} > div.grid`,
+            );
+            if (grid) grid.appendChild(buildCard(p, "md"));
+          }
+          if (p.isFeatured && !presentInFeatured.has(p.slug)) {
+            const fScroll = document.getElementById("featured-scroll");
+            if (fScroll) fScroll.appendChild(buildCard(p, "sm"));
+          }
+        }
+
+        // 3. Refresh per-category "X items" badges.
+        document.querySelectorAll<HTMLElement>('[id^="cat-"]').forEach((section) => {
+          const grid = section.querySelector<HTMLElement>(":scope > div.grid");
+          if (!grid) return;
+          const count = grid.querySelectorAll("article.card").length;
+          const badge = section.querySelector<HTMLElement>("span.text-xs.uppercase");
+          if (badge) badge.textContent = `${count} items`;
+          // Hide section if it ended up empty.
+          if (count === 0) section.style.display = "none";
         });
       })
       .catch(() => {});
