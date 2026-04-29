@@ -724,16 +724,25 @@ const wireMenu = () => {
 };
 
 const loadMenu = () => {
-  loadMenuConfig();
-  menuConfig = reconcileMenu(menuConfig, state.products);
-  saveMenuConfig();
-  const d = menuConfig.doc;
-  document.getElementById("menu-tagline").value = d.tagline ?? "";
-  document.getElementById("menu-strapline").value = d.strapline ?? "";
-  document.getElementById("menu-footer").value = d.footer ?? "";
-  document.getElementById("menu-location").value = d.location ?? "";
-  document.getElementById("menu-show-photos").checked = !!d.showPhotos;
-  renderMenuBuilder();
+  try {
+    if (!document.getElementById("menu-categories")) return; // Menu builder section not in DOM (stale dashboard.html); bail silently.
+    loadMenuConfig();
+    menuConfig = reconcileMenu(menuConfig, state.products);
+    saveMenuConfig();
+    const d = menuConfig.doc;
+    const set = (id, prop, val) => {
+      const el = document.getElementById(id);
+      if (el) el[prop] = val;
+    };
+    set("menu-tagline", "value", d.tagline ?? "");
+    set("menu-strapline", "value", d.strapline ?? "");
+    set("menu-footer", "value", d.footer ?? "");
+    set("menu-location", "value", d.location ?? "");
+    set("menu-show-photos", "checked", !!d.showPhotos);
+    renderMenuBuilder();
+  } catch (e) {
+    console.error("Menu builder failed to initialise:", e);
+  }
 };
 
 const renderMenuBuilder = () => {
