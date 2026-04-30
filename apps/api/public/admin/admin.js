@@ -47,6 +47,28 @@ const api = async (path, { method = "GET", body, form } = {}) => {
   return data;
 };
 
+// Generic helper: disable a form's submit button and show a spinner while
+// `asyncFn` runs. Prevents double-submits and gives the user visible feedback.
+// Usage:  withBusy(form, "Saving…", async () => { ... });
+const withBusy = async (form, label, asyncFn) => {
+  const btn = form?.querySelector?.('button[type="submit"]');
+  if (!btn) return await asyncFn();
+  if (btn.dataset.busy === "1") return; // already in-flight, ignore double-submit
+  const original = btn.innerHTML;
+  btn.dataset.busy = "1";
+  btn.disabled = true;
+  btn.setAttribute("aria-busy", "true");
+  btn.innerHTML = `<span class="spinner" aria-hidden="true"></span>${label || "Saving…"}`;
+  try {
+    return await asyncFn();
+  } finally {
+    btn.disabled = false;
+    btn.removeAttribute("aria-busy");
+    delete btn.dataset.busy;
+    btn.innerHTML = original;
+  }
+};
+
 const tryRefresh = async () => {
   try {
     const res = await fetch("/api/auth/refresh", {
@@ -68,23 +90,25 @@ export const login = async (ev) => {
   const form = ev.target;
   const errEl = document.getElementById("error");
   errEl.hidden = true;
-  try {
-    const fd = new FormData(form);
-    const data = await api("/api/auth/login", {
-      method: "POST",
-      body: { email: fd.get("email"), password: fd.get("password") },
-    });
-    state.accessToken = data.accessToken;
-    state.accessExpiresAt = Date.now() + 13 * 60 * 1000;
-    sessionStorage.setItem(
-      "sb_access",
-      JSON.stringify({ t: state.accessToken, e: state.accessExpiresAt }),
-    );
-    window.location.assign("/admin/dashboard");
-  } catch (e) {
-    errEl.textContent = e.message || "Sign in failed";
-    errEl.hidden = false;
-  }
+  await withBusy(form, "Signing in…", async () => {
+    try {
+      const fd = new FormData(form);
+      const data = await api("/api/auth/login", {
+        method: "POST",
+        body: { email: fd.get("email"), password: fd.get("password") },
+      });
+      state.accessToken = data.accessToken;
+      state.accessExpiresAt = Date.now() + 13 * 60 * 1000;
+      sessionStorage.setItem(
+        "sb_access",
+        JSON.stringify({ t: state.accessToken, e: state.accessExpiresAt }),
+      );
+      window.location.assign("/admin/dashboard");
+    } catch (e) {
+      errEl.textContent = e.message || "Sign in failed";
+      errEl.hidden = false;
+    }
+  });
 };
 
 const restoreToken = () => {
@@ -266,34 +290,36 @@ const openProductDialog = (p) => {
 const onProductSubmit = async (ev) => {
   ev.preventDefault();
   const form = ev.target;
-  const id = form.id.value;
-  const file = form.imageFile.files[0];
-  let imagePath = form.imagePath.value.trim() || null;
-  try {
-    if (file) imagePath = await uploadImage(file);
-    const priceStr = form.priceAud.value.trim();
-    const body = {
-      slug: form.slug.value.trim(),
-      name: form.name.value.trim(),
-      category: form.category.value,
-      unit: form.unit.value,
-      priceCents: priceStr === "" ? null : Math.round(parseFloat(priceStr) * 100),
-      description: form.description.value.trim() || null,
-      imagePath,
-      isFeatured: form.isFeatured.checked,
-      isActive: form.isActive.checked,
-      sortOrder: Number(form.sortOrder.value) || 0,
-    };
-    if (id) {
-      await api(`/api/products/${id}`, { method: "PATCH", body });
-    } else {
-      await api("/api/products", { method: "POST", body });
+  await withBusy(form, "Saving…", async () => {
+    const id = form.id.value;
+    const file = form.imageFile.files[0];
+    let imagePath = form.imagePath.value.trim() || null;
+    try {
+      if (file) imagePath = await uploadImage(file);
+      const priceStr = form.priceAud.value.trim();
+      const body = {
+        slug: form.slug.value.trim(),
+        name: form.name.value.trim(),
+        category: form.category.value,
+        unit: form.unit.value,
+        priceCents: priceStr === "" ? null : Math.round(parseFloat(priceStr) * 100),
+        description: form.description.value.trim() || null,
+        imagePath,
+        isFeatured: form.isFeatured.checked,
+        isActive: form.isActive.checked,
+        sortOrder: Number(form.sortOrder.value) || 0,
+      };
+      if (id) {
+        await api(`/api/products/${id}`, { method: "PATCH", body });
+      } else {
+        await api("/api/products", { method: "POST", body });
+      }
+      document.getElementById("product-dialog").close();
+      await loadProducts();
+    } catch (e) {
+      alert(e.message || "Save failed");
     }
-    document.getElementById("product-dialog").close();
-    await loadProducts();
-  } catch (e) {
-    alert(e.message || "Save failed");
-  }
+  });
 };
 
 const onProductDelete = async () => {
@@ -375,30 +401,32 @@ const openHeroDialog = (b) => {
 const onHeroSubmit = async (ev) => {
   ev.preventDefault();
   const form = ev.target;
-  const id = form.id.value;
-  const file = form.imageFile.files[0];
-  let imagePath = form.imagePath.value.trim() || null;
-  try {
-    if (file) imagePath = await uploadImage(file);
-    const body = {
-      heading: form.heading.value.trim(),
-      subheading: form.subheading.value.trim() || null,
-      ctaLabel: form.ctaLabel.value.trim() || null,
-      ctaHref: form.ctaHref.value.trim() || null,
-      imagePath,
-      isActive: form.isActive.checked,
-      sortOrder: Number(form.sortOrder.value) || 0,
-    };
-    if (id) {
-      await api(`/api/hero/${id}`, { method: "PATCH", body });
-    } else {
-      await api("/api/hero", { method: "POST", body });
+  await withBusy(form, "Saving…", async () => {
+    const id = form.id.value;
+    const file = form.imageFile.files[0];
+    let imagePath = form.imagePath.value.trim() || null;
+    try {
+      if (file) imagePath = await uploadImage(file);
+      const body = {
+        heading: form.heading.value.trim(),
+        subheading: form.subheading.value.trim() || null,
+        ctaLabel: form.ctaLabel.value.trim() || null,
+        ctaHref: form.ctaHref.value.trim() || null,
+        imagePath,
+        isActive: form.isActive.checked,
+        sortOrder: Number(form.sortOrder.value) || 0,
+      };
+      if (id) {
+        await api(`/api/hero/${id}`, { method: "PATCH", body });
+      } else {
+        await api("/api/hero", { method: "POST", body });
+      }
+      document.getElementById("hero-dialog").close();
+      await loadHero();
+    } catch (e) {
+      alert(e.message || "Save failed");
     }
-    document.getElementById("hero-dialog").close();
-    await loadHero();
-  } catch (e) {
-    alert(e.message || "Save failed");
-  }
+  });
 };
 
 const onHeroDelete = async () => {
@@ -440,20 +468,22 @@ const wireNotice = () => {
     ev.preventDefault();
     const form = ev.target;
     const status = document.getElementById("notice-status");
-    try {
-      const body = {
-        message: form.message.value.trim(),
-        level: form.level.value,
-        isActive: form.isActive.checked,
-        startsAt: form.startsAt.value ? new Date(form.startsAt.value).toISOString() : null,
-        endsAt: form.endsAt.value ? new Date(form.endsAt.value).toISOString() : null,
-      };
-      await api("/api/notice", { method: "PATCH", body });
-      status.textContent = "Saved ✓";
-      setTimeout(() => (status.textContent = ""), 2000);
-    } catch (e) {
-      status.textContent = e.message || "Save failed";
-    }
+    await withBusy(form, "Saving…", async () => {
+      try {
+        const body = {
+          message: form.message.value.trim(),
+          level: form.level.value,
+          isActive: form.isActive.checked,
+          startsAt: form.startsAt.value ? new Date(form.startsAt.value).toISOString() : null,
+          endsAt: form.endsAt.value ? new Date(form.endsAt.value).toISOString() : null,
+        };
+        await api("/api/notice", { method: "PATCH", body });
+        status.textContent = "Saved ✓";
+        setTimeout(() => (status.textContent = ""), 2000);
+      } catch (e) {
+        status.textContent = e.message || "Save failed";
+      }
+    });
   });
 };
 
@@ -485,17 +515,19 @@ const wireSettings = () => {
     ev.preventDefault();
     const form = ev.target;
     const status = document.getElementById("settings-status");
-    try {
-      const items = SETTING_KEYS.map((key) => ({
-        key,
-        value: (form[key]?.value ?? "").trim(),
-      }));
-      await api("/api/settings", { method: "PATCH", body: items });
-      status.textContent = "Saved ✓";
-      setTimeout(() => (status.textContent = ""), 2000);
-    } catch (e) {
-      status.textContent = e.message || "Save failed";
-    }
+    await withBusy(form, "Saving…", async () => {
+      try {
+        const items = SETTING_KEYS.map((key) => ({
+          key,
+          value: (form[key]?.value ?? "").trim(),
+        }));
+        await api("/api/settings", { method: "PATCH", body: items });
+        status.textContent = "Saved ✓";
+        setTimeout(() => (status.textContent = ""), 2000);
+      } catch (e) {
+        status.textContent = e.message || "Save failed";
+      }
+    });
   });
 };
 
@@ -539,24 +571,26 @@ const wirePages = () => {
     const form = ev.target;
     const slug = form.dataset.slug;
     const status = document.getElementById("pages-status");
-    try {
-      const body = {
-        title: form.title.value.trim(),
-        content: form.content.value,
-        isPublished: form.isPublished.checked,
-      };
-      const data = await api(`/api/pages/${encodeURIComponent(slug)}`, {
-        method: "PATCH",
-        body,
-      });
-      // refresh cache
-      const idx = pagesCache.findIndex((x) => x.slug === slug);
-      if (idx >= 0) pagesCache[idx] = data.page;
-      status.textContent = "Saved ✓";
-      setTimeout(() => (status.textContent = ""), 2000);
-    } catch (e) {
-      status.textContent = e.message || "Save failed";
-    }
+    await withBusy(form, "Saving page…", async () => {
+      try {
+        const body = {
+          title: form.title.value.trim(),
+          content: form.content.value,
+          isPublished: form.isPublished.checked,
+        };
+        const data = await api(`/api/pages/${encodeURIComponent(slug)}`, {
+          method: "PATCH",
+          body,
+        });
+        // refresh cache
+        const idx = pagesCache.findIndex((x) => x.slug === slug);
+        if (idx >= 0) pagesCache[idx] = data.page;
+        status.textContent = "Saved ✓";
+        setTimeout(() => (status.textContent = ""), 2000);
+      } catch (e) {
+        status.textContent = e.message || "Save failed";
+      }
+    });
   });
 };
 

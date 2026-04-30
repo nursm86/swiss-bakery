@@ -130,6 +130,25 @@ button {
   cursor: pointer;
   font-weight: 600;
 }
+button:disabled,
+button[aria-busy="true"] {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+.spinner {
+  display: inline-block;
+  width: 0.85em;
+  height: 0.85em;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  vertical-align: -2px;
+  animation: sb-spin 0.7s linear infinite;
+  margin-right: 0.5em;
+}
+@keyframes sb-spin {
+  to { transform: rotate(360deg); }
+}
 button.primary {
   background: var(--navy);
   color: #fff;
