@@ -7,8 +7,8 @@ interface Props {
 }
 
 const {
-  title = "Swiss Bakery-Minto · Swiss patisserie & Bengali sweets · Minto NSW · Order online",
-  description = "Order online for pickup from Swiss Bakery-Minto. Handcrafted European patisserie, fresh patties, rolls and samosas, and traditional Bengali sweets — baked daily at Shop 3/12 Minto Rd, Minto NSW 2566.",
+  title = "Swiss Bakery & Sweets · Swiss patisserie & Bengali sweets · Minto NSW · Order online",
+  description = "Order online for pickup from Swiss Bakery & Sweets. Handcrafted European patisserie, fresh patties, rolls and samosas, and traditional Bengali sweets — baked daily at Shop 3/12 Minto Rd, Minto NSW 2566.",
 } = Astro.props;
 
 const canonical = new URL(Astro.url.pathname, Astro.site).toString();
@@ -57,7 +57,7 @@ const buildStamp = new Date().toISOString().replace("T", " ").slice(0, 19) + " U
         "@context": "https://schema.org",
         "@type": "Bakery",
         "@id": `${Astro.site?.toString() ?? ""}#bakery`,
-        name: "Swiss Bakery-Minto",
+        name: "Swiss Bakery & Sweets",
         alternateName: "Swiss Bakery",
         image: logoUrl,
         logo: logoUrl,
