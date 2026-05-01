@@ -155,3 +155,6 @@ exports/gloriafood-menu.csv
 exports/gloriafood-menu.txt
 scripts/build_menu_docx.py
 run-dev.command
+Swiss_Bakery_Logo.pdf
+scripts/transparent-logos.mjs
+scripts/resize-logos.mjs

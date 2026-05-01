@@ -24,11 +24,18 @@ const buildStamp = new Date().toISOString().replace("T", " ").slice(0, 19) + " U
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <meta name="theme-color" content="#1a2a4f" />
+    <meta name="theme-color" content="#1c1715" />
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="64x64" href="/favicon-64x64.png" />
+    <link rel="icon" type="image/png" sizes="128x128" href="/favicon-128x128.png" />
+    <link rel="icon" type="image/png" sizes="256x256" href="/favicon-256x256.png" />
+    <link rel="apple-touch-icon" sizes="128x128" href="/favicon-128x128.png" />
+    <link rel="apple-touch-icon" sizes="256x256" href="/favicon-256x256.png" />
 
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
@@ -41,7 +48,7 @@ const buildStamp = new Date().toISOString().replace("T", " ").slice(0, 19) + " U
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=Pacifico&display=swap"
     />
 
     <script
@@ -97,8 +104,8 @@ const buildStamp = new Date().toISOString().replace("T", " ").slice(0, 19) + " U
     <script is:inline define:vars={{ buildStamp }}>
       console.log(
         "%c Swiss Bakery %c build: " + buildStamp + " ",
-        "background:#1a2a4f;color:#c89a2b;padding:2px 6px;border-radius:3px 0 0 3px;font-weight:bold",
-        "background:#c89a2b;color:#1a2a4f;padding:2px 6px;border-radius:0 3px 3px 0;font-weight:bold",
+        "background:#e11d27;color:#fff;padding:2px 6px;border-radius:3px 0 0 3px;font-weight:bold",
+        "background:#f37020;color:#1c1715;padding:2px 6px;border-radius:0 3px 3px 0;font-weight:bold",
       );
     </script>
     <slot />

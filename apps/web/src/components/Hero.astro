@@ -3,28 +3,50 @@ import { DEFAULT_HERO } from "../lib/seed";
 import OrderButton from "./OrderButton.astro";
 const h = DEFAULT_HERO;
 ---
-<section id="top" class="relative overflow-hidden">
-  <div id="hero-root" class="relative hero-placeholder">
-    <div class="container-x relative py-16 sm:py-24 lg:py-32 grid place-items-center text-center">
-      <img src="/swiss_logo.png" alt="Swiss Bakery emblem" width="120" height="120" class="mb-6 rounded-full shadow-md" />
-      <h2 id="hero-heading" class="font-[family-name:var(--font-display)] text-4xl sm:text-5xl lg:text-6xl font-semibold text-[color:var(--color-navy)] max-w-3xl leading-tight reveal in">
+<section id="top" class="relative">
+  <div id="hero-root" class="relative hero-stage">
+    <div class="container-x relative py-20 sm:py-28 lg:py-36 grid place-items-center text-center">
+      <img
+        src="/swiss_logo.png"
+        alt="Swiss Bakery & Sweets"
+        width="520"
+        height="322"
+        class="hero-logo"
+        loading="eager"
+      />
+      <h2
+        id="hero-heading"
+        class="font-[family-name:var(--font-display)] text-3xl sm:text-5xl lg:text-6xl font-semibold text-white max-w-3xl leading-tight mt-8 reveal in"
+      >
         {h.heading}
       </h2>
-      <p id="hero-subheading" class="mt-5 text-base sm:text-lg text-[color:var(--color-navy)]/80 italic max-w-2xl reveal in" style="font-family:var(--font-display)">
+      <p
+        id="hero-subheading"
+        class="mt-5 text-base sm:text-lg italic text-white/75 max-w-2xl reveal in"
+        style="font-family:var(--font-display)"
+      >
         {h.subheading}
       </p>
-      <div class="mt-8 flex flex-wrap gap-3 justify-center">
-        <OrderButton label="Order Online" variant="navy" size="lg" />
-        <a id="hero-cta" href={h.ctaHref} class="btn-outline">{h.ctaLabel}</a>
+      <div class="mt-9 flex flex-wrap gap-3 justify-center">
+        <OrderButton label="Order Online" variant="gold" size="lg" />
+        <a id="hero-cta" href={h.ctaHref} class="btn-outline-light">{h.ctaLabel}</a>
       </div>
-      <div class="mt-10 flex flex-wrap items-center justify-center gap-3 text-xs uppercase tracking-[0.18em] text-[color:var(--color-navy)]/60">
-        <span class="chip chip-cream">Baked on-site</span>
-        <span class="chip chip-cream">Halal kitchen</span>
-        <span class="chip chip-cream">Open 6 days</span>
+      <div class="mt-12 flex flex-wrap items-center justify-center gap-2 text-xs">
+        <span class="chip chip-dark">Baked on-site</span>
+        <span class="chip chip-dark">Halal kitchen</span>
+        <span class="chip chip-dark">Open 6 days</span>
       </div>
     </div>
+    <div class="hero-fade-bottom" aria-hidden="true"></div>
   </div>
 </section>
+<style>
+  .hero-logo {
+    width: clamp(220px, 60vw, 460px);
+    height: auto;
+    filter: drop-shadow(0 12px 40px rgba(225, 29, 39, 0.3));
+  }
+</style>
 <script>
   type Banner = {
     heading: string;
@@ -49,8 +71,8 @@ const h = DEFAULT_HERO;
         if (b.ctaHref) cta.href = b.ctaHref;
       }
       if (root && b.imagePath) {
-        root.classList.remove("hero-placeholder");
-        root.style.backgroundImage = `linear-gradient(rgba(246,239,224,0.4), rgba(246,239,224,0.85)), url('${b.imagePath}')`;
+        // Custom hero image — overlay stays dark for readability.
+        root.style.backgroundImage = `linear-gradient(rgba(28,23,21,0.78), rgba(28,23,21,0.62)), url('${b.imagePath}')`;
         root.style.backgroundSize = "cover";
         root.style.backgroundPosition = "center";
       }

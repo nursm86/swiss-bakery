@@ -1,35 +1,45 @@
 ---
 import OrderButton from "./OrderButton.astro";
 ---
-<header class="sticky top-0 z-40 backdrop-blur bg-[color:var(--color-cream)]/85 border-b border-[color:var(--color-cream-200)]">
+<header class="sticky top-0 z-40 backdrop-blur bg-[color:var(--color-cream)]/85 border-b border-[color:var(--color-border)]">
   <div class="container-x flex items-center justify-between py-3 sm:py-4">
-    <a href="#top" class="flex items-center gap-3">
-      <img src="/swiss_logo.png" alt="Swiss Bakery emblem" width="42" height="42" class="rounded-full shadow-sm" loading="eager" />
-      <span class="font-[family-name:var(--font-display)] text-lg sm:text-xl text-[color:var(--color-navy)] font-semibold tracking-tight">
-        Swiss <span class="swiss-cross inline-block align-middle" style="--s:14px;margin:0 4px 2px"></span> Bakery
+    <a href="#top" class="flex items-center gap-3 group">
+      <img
+        src="/favicon-128x128.png"
+        alt="Swiss Bakery emblem"
+        width="44"
+        height="44"
+        class="brand-emblem-glow transition group-hover:scale-105"
+        loading="eager"
+      />
+      <span class="brand-wordmark compact text-lg sm:text-xl">
+        <span class="wm-row">
+          <span class="wm-swiss">Swiss</span>
+          <span class="wm-bakery">Bakery</span>
+        </span>
       </span>
     </a>
-    <nav class="hidden md:flex items-center gap-7 text-sm font-medium text-[color:var(--color-navy)]">
-      <a href="#menu" class="hover:text-[color:var(--color-gold)] transition">Menu</a>
-      <a href="#featured" class="hover:text-[color:var(--color-gold)] transition">Featured</a>
-      <a href="#about" class="hover:text-[color:var(--color-gold)] transition">About</a>
-      <a href="#contact" class="hover:text-[color:var(--color-gold)] transition">Contact</a>
+    <nav class="hidden md:flex items-center gap-7 text-sm font-semibold text-[color:var(--color-charcoal)]">
+      <a href="#menu" class="hover:text-[color:var(--color-orange)] transition">Menu</a>
+      <a href="#featured" class="hover:text-[color:var(--color-orange)] transition">Featured</a>
+      <a href="#about" class="hover:text-[color:var(--color-orange)] transition">About</a>
+      <a href="#contact" class="hover:text-[color:var(--color-orange)] transition">Contact</a>
     </nav>
     <div class="flex items-center gap-2">
       <OrderButton label="Order" variant="gold" class="hidden sm:inline-flex" />
-      <button id="nav-toggle" class="md:hidden w-10 h-10 grid place-items-center rounded-full border border-[color:var(--color-cream-200)]" aria-label="Menu" aria-expanded="false">
+      <button id="nav-toggle" class="md:hidden w-10 h-10 grid place-items-center rounded-full border border-[color:var(--color-border)]" aria-label="Menu" aria-expanded="false">
         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-          <path d="M3 5h14M3 10h14M3 15h14" stroke="#1a2a4f" stroke-width="1.8" stroke-linecap="round" />
+          <path d="M3 5h14M3 10h14M3 15h14" stroke="#1c1715" stroke-width="1.8" stroke-linecap="round" />
         </svg>
       </button>
     </div>
   </div>
-  <div id="mobile-nav" class="md:hidden hidden border-t border-[color:var(--color-cream-200)]">
-    <nav class="container-x py-3 flex flex-col gap-1 text-[color:var(--color-navy)]">
-      <a href="#menu" class="py-2">Menu</a>
-      <a href="#featured" class="py-2">Featured</a>
-      <a href="#about" class="py-2">About</a>
-      <a href="#contact" class="py-2">Contact</a>
+  <div id="mobile-nav" class="md:hidden hidden border-t border-[color:var(--color-border)]">
+    <nav class="container-x py-3 flex flex-col gap-1 text-[color:var(--color-charcoal)] font-semibold">
+      <a href="#menu" class="py-2 hover:text-[color:var(--color-orange)]">Menu</a>
+      <a href="#featured" class="py-2 hover:text-[color:var(--color-orange)]">Featured</a>
+      <a href="#about" class="py-2 hover:text-[color:var(--color-orange)]">About</a>
+      <a href="#contact" class="py-2 hover:text-[color:var(--color-orange)]">Contact</a>
       <div class="py-2">
         <OrderButton label="Order Online" variant="gold" />
       </div>
