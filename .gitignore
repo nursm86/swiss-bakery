@@ -1,6 +1,9 @@
 # Server-only deploy marker (written by deploy.sh on the cPanel host)
 .last-deploy
 
+# Passenger restart trigger directory — created by deploy.sh on the server
+tmp/
+
 # Logs
 logs
 *.log
@@ -42,7 +45,9 @@ bower_components
 build/Release
 
 # Dependency directories
-node_modules/
+# NB: no trailing slash — on cPanel the Node wrapper makes `node_modules` a
+# symlink into the venv, which the slash-form pattern wouldn't catch.
+node_modules
 jspm_packages/
 
 # Snowpack dependency directory (https://snowpack.dev/)
