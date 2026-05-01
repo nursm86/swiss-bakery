@@ -1,0 +1,15 @@
+---
+# cPanel Git Version Control deployment hook.
+#
+# Trigger: cPanel → Git Version Control → Manage → "Update from Remote"
+# (pulls the latest commit), then click "Deploy HEAD Commit" — cPanel runs
+# the tasks below in the repo directory as the cPanel user.
+#
+# Each task is a single shell command; tasks run sequentially and the chain
+# aborts on any non-zero exit.
+deployment:
+  tasks:
+    - echo "[cpanel] starting deploy at $(date -u +'%Y-%m-%dT%H:%M:%SZ')"
+    - export DEPLOYPATH=$HOME/repositories/swiss-bakery
+    - cd $DEPLOYPATH && /bin/bash deploy.sh
+    - echo "[cpanel] deploy complete"

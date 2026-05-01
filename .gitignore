@@ -1,3 +1,6 @@
+# Server-only deploy marker (written by deploy.sh on the cPanel host)
+.last-deploy
+
 # Logs
 logs
 *.log
