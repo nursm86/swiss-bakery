@@ -67,7 +67,7 @@ const s = DEFAULT_SETTINGS;
 
       <div class="mt-8 flex flex-wrap gap-3">
         <OrderButton label="Order Online" variant="gold" />
-        <a href={s.phoneHref} class="btn-outline-light">Call shop</a>
+        <a id="c-call-cta" href={s.phoneHref} class="btn-outline-light">Call shop</a>
         <a href={s.mapEmbedUrl.replace("&output=embed", "")} target="_blank" rel="noopener" class="btn-outline-light">Open in Maps ↗</a>
       </div>
     </div>
@@ -93,10 +93,15 @@ const s = DEFAULT_SETTINGS;
       if (!s) return;
       const byId = (id: string) => document.getElementById(id);
       if (s.address && byId("c-address")) byId("c-address")!.textContent = s.address;
-      if (s.phone && byId("c-phone")) {
-        const el = byId("c-phone") as HTMLAnchorElement;
-        el.textContent = s.phone;
-        el.href = `tel:${s.phone.replace(/\s+/g, "")}`;
+      if (s.phone) {
+        const telHref = `tel:${s.phone.replace(/\s+/g, "")}`;
+        const phoneLink = byId("c-phone") as HTMLAnchorElement | null;
+        if (phoneLink) {
+          phoneLink.textContent = s.phone;
+          phoneLink.href = telHref;
+        }
+        const callCta = byId("c-call-cta") as HTMLAnchorElement | null;
+        if (callCta) callCta.href = telHref;
       }
       if (s.email && byId("c-email")) {
         const el = byId("c-email") as HTMLAnchorElement;
