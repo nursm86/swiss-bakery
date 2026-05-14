@@ -485,19 +485,6 @@
       "sortOrder": 9
     },
     {
-      "slug": "morobba-cake-pound",
-      "name": "Morobba Cake (Pound)",
-      "category": "Bakery",
-      "priceCents": 2400,
-      "unit": "pound",
-      "qty": 1,
-      "description": "Soft butter cake studded with sweet preserved fruit (morobba). Sold by the pound.",
-      "imagePath": "/uploads/seed/morobba-cake-pound.jpg",
-      "isFeatured": false,
-      "isActive": true,
-      "sortOrder": 10
-    },
-    {
       "slug": "morobba-cake-small",
       "name": "Morobba Cake (Small)",
       "category": "Bakery",
@@ -508,20 +495,7 @@
       "imagePath": "/uploads/seed/morobba-cake-small.jpg",
       "isFeatured": false,
       "isActive": true,
-      "sortOrder": 11
-    },
-    {
-      "slug": "ovaltin-cake-pound",
-      "name": "Ovaltin Cake (Pound)",
-      "category": "Bakery",
-      "priceCents": 2400,
-      "unit": "pound",
-      "qty": 1,
-      "description": "Rich malt-chocolate sponge cake made with Ovaltine. Moist crumb, mellow cocoa. Sold by the pound.",
-      "imagePath": "/uploads/seed/ovaltin-cake-pound.jpg",
-      "isFeatured": false,
-      "isActive": true,
-      "sortOrder": 12
+      "sortOrder": 10
     },
     {
       "slug": "ovaltin-cake-small",
@@ -534,7 +508,7 @@
       "imagePath": "/uploads/seed/ovaltin-cake-small.jpg",
       "isFeatured": false,
       "isActive": true,
-      "sortOrder": 13
+      "sortOrder": 11
     },
     {
       "slug": "butter-bun",
@@ -547,7 +521,7 @@
       "imagePath": "/uploads/seed/butter-bun.jpg",
       "isFeatured": false,
       "isActive": true,
-      "sortOrder": 14
+      "sortOrder": 12
     },
     {
       "slug": "cream-roll",
@@ -560,7 +534,7 @@
       "imagePath": "/uploads/seed/cream-roll.jpg",
       "isFeatured": false,
       "isActive": true,
-      "sortOrder": 15
+      "sortOrder": 13
     },
     {
       "slug": "kaza",
@@ -573,7 +547,7 @@
       "imagePath": "/uploads/seed/kaza.jpg",
       "isFeatured": false,
       "isActive": true,
-      "sortOrder": 16
+      "sortOrder": 14
     },
     {
       "slug": "fruit-cake",
@@ -586,7 +560,7 @@
       "imagePath": "/uploads/seed/fruit-cake.jpg",
       "isFeatured": false,
       "isActive": true,
-      "sortOrder": 17
+      "sortOrder": 15
     },
     {
       "slug": "baklava",
@@ -599,7 +573,7 @@
       "imagePath": "/uploads/seed/baklava.jpg",
       "isFeatured": false,
       "isActive": true,
-      "sortOrder": 18
+      "sortOrder": 16
     },
     {
       "slug": "patishapta",
@@ -612,7 +586,7 @@
       "imagePath": "/uploads/seed/patishapta.jpg",
       "isFeatured": false,
       "isActive": true,
-      "sortOrder": 19
+      "sortOrder": 17
     },
     {
       "slug": "pakon-pitha",
@@ -625,7 +599,7 @@
       "imagePath": "/uploads/seed/pakon-pitha.jpg",
       "isFeatured": false,
       "isActive": true,
-      "sortOrder": 20
+      "sortOrder": 18
     },
     {
       "slug": "narikel-puli",
@@ -638,7 +612,7 @@
       "imagePath": "/uploads/seed/narikel-puli.jpg",
       "isFeatured": false,
       "isActive": true,
-      "sortOrder": 21
+      "sortOrder": 19
     },
     {
       "slug": "rasgulla",
@@ -930,7 +904,7 @@
       "slug": "malai-cha",
       "name": "Malai Cha - small cup",
       "category": "Beverages",
-      "priceCents": 280,
+      "priceCents": 350,
       "unit": "cup",
       "qty": 1,
       "description": "Rich boiled milk tea with malai cream on top. The perfect pairing for any savoury pastry.",
@@ -964,6 +938,58 @@
       "isFeatured": false,
       "isActive": true,
       "sortOrder": 3
+    },
+    {
+      "slug": "milk-tea",
+      "name": "Milk Tea",
+      "category": "Beverages",
+      "priceCents": 300,
+      "unit": "cup",
+      "qty": 1,
+      "description": "Classic boiled milk tea, hot and strong - the everyday cha that pairs with any patty.",
+      "imagePath": "/uploads/seed/milk-tea.jpg",
+      "isFeatured": false,
+      "isActive": true,
+      "sortOrder": 4
+    },
+    {
+      "slug": "ginger-tea",
+      "name": "Ginger Tea",
+      "category": "Beverages",
+      "priceCents": 300,
+      "unit": "cup",
+      "qty": 1,
+      "description": "Brewed black tea with fresh ginger and a touch of milk. Warming and aromatic.",
+      "imagePath": "/uploads/seed/ginger-tea.jpg",
+      "isFeatured": false,
+      "isActive": true,
+      "sortOrder": 5
+    },
+    {
+      "slug": "morobba-cake-half-pound",
+      "name": "Morobba Cake (½ pound)",
+      "category": "Bakery",
+      "priceCents": 1200,
+      "unit": "piece",
+      "qty": 1,
+      "description": "Soft butter cake studded with sweet preserved fruit (morobba). Half-pound loaf.",
+      "imagePath": "/uploads/seed/morobba-cake-half-pound.jpg",
+      "isFeatured": false,
+      "isActive": true,
+      "sortOrder": 20
+    },
+    {
+      "slug": "ovaltin-cake-half-pound",
+      "name": "Ovaltin Cake (½ pound)",
+      "category": "Bakery",
+      "priceCents": 1200,
+      "unit": "piece",
+      "qty": 1,
+      "description": "Rich malt-chocolate sponge cake made with Ovaltine. Moist crumb, mellow cocoa. Half-pound loaf.",
+      "imagePath": "/uploads/seed/ovaltin-cake-half-pound.jpg",
+      "isFeatured": false,
+      "isActive": true,
+      "sortOrder": 21
     }
   ]
 }

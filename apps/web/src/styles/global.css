@@ -378,6 +378,31 @@
   pointer-events: none;
 }
 
+/* ============================================================
+   Menu section — orange stage (matches the in-store price-card
+   palette). White product cards sit on it for max readability.
+   ============================================================ */
+.menu-orange-stage {
+  background:
+    radial-gradient(circle at 12% 0%, rgba(255, 255, 255, 0.18), transparent 55%),
+    radial-gradient(circle at 88% 100%, rgba(28, 23, 21, 0.22), transparent 55%),
+    var(--color-orange);
+  color: #fff;
+  position: relative;
+  overflow: hidden;
+}
+.menu-orange-stage h2,
+.menu-orange-stage h3 {
+  color: #fff;
+}
+.menu-orange-stage .section-title.menu-title-on-orange::after {
+  background: linear-gradient(90deg, #fff 0%, rgba(255, 255, 255, 0.5) 100%);
+}
+.menu-orange-stage .chip-cream {
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--color-charcoal);
+}
+
 /* Notice strip */
 .notice-strip {
   background: linear-gradient(90deg, #1c1715 0%, #2a2421 100%);

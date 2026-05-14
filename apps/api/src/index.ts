@@ -156,6 +156,13 @@ app.use(
     maxAge: config.isProd ? "1h" : 0,
     index: "index.html",
     extensions: ["html"],
+    setHeaders: (res, filePath) => {
+      // In dev, force browsers to revalidate HTML on every load so theme/copy
+      // edits never get masked by stale cached pages.
+      if (!config.isProd && filePath.endsWith(".html")) {
+        res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate");
+      }
+    },
   }),
 );
 
@@ -164,7 +171,11 @@ app.use("/api", (_req, res) => {
 });
 
 app.get(/.*/, (_req, res, next) => {
-  res.sendFile(path.join(WEB_DIST, "index.html"), (err) => {
+  res.sendFile(path.join(WEB_DIST, "index.html"), {
+    headers: config.isProd
+      ? {}
+      : { "Cache-Control": "no-store, no-cache, must-revalidate" },
+  }, (err) => {
     if (err) next(err);
   });
 });

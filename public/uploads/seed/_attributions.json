@@ -417,6 +417,38 @@
       "photographer_url": "https://www.pexels.com/@rajan-gaur-31612043",
       "license": "Pexels License (https://www.pexels.com/license/)",
       "query": "almond barfi indian sweet"
+    },
+    "milk-tea": {
+      "source": "Pexels",
+      "page_url": "https://www.pexels.com/photo/white-ceramic-cup-with-cinnamon-stick-9228428/",
+      "photographer": "negin marufi",
+      "photographer_url": "https://www.pexels.com/@negin-marufi-95409687",
+      "license": "Pexels License (https://www.pexels.com/license/)",
+      "query": "milk tea chai cup"
+    },
+    "ginger-tea": {
+      "source": "Pexels",
+      "page_url": "https://www.pexels.com/photo/close-up-photo-of-a-cup-of-tea-6195509/",
+      "photographer": "Lydia Irene",
+      "photographer_url": "https://www.pexels.com/@poetesslydia",
+      "license": "Pexels License (https://www.pexels.com/license/)",
+      "query": "ginger tea cup"
+    },
+    "morobba-cake-half-pound": {
+      "source": "Pexels",
+      "page_url": "https://www.pexels.com/photo/delicious-homemade-blueberry-loaf-cake-slice-31430609/",
+      "photographer": "Jared Kaeb",
+      "photographer_url": "https://www.pexels.com/@jared-kaeb-2910117",
+      "license": "Pexels License (https://www.pexels.com/license/)",
+      "query": "fruit loaf cake half"
+    },
+    "ovaltin-cake-half-pound": {
+      "source": "Pexels",
+      "page_url": "https://www.pexels.com/photo/chocolate-cake-with-nuts-on-a-cooling-rack-9810298/",
+      "photographer": "Dee Dave",
+      "photographer_url": "https://www.pexels.com/@dee-dave-60341237",
+      "license": "Pexels License (https://www.pexels.com/license/)",
+      "query": "chocolate sponge loaf cake"
     }
   },
   "_pexels_note": "Images added via scripts/download-pexels-images.mjs are sourced from Pexels (Pexels License — free for commercial use, no attribution required, but credit appreciated). Where Pexels had no match, the Wikimedia Commons fallback was used; those carry CC-BY-SA terms — see each image's page_url before commercial launch."

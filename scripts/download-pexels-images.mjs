@@ -51,6 +51,10 @@ const QUERY = {
   "milk-cake": "kalakand milk cake sweet",
   "shoan-papri": "soan papdi indian sweet",
   "almond-barfi": "almond barfi indian sweet",
+  "milk-tea": "milk tea chai cup",
+  "ginger-tea": "ginger tea cup",
+  "morobba-cake-half-pound": "fruit loaf cake half",
+  "ovaltin-cake-half-pound": "chocolate sponge loaf cake",
 };
 
 // Wikipedia fallback if Pexels returns nothing relevant.
