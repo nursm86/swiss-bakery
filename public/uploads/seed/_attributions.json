@@ -225,6 +225,199 @@
       "source_article": "Pitha",
       "page_url": "https://en.wikipedia.org/wiki/Pitha",
       "image_url": "https://upload.wikimedia.org/wikipedia/commons/1/1b/Pitha_for_Wedding-_Pakan%2C_Patishapta%2C_Bharandash.jpg"
+    },
+    "chicken-pocket": {
+      "source": "Pexels",
+      "page_url": "https://www.pexels.com/photo/delicious-chicken-doner-kebab-with-fresh-vegetables-29306495/",
+      "photographer": "Nano Erdozain",
+      "photographer_url": "https://www.pexels.com/@nano-erdozain-120534369",
+      "license": "Pexels License (https://www.pexels.com/license/)",
+      "query": "chicken pita pocket sandwich"
+    },
+    "prawn-onton": {
+      "source": "Pexels",
+      "page_url": "https://www.pexels.com/photo/dumplings-and-red-sauce-on-black-plate-14457519/",
+      "photographer": "tanish  pathania",
+      "photographer_url": "https://www.pexels.com/@tanish-pathania-201200952",
+      "license": "Pexels License (https://www.pexels.com/license/)",
+      "query": "prawn wonton dumpling"
+    },
+    "chicken-momo": {
+      "source": "Pexels",
+      "page_url": "https://www.pexels.com/photo/dumplings-and-red-sauce-on-black-plate-14457519/",
+      "photographer": "tanish  pathania",
+      "photographer_url": "https://www.pexels.com/@tanish-pathania-201200952",
+      "license": "Pexels License (https://www.pexels.com/license/)",
+      "query": "chicken dumpling momo"
+    },
+    "chicken-pie": {
+      "source": "Pexels",
+      "page_url": "https://www.pexels.com/photo/cookie-6731/",
+      "photographer": "Snapwire",
+      "photographer_url": "https://www.pexels.com/@snapwire",
+      "license": "Pexels License (https://www.pexels.com/license/)",
+      "query": "chicken pot pie"
+    },
+    "pakora": {
+      "source": "Pexels",
+      "page_url": "https://www.pexels.com/photo/delicious-crispy-corn-croquettes-with-dips-34203235/",
+      "photographer": "synture studio",
+      "photographer_url": "https://www.pexels.com/@synture-studio-2155547469",
+      "license": "Pexels License (https://www.pexels.com/license/)",
+      "query": "pakora indian fritter"
+    },
+    "vegetable-momo": {
+      "source": "Pexels",
+      "page_url": "https://www.pexels.com/photo/dumplings-and-red-sauce-on-black-plate-14457519/",
+      "photographer": "tanish  pathania",
+      "photographer_url": "https://www.pexels.com/@tanish-pathania-201200952",
+      "license": "Pexels License (https://www.pexels.com/license/)",
+      "query": "vegetable dumpling momo"
+    },
+    "swiss-coconut-biscuit": {
+      "source": "Pexels",
+      "page_url": "https://www.pexels.com/photo/coconut-cookies-and-milk-in-cozy-setting-28664619/",
+      "photographer": "ALOK DAS",
+      "photographer_url": "https://www.pexels.com/@alokkd1",
+      "license": "Pexels License (https://www.pexels.com/license/)",
+      "query": "coconut biscuit cookie"
+    },
+    "nemokpara": {
+      "source": "Pexels",
+      "page_url": "https://www.pexels.com/photo/south-indian-banana-chips-in-black-bowl-30622220/",
+      "photographer": "Anil  Sharma",
+      "photographer_url": "https://www.pexels.com/@shootsaga",
+      "license": "Pexels License (https://www.pexels.com/license/)",
+      "query": "salty crackers indian snack"
+    },
+    "salted-biscuit": {
+      "source": "Pexels",
+      "page_url": "https://www.pexels.com/photo/milk-splashing-with-cookies-on-white-table-37304947/",
+      "photographer": "hazem kooli",
+      "photographer_url": "https://www.pexels.com/@hazem-kooli-2160704344",
+      "license": "Pexels License (https://www.pexels.com/license/)",
+      "query": "salted cracker biscuit"
+    },
+    "peanut-biscuit": {
+      "source": "Pexels",
+      "page_url": "https://www.pexels.com/photo/glass-of-milk-with-biscuits-on-white-podium-28664618/",
+      "photographer": "ALOK DAS",
+      "photographer_url": "https://www.pexels.com/@alokkd1",
+      "license": "Pexels License (https://www.pexels.com/license/)",
+      "query": "peanut cookie biscuit"
+    },
+    "danish-biscuit": {
+      "source": "Pexels",
+      "page_url": "https://www.pexels.com/photo/cookies-with-jam-on-white-ceramic-plate-5599487/",
+      "photographer": "Jasmin",
+      "photographer_url": "https://www.pexels.com/@jasmin-394896",
+      "license": "Pexels License (https://www.pexels.com/license/)",
+      "query": "danish butter cookie"
+    },
+    "coconut-biscuit": {
+      "source": "Pexels",
+      "page_url": "https://www.pexels.com/photo/coconut-cookies-and-milk-in-cozy-setting-28664619/",
+      "photographer": "ALOK DAS",
+      "photographer_url": "https://www.pexels.com/@alokkd1",
+      "license": "Pexels License (https://www.pexels.com/license/)",
+      "query": "coconut cookie"
+    },
+    "morobba-cake-pound": {
+      "source": "Pexels",
+      "page_url": "https://www.pexels.com/photo/delicious-homemade-blueberry-loaf-cake-slice-31430609/",
+      "photographer": "Jared Kaeb",
+      "photographer_url": "https://www.pexels.com/@jared-kaeb-2910117",
+      "license": "Pexels License (https://www.pexels.com/license/)",
+      "query": "fruit loaf cake"
+    },
+    "morobba-cake-small": {
+      "source": "Pexels",
+      "page_url": "https://www.pexels.com/photo/sweet-fruit-cake-25585181/",
+      "photographer": "Jimmy Elizarraras",
+      "photographer_url": "https://www.pexels.com/@jimmyelizarraras",
+      "license": "Pexels License (https://www.pexels.com/license/)",
+      "query": "small fruit cake"
+    },
+    "ovaltin-cake-pound": {
+      "source": "Pexels",
+      "page_url": "https://www.pexels.com/photo/chocolate-cake-with-nuts-on-a-cooling-rack-9810298/",
+      "photographer": "Dee Dave",
+      "photographer_url": "https://www.pexels.com/@dee-dave-60341237",
+      "license": "Pexels License (https://www.pexels.com/license/)",
+      "query": "chocolate sponge loaf cake"
+    },
+    "ovaltin-cake-small": {
+      "source": "Pexels",
+      "page_url": "https://www.pexels.com/photo/decadent-chocolate-cake-with-mint-garnish-37418888/",
+      "photographer": "Samed Bayrak",
+      "photographer_url": "https://www.pexels.com/@samed-bayrak-2518016",
+      "license": "Pexels License (https://www.pexels.com/license/)",
+      "query": "small chocolate cake"
+    },
+    "ghazia": {
+      "source": "Pexels",
+      "page_url": "https://www.pexels.com/photo/cakes-and-cookies-on-plate-9951856/",
+      "photographer": "Rajan Gaur",
+      "photographer_url": "https://www.pexels.com/@rajan-gaur-31612043",
+      "license": "Pexels License (https://www.pexels.com/license/)",
+      "query": "indian barfi milk sweet"
+    },
+    "motichur-laddoo": {
+      "source": "Pexels",
+      "page_url": "https://www.pexels.com/photo/burning-candle-27695746/",
+      "photographer": "ALOK DAS",
+      "photographer_url": "https://www.pexels.com/@alokkd1",
+      "license": "Pexels License (https://www.pexels.com/license/)",
+      "query": "laddoo indian sweet"
+    },
+    "coconut-naru": {
+      "source": "Pexels",
+      "page_url": "https://www.pexels.com/photo/burning-candle-27695746/",
+      "photographer": "ALOK DAS",
+      "photographer_url": "https://www.pexels.com/@alokkd1",
+      "license": "Pexels License (https://www.pexels.com/license/)",
+      "query": "coconut ladoo sweet"
+    },
+    "shondesh": {
+      "source": "Pexels",
+      "page_url": "https://www.pexels.com/photo/handcrafted-pumpkin-shaped-sweets-for-halloween-29066270/",
+      "photographer": "Giovanna Kamimura",
+      "photographer_url": "https://www.pexels.com/@giovanna-kamimura-399616174",
+      "license": "Pexels License (https://www.pexels.com/license/)",
+      "query": "sandesh bengali sweet"
+    },
+    "amittri": {
+      "source": "Pexels",
+      "page_url": "https://www.pexels.com/photo/delicious-indian-dishes-with-appetizers-and-sweets-29253305/",
+      "photographer": "Ali Dashti",
+      "photographer_url": "https://www.pexels.com/@ali-dashti-506667798",
+      "license": "Pexels License (https://www.pexels.com/license/)",
+      "query": "jalebi indian sweet"
+    },
+    "milk-cake": {
+      "source": "Pexels",
+      "page_url": "https://www.pexels.com/photo/top-view-of-a-dessert-26341215/",
+      "photographer": "Ali Dashti",
+      "photographer_url": "https://www.pexels.com/@ali-dashti-506667798",
+      "license": "Pexels License (https://www.pexels.com/license/)",
+      "query": "kalakand milk cake sweet"
+    },
+    "shoan-papri": {
+      "source": "Pexels",
+      "page_url": "https://www.pexels.com/photo/close-up-of-indian-street-food-in-glass-bowl-34270742/",
+      "photographer": "Ar kay",
+      "photographer_url": "https://www.pexels.com/@ar-kay-768552413",
+      "license": "Pexels License (https://www.pexels.com/license/)",
+      "query": "soan papdi indian sweet"
+    },
+    "almond-barfi": {
+      "source": "Pexels",
+      "page_url": "https://www.pexels.com/photo/cakes-and-cookies-on-plate-9951856/",
+      "photographer": "Rajan Gaur",
+      "photographer_url": "https://www.pexels.com/@rajan-gaur-31612043",
+      "license": "Pexels License (https://www.pexels.com/license/)",
+      "query": "almond barfi indian sweet"
     }
-  }
+  },
+  "_pexels_note": "Images added via scripts/download-pexels-images.mjs are sourced from Pexels (Pexels License — free for commercial use, no attribution required, but credit appreciated). Where Pexels had no match, the Wikimedia Commons fallback was used; those carry CC-BY-SA terms — see each image's page_url before commercial launch."
 }

@@ -1,6 +1,6 @@
 ---
 import type { SeedProduct } from "../lib/seed";
-import { formatPrice } from "../lib/seed";
+import { formatPrice, formatUnit } from "../lib/seed";
 
 interface Props {
   product: SeedProduct;
@@ -9,6 +9,7 @@ interface Props {
 
 const { product, size = "md" } = Astro.props;
 const price = formatPrice(product);
+const unitLabel = formatUnit(product);
 ---
 <article
   class:list={[
@@ -40,7 +41,9 @@ const price = formatPrice(product);
     )}
     <div class="mt-auto pt-3 flex items-center justify-between">
       <span class="font-[family-name:var(--font-display)] text-lg text-[color:var(--color-navy)]">{price}</span>
-      <span class="text-xs uppercase tracking-[0.12em] text-[color:var(--color-muted)]">{product.unit}</span>
+      {unitLabel && (
+        <span class="text-xs uppercase tracking-[0.12em] text-[color:var(--color-muted)]">{unitLabel}</span>
+      )}
     </div>
   </div>
 </article>

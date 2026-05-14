@@ -20,6 +20,7 @@ model Product {
   category    String
   priceCents  Int?
   unit        String   @default("piece")
+  qty         Int      @default(1)
   description String?  @db.Text
   imagePath   String?
   isFeatured  Boolean  @default(false)

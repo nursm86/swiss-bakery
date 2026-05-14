@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE `Product` ADD COLUMN `qty` INTEGER NOT NULL DEFAULT 1;

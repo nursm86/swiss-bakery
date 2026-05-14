@@ -270,14 +270,19 @@
 
     <script>
       const KEY = "sb_menu_preview_v1";
-      const fmtPrice = (cents, unit) => {
+      const fmtPrice = (cents, unit, qty) => {
         if (cents == null) return { text: "ask staff", muted: true };
         const dollars = (cents / 100).toFixed(2).replace(/\.00$/, "");
-        const showUnit = unit && unit !== "piece";
-        return {
-          text: showUnit ? `$${dollars}/${unit}` : `$${dollars}`,
-          muted: false,
-        };
+        const q = Number(qty) > 1 ? Number(qty) : 1;
+        const unitLabel = q > 1 && unit === "piece" ? "pcs" : unit;
+        // qty=1, piece-only items render bare ($X). Anything else gets "/unit" or "/Nunit".
+        if (q === 1) {
+          return {
+            text: unit && unit !== "piece" ? `$${dollars}/${unitLabel}` : `$${dollars}`,
+            muted: false,
+          };
+        }
+        return { text: `$${dollars}/${q}${unitLabel}`, muted: false };
       };
 
       const splitIntoPages = (categories) => {
@@ -298,7 +303,7 @@
         const photo = showPhoto && it.imagePath
           ? `<div class="thumb" style="background-image:url('${it.imagePath.replace(/'/g, "\\'")}')"></div>`
           : (showPhoto ? `<div class="thumb"></div>` : "");
-        const p = fmtPrice(it.priceCents, it.unit);
+        const p = fmtPrice(it.priceCents, it.unit, it.qty);
         return `
           <div class="item${showPhoto ? " with-photo" : ""}">
             ${photo}

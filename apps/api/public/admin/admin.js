@@ -203,6 +203,17 @@ const renderProducts = () => {
   }
 };
 
+// Format a product's price + unit, accounting for the qty field.
+//   qty=1  →  "$26/kg"
+//   qty>1  →  "$24/2kg"  or  "$7/5pcs"  (piece is pluralised to "pcs")
+const formatProductPrice = (p) => {
+  if (p.priceCents == null) return "Visit shop";
+  const dollars = (p.priceCents / 100).toFixed(2).replace(/\.00$/, "");
+  const qty = Number(p.qty) > 1 ? Number(p.qty) : 1;
+  const unitLabel = qty > 1 && p.unit === "piece" ? "pcs" : p.unit;
+  return qty > 1 ? `$${dollars}/${qty}${unitLabel}` : `$${dollars}/${unitLabel}`;
+};
+
 const productCard = (p) => {
   const el = document.createElement("article");
   el.className = "product-card";
@@ -215,7 +226,7 @@ const productCard = (p) => {
   title.textContent = p.name;
   const meta = document.createElement("div");
   meta.className = "meta";
-  meta.innerHTML = `<span>${p.priceCents == null ? "Visit shop" : `$${(p.priceCents / 100).toFixed(2)} / ${p.unit}`}</span><span>${p.isFeatured ? `<span class="badge featured">Featured</span>` : ""} ${p.isActive ? "" : `<span class="badge inactive">Hidden</span>`}</span>`;
+  meta.innerHTML = `<span>${formatProductPrice(p)}</span><span>${p.isFeatured ? `<span class="badge featured">Featured</span>` : ""} ${p.isActive ? "" : `<span class="badge inactive">Hidden</span>`}</span>`;
   el.append(thumb, title, meta);
   el.addEventListener("click", () => openProductDialog(p));
   return el;
@@ -287,6 +298,7 @@ const openProductDialog = (p) => {
     form.slug.value = p.slug;
     form.category.value = p.category;
     form.unit.value = p.unit;
+    if (form.qty) form.qty.value = p.qty ?? 1;
     form.priceAud.value = p.priceCents == null ? "" : (p.priceCents / 100).toFixed(2);
     form.description.value = p.description ?? "";
     form.imagePath.value = p.imagePath ?? "";
@@ -295,6 +307,7 @@ const openProductDialog = (p) => {
     form.sortOrder.value = p.sortOrder ?? 0;
   } else {
     form.isActive.checked = true;
+    if (form.qty) form.qty.value = 1;
   }
 
   // Auto-fill slug from name. Stops once user types in the slug field directly.
@@ -338,6 +351,7 @@ const onProductSubmit = async (ev) => {
         name: form.name.value.trim(),
         category: form.category.value,
         unit: form.unit.value,
+        qty: Math.max(1, Math.floor(Number(form.qty?.value) || 1)),
         priceCents: priceStr === "" ? null : Math.round(parseFloat(priceStr) * 100),
         description: form.description.value.trim() || null,
         imagePath,
@@ -639,6 +653,8 @@ const UNIT_OPTIONS = [
   { value: "kg", label: "kg" },
   { value: "pack", label: "pack" },
   { value: "cup", label: "cup" },
+  { value: "pound", label: "pound" },
+  { value: "half-pound", label: "½ pound" },
 ];
 const CAT_DEFAULTS = {
   Savoury: { title: "SAVOURY BITES", subtitle: "Per piece", defaultUnit: "" },
@@ -1111,6 +1127,7 @@ const openMenuPreview = () => {
               imagePath: p.imagePath,
               priceCents: e.priceCents,
               unit: e.unitOverride || c.defaultUnit || p.unit || "",
+              qty: p.qty ?? 1,
             };
           })
           .filter(Boolean);

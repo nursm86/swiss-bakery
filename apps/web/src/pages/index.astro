@@ -50,6 +50,7 @@ import Footer from "../components/Footer.astro";
     };
     const formatPrice = (p: ApiProduct) =>
       p.priceCents == null ? "Visit shop" : `$${(p.priceCents / 100).toFixed(2)}`;
+    const formatUnit = (u: string) => (u === "half-pound" ? "½ pound" : u);
 
     const buildCard = (p: ApiProduct, size: "sm" | "md" = "md"): HTMLElement => {
       const card = document.createElement("article");
@@ -99,7 +100,7 @@ import Footer from "../components/Footer.astro";
       priceSpan.textContent = formatPrice(p);
       const unitSpan = document.createElement("span");
       unitSpan.className = "text-xs uppercase tracking-[0.12em] text-[color:var(--color-muted)]";
-      unitSpan.textContent = p.unit;
+      unitSpan.textContent = formatUnit(p.unit);
       meta.append(priceSpan, unitSpan);
       body.appendChild(meta);
 

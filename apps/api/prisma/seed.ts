@@ -15,6 +15,7 @@ type SeedProduct = {
   category: "Savoury" | "Bakery" | "Sweets" | "Beverages";
   priceCents: number | null;
   unit: string;
+  qty: number;
   description: string;
   imagePath: string | null;
   isFeatured: boolean;
@@ -146,6 +147,7 @@ async function main() {
         category: p.category,
         priceCents: p.priceCents,
         unit: p.unit,
+        qty: p.qty ?? 1,
         description: p.description,
         imagePath: p.imagePath,
         isFeatured: p.isFeatured,
@@ -157,6 +159,7 @@ async function main() {
         category: p.category,
         priceCents: p.priceCents,
         unit: p.unit,
+        qty: p.qty ?? 1,
         description: p.description,
         imagePath: p.imagePath,
         isFeatured: p.isFeatured,
