@@ -227,6 +227,42 @@ const wireProducts = () => {
   dlg.querySelectorAll("[data-close]").forEach((b) => b.addEventListener("click", () => dlg.close()));
   document.getElementById("product-form").addEventListener("submit", onProductSubmit);
   document.getElementById("product-delete").addEventListener("click", onProductDelete);
+  document.getElementById("products-restore-btn")?.addEventListener("click", onProductsRestore);
+};
+
+const onProductsRestore = async () => {
+  const btn = document.getElementById("products-restore-btn");
+  const status = document.getElementById("products-restore-status");
+  if (!btn || btn.dataset.busy === "1") return;
+  const ok = confirm(
+    "Restore the entire product listing from the seed file?\n\n" +
+      "This will:\n" +
+      "  • update prices, names and descriptions for all products in the seed\n" +
+      "  • create any missing products\n" +
+      "  • overwrite manual edits on those products (slugs are the key)\n\n" +
+      "Products NOT listed in the seed file are left untouched.",
+  );
+  if (!ok) return;
+  const original = btn.innerHTML;
+  btn.dataset.busy = "1";
+  btn.disabled = true;
+  btn.innerHTML = `<span class="spinner" aria-hidden="true"></span>Restoring…`;
+  if (status) status.textContent = "";
+  try {
+    const data = await api("/api/products/restore", { method: "POST" });
+    if (status) {
+      status.textContent = `Restored ✓  ${data.total} total · ${data.created} new · ${data.updated} updated`;
+      setTimeout(() => (status.textContent = ""), 6000);
+    }
+    await loadProducts();
+  } catch (e) {
+    if (status) status.textContent = e.message || "Restore failed";
+    else alert(e.message || "Restore failed");
+  } finally {
+    btn.disabled = false;
+    delete btn.dataset.busy;
+    btn.innerHTML = original;
+  }
 };
 
 const slugify = (s) =>

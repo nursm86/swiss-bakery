@@ -34,7 +34,11 @@
       <section id="tab-products" class="panel active">
         <div class="panel-head">
           <h2>Products</h2>
-          <button id="new-product-btn" class="primary">+ New product</button>
+          <div style="display:flex;gap:0.5rem;align-items:center">
+            <span class="hint" id="products-restore-status"></span>
+            <button id="products-restore-btn" class="ghost" title="Reseed all products from data/products.seed.json - overwrites manual edits">↻ Restore product listing</button>
+            <button id="new-product-btn" class="primary">+ New product</button>
+          </div>
         </div>
         <div id="products-list" class="product-grid"></div>
       </section>
