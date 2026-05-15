@@ -105,7 +105,7 @@ hdr "2/6  Building the public site (Astro)"
 ok "apps/web/dist rebuilt ($(find apps/web/dist -type f | wc -l | tr -d ' ') files)"
 
 # ── 3. prisma client ──────────────────────────────────────────────────────
-hdr "3/6  Generating Prisma client (native + rhel-openssl-3.0.x)"
+hdr "3/6  Generating Prisma client (native + debian-openssl-1.0.x)"
 # The output path and binaryTargets are set in apps/api/prisma/schema.prisma.
 # We always regenerate so the client matches the current schema and the
 # committed engine binaries stay in sync with whatever's in node_modules.
@@ -114,12 +114,12 @@ npx prisma generate --schema apps/api/prisma/schema.prisma >/tmp/sb-prisma.log 2
   tail -40 /tmp/sb-prisma.log
   pause_and_exit 1
 }
-if [[ ! -f apps/api/prisma-client/libquery_engine-rhel-openssl-3.0.x.so.node ]]; then
-  fail "rhel-openssl-3.0.x engine missing after generate — check binaryTargets in schema.prisma."
+if [[ ! -f apps/api/prisma-client/libquery_engine-debian-openssl-1.0.x.so.node ]]; then
+  fail "debian-openssl-1.0.x engine missing after generate — the cPanel server needs this. Check binaryTargets in schema.prisma."
   pause_and_exit 1
 fi
 PRISMA_SIZE="$(du -sh apps/api/prisma-client | cut -f1)"
-ok "apps/api/prisma-client ready ($PRISMA_SIZE, native + rhel-openssl-3.0.x)"
+ok "apps/api/prisma-client ready ($PRISMA_SIZE, native + debian-openssl-1.0.x)"
 
 # ── 4. build API ──────────────────────────────────────────────────────────
 hdr "4/6  Compiling the API (tsc)"
@@ -198,18 +198,30 @@ cat <<'EOF'
   SSH into the server (cPanel → Terminal, or ssh swissbak@au-s1) and run:
 
       cd ~/repositories/swiss-bakery
-      git fetch && git reset --hard origin/main
+      git fetch origin main
+      git pull --ff-only origin main        # safe: refuses to merge if diverged
       bash deploy.sh
 
-  deploy.sh will:
+  Only fall back to a hard reset if `pull --ff-only` complains about local
+  changes / divergence — that means someone hand-edited files on the server
+  and you need to decide what to keep before nuking them:
+
+      git status                             # see what's modified
+      git diff                               # review before discarding
+      git reset --hard origin/main           # last resort — wipes local edits
+
+  Files that survive any reset (gitignored): .env, .last-deploy, tmp/,
+  node_modules.
+
+  deploy.sh will then:
     • detect what changed since the last deploy
     • apply any new Prisma migrations
     • use the pre-generated client at apps/api/prisma-client/
     • touch tmp/restart.txt to restart Passenger
     • update .last-deploy with the new HEAD
 
-  After it finishes, the next browser request to swissbakery.com.au
-  picks up the new build.
+  After it finishes, the next browser request to swissbakery.com.au picks
+  up the new build.
 
 EOF
 

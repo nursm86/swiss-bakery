@@ -94,8 +94,9 @@ fi
 # the repo at apps/api/prisma-client/. We do NOT regenerate on the server -
 # CloudLinux LVE was SIGABRT-killing the generator's WASM engine. If this
 # folder is missing it means someone forgot to commit it locally; bail loudly.
-if [ ! -f "$PRISMA_CLIENT_DIR/index.js" ] || [ ! -f "$PRISMA_CLIENT_DIR/libquery_engine-rhel-openssl-3.0.x.so.node" ]; then
-  echo "✗ Pre-generated Prisma client missing at $PRISMA_CLIENT_DIR" >&2
+if [ ! -f "$PRISMA_CLIENT_DIR/index.js" ] || [ ! -f "$PRISMA_CLIENT_DIR/libquery_engine-debian-openssl-1.0.x.so.node" ]; then
+  echo "✗ Pre-generated Prisma client missing (or wrong target) at $PRISMA_CLIENT_DIR" >&2
+  echo "  This server needs the debian-openssl-1.0.x engine." >&2
   echo "  Locally:  npx prisma generate --schema apps/api/prisma/schema.prisma" >&2
   echo "  Then:     git add apps/api/prisma-client && git commit && git push" >&2
   exit 1

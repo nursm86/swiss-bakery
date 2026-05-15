@@ -10,11 +10,11 @@ generator client {
   // SIGABRT-killing the generator's WASM engine on shared hosting).
   // Build locally, commit `apps/api/prisma-client/`, deploy.
   output        = "../prisma-client"
-  // `native` covers the developer's host; `rhel-openssl-3.0.x` covers
-  // CloudLinux 8/9 / AlmaLinux / Rocky Linux 8/9, which is what cPanel uses
-  // on swissbakery.com.au. If the server's OpenSSL is 1.x, add
-  // `rhel-openssl-1.0.x` here and regenerate.
-  binaryTargets = ["native", "rhel-openssl-3.0.x"]
+  // `native` covers the developer's host. The cPanel server at au-s1
+  // runs Debian with OpenSSL 1.0.x (confirmed from the Prisma runtime
+  // error). `rhel-openssl-3.0.x` is kept as a safety net in case the
+  // hosting environment changes.
+  binaryTargets = ["native", "debian-openssl-1.0.x", "rhel-openssl-3.0.x"]
 }
 
 datasource db {

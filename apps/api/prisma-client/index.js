@@ -238,6 +238,10 @@ const config = {
       },
       {
         "fromEnvVar": null,
+        "value": "debian-openssl-1.0.x"
+      },
+      {
+        "fromEnvVar": null,
         "value": "rhel-openssl-3.0.x"
       }
     ],
@@ -265,8 +269,8 @@ const config = {
       }
     }
   },
-  "inlineSchema": "// Swiss Bakery - Prisma schema\n//\n// Provider: MySQL / MariaDB (cPanel-compatible).\n// @db.Text is used for free-form fields so long descriptions aren't truncated to VARCHAR(191).\n\ngenerator client {\n  provider      = \"prisma-client-js\"\n  // Output the generated client into a repo-internal, committed path so the\n  // cPanel server can skip `prisma generate` entirely (CloudLinux LVE was\n  // SIGABRT-killing the generator's WASM engine on shared hosting).\n  // Build locally, commit `apps/api/prisma-client/`, deploy.\n  output        = \"../prisma-client\"\n  // `native` covers the developer's host; `rhel-openssl-3.0.x` covers\n  // CloudLinux 8/9 / AlmaLinux / Rocky Linux 8/9, which is what cPanel uses\n  // on swissbakery.com.au. If the server's OpenSSL is 1.x, add\n  // `rhel-openssl-1.0.x` here and regenerate.\n  binaryTargets = [\"native\", \"rhel-openssl-3.0.x\"]\n}\n\ndatasource db {\n  provider          = \"mysql\"\n  url               = env(\"DATABASE_URL\")\n  shadowDatabaseUrl = env(\"SHADOW_DATABASE_URL\")\n}\n\nmodel Product {\n  id          Int      @id @default(autoincrement())\n  slug        String   @unique\n  name        String\n  category    String\n  priceCents  Int?\n  unit        String   @default(\"piece\")\n  qty         Int      @default(1)\n  description String?  @db.Text\n  imagePath   String?\n  isFeatured  Boolean  @default(false)\n  isActive    Boolean  @default(true)\n  sortOrder   Int      @default(0)\n  createdAt   DateTime @default(now())\n  updatedAt   DateTime @updatedAt\n\n  @@index([category, sortOrder])\n  @@index([isFeatured])\n}\n\nmodel HeroBanner {\n  id         Int      @id @default(autoincrement())\n  heading    String\n  subheading String?\n  ctaLabel   String?\n  ctaHref    String?\n  imagePath  String?\n  isActive   Boolean  @default(true)\n  sortOrder  Int      @default(0)\n  updatedAt  DateTime @updatedAt\n}\n\nmodel Notice {\n  id        Int       @id @default(autoincrement())\n  message   String    @db.Text\n  level     String    @default(\"info\")\n  isActive  Boolean   @default(false)\n  startsAt  DateTime?\n  endsAt    DateTime?\n  updatedAt DateTime  @updatedAt\n}\n\nmodel SiteSetting {\n  key       String   @id\n  value     String   @db.Text\n  updatedAt DateTime @updatedAt\n}\n\nmodel RefreshToken {\n  id        String    @id\n  subject   String\n  expiresAt DateTime\n  createdAt DateTime  @default(now())\n  revokedAt DateTime?\n\n  @@index([subject])\n}\n\nmodel Page {\n  id          Int      @id @default(autoincrement())\n  slug        String   @unique\n  title       String\n  content     String   @db.Text\n  isPublished Boolean  @default(true)\n  updatedAt   DateTime @updatedAt\n}\n",
-  "inlineSchemaHash": "047fda59c04322ff6578239d570ac64afd5da380868b0fc51e12b39e494a46bc",
+  "inlineSchema": "// Swiss Bakery - Prisma schema\n//\n// Provider: MySQL / MariaDB (cPanel-compatible).\n// @db.Text is used for free-form fields so long descriptions aren't truncated to VARCHAR(191).\n\ngenerator client {\n  provider      = \"prisma-client-js\"\n  // Output the generated client into a repo-internal, committed path so the\n  // cPanel server can skip `prisma generate` entirely (CloudLinux LVE was\n  // SIGABRT-killing the generator's WASM engine on shared hosting).\n  // Build locally, commit `apps/api/prisma-client/`, deploy.\n  output        = \"../prisma-client\"\n  // `native` covers the developer's host. The cPanel server at au-s1\n  // runs Debian with OpenSSL 1.0.x (confirmed from the Prisma runtime\n  // error). `rhel-openssl-3.0.x` is kept as a safety net in case the\n  // hosting environment changes.\n  binaryTargets = [\"native\", \"debian-openssl-1.0.x\", \"rhel-openssl-3.0.x\"]\n}\n\ndatasource db {\n  provider          = \"mysql\"\n  url               = env(\"DATABASE_URL\")\n  shadowDatabaseUrl = env(\"SHADOW_DATABASE_URL\")\n}\n\nmodel Product {\n  id          Int      @id @default(autoincrement())\n  slug        String   @unique\n  name        String\n  category    String\n  priceCents  Int?\n  unit        String   @default(\"piece\")\n  qty         Int      @default(1)\n  description String?  @db.Text\n  imagePath   String?\n  isFeatured  Boolean  @default(false)\n  isActive    Boolean  @default(true)\n  sortOrder   Int      @default(0)\n  createdAt   DateTime @default(now())\n  updatedAt   DateTime @updatedAt\n\n  @@index([category, sortOrder])\n  @@index([isFeatured])\n}\n\nmodel HeroBanner {\n  id         Int      @id @default(autoincrement())\n  heading    String\n  subheading String?\n  ctaLabel   String?\n  ctaHref    String?\n  imagePath  String?\n  isActive   Boolean  @default(true)\n  sortOrder  Int      @default(0)\n  updatedAt  DateTime @updatedAt\n}\n\nmodel Notice {\n  id        Int       @id @default(autoincrement())\n  message   String    @db.Text\n  level     String    @default(\"info\")\n  isActive  Boolean   @default(false)\n  startsAt  DateTime?\n  endsAt    DateTime?\n  updatedAt DateTime  @updatedAt\n}\n\nmodel SiteSetting {\n  key       String   @id\n  value     String   @db.Text\n  updatedAt DateTime @updatedAt\n}\n\nmodel RefreshToken {\n  id        String    @id\n  subject   String\n  expiresAt DateTime\n  createdAt DateTime  @default(now())\n  revokedAt DateTime?\n\n  @@index([subject])\n}\n\nmodel Page {\n  id          Int      @id @default(autoincrement())\n  slug        String   @unique\n  title       String\n  content     String   @db.Text\n  isPublished Boolean  @default(true)\n  updatedAt   DateTime @updatedAt\n}\n",
+  "inlineSchemaHash": "70fa3293f3c6267e0c2f44dc1c05c126fa77d6d7de85f1d8b1e06238a8d05cf7",
   "copyEngine": true
 }
 
@@ -307,6 +311,10 @@ Object.assign(exports, Prisma)
 // file annotations for bundling tools to include these files
 path.join(__dirname, "libquery_engine-darwin-arm64.dylib.node");
 path.join(process.cwd(), "apps/api/prisma-client/libquery_engine-darwin-arm64.dylib.node")
+
+// file annotations for bundling tools to include these files
+path.join(__dirname, "libquery_engine-debian-openssl-1.0.x.so.node");
+path.join(process.cwd(), "apps/api/prisma-client/libquery_engine-debian-openssl-1.0.x.so.node")
 
 // file annotations for bundling tools to include these files
 path.join(__dirname, "libquery_engine-rhel-openssl-3.0.x.so.node");

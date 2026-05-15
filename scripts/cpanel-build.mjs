@@ -61,11 +61,11 @@ for (const p of [path.join(ROOT, "node_modules"), path.join(ROOT, "package-lock.
 // Verify pre-built artifacts are present (they must be committed to git)
 const WEB_DIST = path.join(ROOT, "apps", "web", "dist", "index.html");
 const API_DIST = path.join(APP_API, "dist", "index.js");
-const PRISMA_CLIENT = path.join(APP_API, "prisma-client", "libquery_engine-rhel-openssl-3.0.x.so.node");
+const PRISMA_CLIENT = path.join(APP_API, "prisma-client", "libquery_engine-debian-openssl-1.0.x.so.node");
 for (const [name, p] of [
   ["apps/web/dist", WEB_DIST],
   ["apps/api/dist", API_DIST],
-  ["apps/api/prisma-client (rhel engine)", PRISMA_CLIENT],
+  ["apps/api/prisma-client (debian engine)", PRISMA_CLIENT],
 ]) {
   if (!existsSync(p)) {
     process.stderr.write(`\n✗ pre-built artifact missing: ${p}\n`);
