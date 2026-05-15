@@ -27,6 +27,7 @@ set -eo pipefail
 REPO_DIR="$HOME/repositories/swiss-bakery"
 VENV_ACTIVATE="$HOME/nodevenv/repositories/swiss-bakery/20/bin/activate"
 SCHEMA="$REPO_DIR/apps/api/prisma/schema.prisma"
+PRISMA_CLIENT_DIR="$REPO_DIR/apps/api/prisma-client"
 STATE_FILE="$REPO_DIR/.last-deploy"
 
 FORCE=false
@@ -89,9 +90,18 @@ if $deps_changed; then
   npm install --no-audit --no-fund --omit=dev
 fi
 
+# Sanity check: the Prisma client is pre-generated locally and committed to
+# the repo at apps/api/prisma-client/. We do NOT regenerate on the server -
+# CloudLinux LVE was SIGABRT-killing the generator's WASM engine. If this
+# folder is missing it means someone forgot to commit it locally; bail loudly.
+if [ ! -f "$PRISMA_CLIENT_DIR/index.js" ] || [ ! -f "$PRISMA_CLIENT_DIR/libquery_engine-rhel-openssl-3.0.x.so.node" ]; then
+  echo "✗ Pre-generated Prisma client missing at $PRISMA_CLIENT_DIR" >&2
+  echo "  Locally:  npx prisma generate --schema apps/api/prisma/schema.prisma" >&2
+  echo "  Then:     git add apps/api/prisma-client && git commit && git push" >&2
+  exit 1
+fi
 if $schema_changed; then
-  echo "==> prisma schema changed; regenerating client"
-  npx prisma generate --schema "$SCHEMA"
+  echo "==> prisma schema changed; using pre-generated client at apps/api/prisma-client/ (no server-side generate)"
 fi
 
 if $migrations_changed; then

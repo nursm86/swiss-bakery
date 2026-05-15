@@ -72,10 +72,10 @@ model SiteSetting {
 }
 
 model RefreshToken {
-  id        String   @id
+  id        String    @id
   subject   String
   expiresAt DateTime
-  createdAt DateTime @default(now())
+  createdAt DateTime  @default(now())
   revokedAt DateTime?
 
   @@index([subject])

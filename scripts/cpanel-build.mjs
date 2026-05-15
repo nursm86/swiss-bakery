@@ -3,11 +3,11 @@
 // Runs via "Run JS Script" → cpanel:build after "Run NPM Install".
 //
 // Deploy strategy: everything is pre-built and committed to the repo
-// (apps/web/dist for the static site, apps/api/dist for compiled API).
-// cPanel only needs to:
-//   1. Install apps/api runtime deps (so @prisma/client etc. are present)
-//   2. Generate the Prisma client for Linux
-// No astro / tsc compile happens on the server.
+// (apps/web/dist for the static site, apps/api/dist for compiled API,
+//  apps/api/prisma-client for the pre-generated Prisma client).
+// cPanel only needs to install apps/api runtime deps - no astro/tsc/prisma
+// compile happens on the server. The Prisma client is pre-generated locally
+// with the rhel-openssl-3.0.x engine baked in (see schema.prisma).
 
 import { spawnSync } from "node:child_process";
 import { existsSync, readFileSync, rmSync } from "node:fs";
@@ -61,10 +61,16 @@ for (const p of [path.join(ROOT, "node_modules"), path.join(ROOT, "package-lock.
 // Verify pre-built artifacts are present (they must be committed to git)
 const WEB_DIST = path.join(ROOT, "apps", "web", "dist", "index.html");
 const API_DIST = path.join(APP_API, "dist", "index.js");
-for (const [name, p] of [["apps/web/dist", WEB_DIST], ["apps/api/dist", API_DIST]]) {
+const PRISMA_CLIENT = path.join(APP_API, "prisma-client", "libquery_engine-rhel-openssl-3.0.x.so.node");
+for (const [name, p] of [
+  ["apps/web/dist", WEB_DIST],
+  ["apps/api/dist", API_DIST],
+  ["apps/api/prisma-client (rhel engine)", PRISMA_CLIENT],
+]) {
   if (!existsSync(p)) {
     process.stderr.write(`\n✗ pre-built artifact missing: ${p}\n`);
-    process.stderr.write(`  Run \`npm run build\` locally and commit ${name} before deploying.\n`);
+    process.stderr.write(`  Locally:  npx prisma generate --schema apps/api/prisma/schema.prisma\n`);
+    process.stderr.write(`            git add apps/api/prisma-client && git commit && git push\n`);
     process.exit(1);
   }
   process.stdout.write(`  ✓ ${name} present\n`);
@@ -82,9 +88,8 @@ for (const p of [path.join(APP_API, "node_modules"), path.join(APP_API, "package
 }
 run(npmCmd, ["install", "--no-audit", "--no-fund", "--omit=dev"], APP_API);
 
-// Generate the Prisma client for Linux using the prisma CLI that just installed
-const prisma = resolveBinScript(APP_API, "prisma", "prisma");
-run(NODE, [prisma, "generate", "--schema", path.join(APP_API, "prisma", "schema.prisma")], APP_API);
+// No server-side `prisma generate` - the client is pre-generated and lives at
+// apps/api/prisma-client/ with both native and rhel-openssl-3.0.x engines.
 
 process.stdout.write("\n✓ Post-install complete.\n");
-process.stdout.write("  Next: run `npm run deploy:prisma` to apply migrations + seed (one time), then restart the app.\n");
+process.stdout.write("  Next: run `npm run prisma:deploy` to apply migrations, then restart the app.\n");
