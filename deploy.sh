@@ -106,7 +106,37 @@ fi
 
 if $migrations_changed; then
   echo "==> new migrations; applying"
-  npx prisma migrate deploy --schema "$SCHEMA"
+  # Locate the Prisma CLI script. Invoke it via `node` directly (NOT npx) -
+  # CloudLinux LVE was returning EAGAIN ("spawn sh") because npx adds an extra
+  # shell + npm process to the chain that bumps into the NPROC ceiling.
+  PRISMA_CLI=""
+  for p in \
+    "$REPO_DIR/node_modules/prisma/build/index.js" \
+    "$REPO_DIR/apps/api/node_modules/prisma/build/index.js"; do
+    if [ -f "$p" ]; then PRISMA_CLI="$p"; break; fi
+  done
+  if [ -z "$PRISMA_CLI" ]; then
+    echo "✗ prisma CLI not found at node_modules/prisma/build/index.js" >&2
+    echo "  Run with --force, or \`cd apps/api && npm install\`." >&2
+    exit 1
+  fi
+  # Retry once or twice on EAGAIN — CloudLinux process limits are bursty and
+  # the migration engine itself spawns a subprocess.
+  attempt=1
+  while true; do
+    if node "$PRISMA_CLI" migrate deploy --schema "$SCHEMA"; then
+      break
+    fi
+    if [ "$attempt" -ge 3 ]; then
+      echo "✗ prisma migrate deploy failed after $attempt attempts." >&2
+      echo "  If the failure is 'EAGAIN spawn …', try again in 30s — your CloudLinux" >&2
+      echo "  account hit its process-entry / NPROC ceiling." >&2
+      exit 1
+    fi
+    echo "  attempt $attempt failed; retrying in 5s…"
+    sleep 5
+    attempt=$((attempt + 1))
+  done
 fi
 
 echo "==> restarting Passenger app"
