@@ -131,7 +131,16 @@ app.get("/admin/login", (_req, res) => {
 app.get("/admin/dashboard", (_req, res) => {
     res.sendFile(path.join(ADMIN_PUBLIC, "admin", "dashboard.html"));
 });
-app.use("/admin", express.static(path.join(ADMIN_PUBLIC, "admin"), { index: false }));
+// Admin assets must NOT be cached aggressively - admin.js and admin.css change
+// on every deploy, and the URLs don't carry a content hash. Without these
+// headers, browsers serve a stale JS for up to an hour after a deploy and any
+// UI fixes appear broken.
+app.use("/admin", express.static(path.join(ADMIN_PUBLIC, "admin"), {
+    index: false,
+    setHeaders: (res) => {
+        res.setHeader("Cache-Control", "no-cache, must-revalidate");
+    },
+}));
 app.use(express.static(WEB_DIST, {
     maxAge: config.isProd ? "1h" : 0,
     index: "index.html",

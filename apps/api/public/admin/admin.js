@@ -800,6 +800,26 @@ const wireMenu = () => {
       setTimeout(() => (status.textContent = ""), 1800);
     }
   });
+  document.getElementById("menu-clear-breaks-btn")?.addEventListener("click", () => {
+    const set = menuConfig.categories.filter((c) => c.pageBreakBefore).length;
+    if (set === 0) {
+      const status = document.getElementById("menu-status");
+      if (status) {
+        status.textContent = "No page breaks were set.";
+        setTimeout(() => (status.textContent = ""), 1800);
+      }
+      return;
+    }
+    if (!confirm(`Clear ${set} page break(s)? Categories will flow naturally onto the next page only when they run out of room.`)) return;
+    for (const c of menuConfig.categories) c.pageBreakBefore = false;
+    saveMenuConfig();
+    renderMenuBuilder();
+    const status = document.getElementById("menu-status");
+    if (status) {
+      status.textContent = `Cleared ${set} page break(s) ✓`;
+      setTimeout(() => (status.textContent = ""), 2200);
+    }
+  });
   document.getElementById("menu-preview-btn")?.addEventListener("click", openMenuPreview);
   document.getElementById("menu-toggle-all-btn")?.addEventListener("click", () => {
     const anyCollapsed = menuConfig.categories.some((c) => c.collapsed);
@@ -893,14 +913,30 @@ const renderCategoryCard = (cat, catIdx, productsById) => {
   summary.title = `${included} of ${total} products included`;
   summary.innerHTML = `<strong>${included}</strong><span class="dim">/${total}</span>`;
 
+  // Visible badge so it's obvious (even when collapsed) that this category
+  // forces a page break - explains "why is this on a new page?".
+  let breakBadge = null;
+  if (cat.pageBreakBefore) {
+    breakBadge = document.createElement("span");
+    breakBadge.className = "badge";
+    breakBadge.textContent = "⤓ new page";
+    breakBadge.title = "This category starts on a new printed page. Use 'Clear page breaks' or untick 'Start on a new page' to remove.";
+    breakBadge.style.cssText =
+      "background:var(--navy);color:#fff;font-size:0.66rem;padding:0.12rem 0.45rem;border-radius:999px;white-space:nowrap";
+  }
+
   const orderBtns = document.createElement("div");
   orderBtns.className = "menu-order-btns";
-  const upBtn = mkBtn("⤒ Top", "ghost small", () => moveCategoryToTop(catIdx));
-  const downBtn = mkBtn("⤓ Bottom", "ghost small", () => moveCategoryToBottom(catIdx));
+  const upBtn = mkBtn("↑ Up", "ghost small", () => moveCategoryUp(catIdx));
+  const downBtn = mkBtn("↓ Down", "ghost small", () => moveCategoryDown(catIdx));
+  upBtn.title = "Move this category up one position";
+  downBtn.title = "Move this category down one position";
   upBtn.disabled = catIdx === 0;
   downBtn.disabled = catIdx === menuConfig.categories.length - 1;
   orderBtns.append(upBtn, downBtn);
-  head.append(chevron, titleWrap, summary, orderBtns);
+  head.append(chevron, titleWrap, summary);
+  if (breakBadge) head.append(breakBadge);
+  head.append(orderBtns);
 
   // Allow clicking blank space on the head to toggle (but not the input or buttons).
   head.addEventListener("click", (ev) => {
@@ -1061,10 +1097,10 @@ const renderProductRow = (cat, entry, idx, p) => {
 
   const orderWrap = document.createElement("div");
   orderWrap.className = "menu-order-btns small";
-  const top = mkBtn("⤒", "ghost small icon", () => moveProductToTop(cat, idx));
-  const bot = mkBtn("⤓", "ghost small icon", () => moveProductToBottom(cat, idx));
-  top.title = "Move to top of category";
-  bot.title = "Move to bottom of category";
+  const top = mkBtn("↑", "ghost small icon", () => moveProductUp(cat, idx));
+  const bot = mkBtn("↓", "ghost small icon", () => moveProductDown(cat, idx));
+  top.title = "Move up one position";
+  bot.title = "Move down one position";
   top.disabled = idx === 0;
   bot.disabled = idx === cat.products.length - 1;
   orderWrap.append(top, bot);
@@ -1082,31 +1118,58 @@ const mkBtn = (text, cls, onClick) => {
   return b;
 };
 
-const moveCategoryToTop = (idx) => {
+// Step-by-step reorder helpers. The arrow buttons now move one position at a
+// time (swap with neighbour). Holding shift while clicking jumps to the
+// extreme top/bottom for power users.
+const moveCategoryUp = (idx, jumpToEdge) => {
   if (idx <= 0) return;
-  const [c] = menuConfig.categories.splice(idx, 1);
-  menuConfig.categories.unshift(c);
+  if (jumpToEdge) {
+    const [c] = menuConfig.categories.splice(idx, 1);
+    menuConfig.categories.unshift(c);
+  } else {
+    const tmp = menuConfig.categories[idx - 1];
+    menuConfig.categories[idx - 1] = menuConfig.categories[idx];
+    menuConfig.categories[idx] = tmp;
+  }
   saveMenuConfig();
   renderMenuBuilder();
 };
-const moveCategoryToBottom = (idx) => {
+const moveCategoryDown = (idx, jumpToEdge) => {
   if (idx >= menuConfig.categories.length - 1) return;
-  const [c] = menuConfig.categories.splice(idx, 1);
-  menuConfig.categories.push(c);
+  if (jumpToEdge) {
+    const [c] = menuConfig.categories.splice(idx, 1);
+    menuConfig.categories.push(c);
+  } else {
+    const tmp = menuConfig.categories[idx + 1];
+    menuConfig.categories[idx + 1] = menuConfig.categories[idx];
+    menuConfig.categories[idx] = tmp;
+  }
   saveMenuConfig();
   renderMenuBuilder();
 };
-const moveProductToTop = (cat, idx) => {
+const moveProductUp = (cat, idx, jumpToEdge) => {
   if (idx <= 0) return;
-  const [e] = cat.products.splice(idx, 1);
-  cat.products.unshift(e);
+  if (jumpToEdge) {
+    const [e] = cat.products.splice(idx, 1);
+    cat.products.unshift(e);
+  } else {
+    const tmp = cat.products[idx - 1];
+    cat.products[idx - 1] = cat.products[idx];
+    cat.products[idx] = tmp;
+  }
   saveMenuConfig();
   renderMenuBuilder();
 };
-const moveProductToBottom = (cat, idx) => {
+const moveProductDown = (cat, idx, jumpToEdge) => {
   if (idx >= cat.products.length - 1) return;
-  const [e] = cat.products.splice(idx, 1);
-  cat.products.push(e);
+  if (jumpToEdge) {
+    const [e] = cat.products.splice(idx, 1);
+    cat.products.push(e);
+  } else {
+    const tmp = cat.products[idx + 1];
+    cat.products[idx + 1] = cat.products[idx];
+    cat.products[idx] = tmp;
+  }
   saveMenuConfig();
   renderMenuBuilder();
 };

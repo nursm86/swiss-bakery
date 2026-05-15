@@ -244,12 +244,24 @@
         font-style: italic;
       }
       @media print {
-        body { background: var(--paper); }
+        /* Force the orange paper colour to fill every printed page edge-
+           to-edge. Without -webkit-print-color-adjust: exact on html + body,
+           Chrome's print pipeline drops the background and the unused space
+           below the last item prints as white. */
+        html, body {
+          background: var(--paper) !important;
+          -webkit-print-color-adjust: exact;
+          print-color-adjust: exact;
+        }
         .toolbar { display: none; }
-        .stage { padding: 0; gap: 0; }
+        .stage { padding: 0; gap: 0; background: var(--paper); }
         .page {
           box-shadow: none;
           margin: 0;
+          /* exact A4 height so the orange paper covers the whole sheet
+             even when the page has only a few rows on it */
+          height: 297mm;
+          min-height: 297mm;
           page-break-after: always;
           break-after: page;
         }
