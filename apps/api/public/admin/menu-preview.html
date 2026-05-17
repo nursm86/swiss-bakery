@@ -136,6 +136,22 @@
         page-break-inside: avoid;
         break-inside: avoid;
       }
+      /* JS paginator wrappers (replace the old .cat box so categories can
+         flow across pages). page-body holds the flowing content inside the
+         page padding; cat-headblock is the title+rule+subtitle unit. */
+      .page-body {
+        position: relative;
+        height: 100%;
+      }
+      .cat-headblock {
+        margin: 0 0 1mm;
+        /* a tiny top padding stops the inner .cat-head margin from collapsing
+           through the wrapper, so getBoundingClientRect() is accurate */
+        padding-top: 0.1px;
+      }
+      .page-body .items {
+        margin-bottom: 6mm;
+      }
       .cat-head {
         display: grid;
         grid-template-columns: 1fr auto 1fr;
@@ -301,78 +317,67 @@
         return { text: `$${dollars}/${q}${unitLabel}`, muted: false };
       };
 
-      const splitIntoPages = (categories) => {
-        const pages = [];
-        let cur = [];
-        for (const cat of categories) {
-          if (cat.pageBreakBefore && cur.length > 0) {
-            pages.push(cur);
-            cur = [];
-          }
-          cur.push(cat);
-        }
-        if (cur.length > 0) pages.push(cur);
-        return pages.length === 0 ? [[]] : pages;
-      };
-
-      const renderItem = (it, showPhoto) => {
-        const photo = showPhoto && it.imagePath
-          ? `<div class="thumb" style="background-image:url('${it.imagePath.replace(/'/g, "\\'")}')"></div>`
-          : (showPhoto ? `<div class="thumb"></div>` : "");
-        const p = fmtPrice(it.priceCents, it.unit, it.qty);
-        return `
-          <div class="item${showPhoto ? " with-photo" : ""}">
-            ${photo}
-            <div class="name">${escapeHtml(it.name)}</div>
-            <div class="price${p.muted ? " muted" : ""}">${escapeHtml(p.text)}</div>
-          </div>`;
-      };
-
       const escapeHtml = (s) =>
         String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
 
-      const renderCategory = (cat, globalShowPhotos) => {
-        const showPhoto = !!cat.showPhotos || !!globalShowPhotos;
-        const cols = cat.columns ?? 2;
-        const items = cat.items.map((it) => renderItem(it, showPhoto)).join("");
-        const sub = cat.subtitle ? `<p class="cat-sub">${escapeHtml(cat.subtitle)}</p>` : "";
-        return `
-          <section class="cat">
-            <div class="cat-head">
-              <div class="rule"></div>
-              <h2>${escapeHtml(cat.title)}</h2>
-              <div class="rule"></div>
-            </div>
-            ${sub}
-            <div class="items cols-${cols}">${items}</div>
-          </section>`;
+      // ---- DOM builders (nodes, so we can measure & relocate them) ----
+      const el = (tag, cls, html) => {
+        const n = document.createElement(tag);
+        if (cls) n.className = cls;
+        if (html != null) n.innerHTML = html;
+        return n;
       };
 
-      const renderPage = (categories, doc, isFirst, isLast) => {
-        const header = isFirst
-          ? `
-            <div class="header">
-              <div class="logo"><img src="/swiss_logo.png" alt="Swiss Bakery" onerror="this.style.display='none'" /></div>
-              <p class="tagline">${escapeHtml(doc.tagline ?? "")}</p>
-              <p class="strapline">${escapeHtml(doc.strapline ?? "")}</p>
-            </div>
-            <div class="top-divider"></div>`
-          : `<div style="height:8mm"></div>`;
-        const cats = categories.map((c) => renderCategory(c, doc.showPhotos)).join("");
-        const footer = isLast
-          ? `
-            <div class="footer">
-              <p class="note">${escapeHtml(doc.footer ?? "")}</p>
-              <div class="loc">${escapeHtml((doc.location ?? "").replace(/·/g, "·"))}</div>
-            </div>`
-          : "";
-        return `
-          <article class="page">
-            <div class="frame"></div>
-            ${header}
-            ${cats}
-            ${footer}
-          </article>`;
+      const buildItem = (it, showPhoto) => {
+        const item = el("div", "item" + (showPhoto ? " with-photo" : ""));
+        if (showPhoto) {
+          const thumb = el("div", "thumb");
+          if (it.imagePath) thumb.style.backgroundImage = `url('${it.imagePath.replace(/'/g, "\\'")}')`;
+          item.appendChild(thumb);
+        }
+        item.appendChild(el("div", "name", escapeHtml(it.name)));
+        const p = fmtPrice(it.priceCents, it.unit, it.qty);
+        item.appendChild(el("div", "price" + (p.muted ? " muted" : ""), escapeHtml(p.text)));
+        return item;
+      };
+
+      const buildCatHead = (title, sub, cont) => {
+        const frag = document.createElement("div");
+        frag.className = "cat-headblock";
+        const head = el("div", "cat-head");
+        head.appendChild(el("div", "rule"));
+        head.appendChild(el("h2", null, escapeHtml(title) + (cont ? ' <span style="font-size:0.6em;font-style:italic;opacity:.75">(cont.)</span>' : "")));
+        head.appendChild(el("div", "rule"));
+        frag.appendChild(head);
+        if (sub && !cont) frag.appendChild(el("p", "cat-sub", escapeHtml(sub)));
+        return frag;
+      };
+
+      const buildHeader = (doc) => {
+        const h = el("div", "header");
+        h.innerHTML =
+          `<div class="logo"><img src="/swiss_logo.png" alt="Swiss Bakery" onerror="this.style.display='none'" /></div>` +
+          `<p class="tagline">${escapeHtml(doc.tagline ?? "")}</p>` +
+          `<p class="strapline">${escapeHtml(doc.strapline ?? "")}</p>`;
+        const wrap = document.createElement("div");
+        wrap.appendChild(h);
+        wrap.appendChild(el("div", "top-divider"));
+        return wrap;
+      };
+
+      const buildFooter = (doc) => {
+        const f = el("div", "footer");
+        f.appendChild(el("p", "note", escapeHtml(doc.footer ?? "")));
+        f.appendChild(el("div", "loc", escapeHtml(doc.location ?? "")));
+        return f;
+      };
+
+      const newPage = () => {
+        const page = el("article", "page");
+        page.appendChild(el("div", "frame"));
+        const body = el("div", "page-body");
+        page.appendChild(body);
+        return { page, body };
       };
 
       const boot = () => {
@@ -397,18 +402,144 @@
           stage.innerHTML = `<div class="empty">No products selected.<br/>Tick at least one product in the Menu builder.</div>`;
           return;
         }
-        const pages = splitIntoPages(categories);
-        stage.innerHTML = pages
-          .map((cats, i) => renderPage(cats, doc, i === 0, i === pages.length - 1))
-          .join("");
-        // Auto-open print dialog after fonts settle.
-        const trigger = () => setTimeout(() => window.print(), 600);
+
+        // Paginate once fonts are ready so measurements are accurate.
+        const run = () => {
+          paginate(stage, doc, categories);
+          setTimeout(() => window.print(), 500);
+        };
         if (document.fonts && document.fonts.ready) {
-          document.fonts.ready.then(trigger).catch(trigger);
+          document.fonts.ready.then(run).catch(run);
         } else {
-          trigger();
+          setTimeout(run, 300);
         }
       };
+
+      // Measurement-based paginator: fills each A4 .page exactly, splitting a
+      // long category across pages (repeating its header with "(cont.)"), so
+      // every printed page has its own frame + orange background and nothing
+      // overflows. Header on page 1; footer on the last page only.
+      const paginate = (stage, doc, categories) => {
+        stage.innerHTML = "";
+
+        // A real empty page to read the usable content height from.
+        const probe = newPage();
+        probe.page.style.visibility = "hidden";
+        stage.appendChild(probe.page);
+        const cs = getComputedStyle(probe.page);
+        const padTop = parseFloat(cs.paddingTop);
+        const padBottom = parseFloat(cs.paddingBottom);
+        const fullContentH = probe.page.clientHeight - padTop - padBottom;
+        stage.removeChild(probe.page);
+
+        const pages = [];
+        let cur = null;
+        let curBody = null;
+        let usedH = 0;
+        let limit = 0;
+
+        const startPage = (isFirst) => {
+          const np = newPage();
+          stage.appendChild(np.page);
+          cur = np.page;
+          curBody = np.body;
+          usedH = 0;
+          limit = fullContentH;
+          if (isFirst) {
+            const hdr = buildHeader(doc);
+            curBody.appendChild(hdr);
+            usedH += hdr.getBoundingClientRect().height;
+          } else {
+            const spacer = el("div");
+            spacer.style.height = "8mm";
+            curBody.appendChild(spacer);
+            usedH += spacer.getBoundingClientRect().height;
+          }
+          pages.push(np);
+        };
+
+        const remaining = () => limit - usedH;
+
+        startPage(true);
+
+        for (const cat of categories) {
+          const showPhoto = !!cat.showPhotos || !!doc.showPhotos;
+          const cols = cat.columns ?? 2;
+          const items = cat.items || [];
+          if (items.length === 0) continue;
+
+          let placedAny = false; // has at least one row of THIS category landed?
+          let idx = 0;
+
+          while (idx < items.length) {
+            // (Re)emit the category header on the current page.
+            const headBlock = buildCatHead(cat.title, cat.subtitle, placedAny);
+            curBody.appendChild(headBlock);
+            let headH = headBlock.getBoundingClientRect().height;
+
+            // If the header itself doesn't leave room for even one row, move
+            // it to a fresh page.
+            if (remaining() - headH < 40 && usedH > 0) {
+              curBody.removeChild(headBlock);
+              startPage(false);
+              curBody.appendChild(headBlock);
+              headH = headBlock.getBoundingClientRect().height;
+            }
+            usedH += headH;
+
+            const grid = el("div", "items cols-" + cols);
+            curBody.appendChild(grid);
+
+            // Add items row by row (a "row" = `cols` items). Measure after
+            // each row; if it overflowed, pull the row back, close the grid,
+            // and continue this category on a new page.
+            let overflowed = false;
+            let rowsInGrid = 0; // always allow ≥1 row per page (anti-loop guard)
+            while (idx < items.length) {
+              const rowNodes = [];
+              for (let c = 0; c < cols && idx < items.length; c++, idx++) {
+                const n = buildItem(items[idx], showPhoto);
+                grid.appendChild(n);
+                rowNodes.push(n);
+              }
+              const gridH = grid.getBoundingClientRect().height;
+              if (usedH + gridH > limit && rowsInGrid > 0) {
+                // Row doesn't fit and this grid already has a row — roll back
+                // and continue the category on the next page.
+                for (const n of rowNodes) grid.removeChild(n);
+                idx -= rowNodes.length;
+                overflowed = true;
+                break;
+              }
+              rowsInGrid++;
+            }
+            usedH += grid.getBoundingClientRect().height;
+            placedAny = true;
+
+            if (overflowed) {
+              startPage(false);
+            }
+          }
+        }
+
+        // Footer on the last page; if it would collide with content, give it
+        // its own trailing page (frame only).
+        const footer = buildFooter(doc);
+        const lastBody = pages[pages.length - 1].body;
+        lastBody.appendChild(footer);
+        // .footer is absolute (bottom of page). Check it doesn't sit on top of
+        // the last content block.
+        const fr = footer.getBoundingClientRect();
+        const lastContent = lastBody.lastElementChild?.previousElementSibling;
+        const contentBottom = lastContent ? lastContent.getBoundingClientRect().bottom : 0;
+        if (contentBottom && fr.top < contentBottom + 6) {
+          lastBody.removeChild(footer);
+          const np = newPage();
+          stage.appendChild(np.page);
+          np.body.appendChild(footer);
+        }
+      };
+
       boot();
     </script>
   </body>

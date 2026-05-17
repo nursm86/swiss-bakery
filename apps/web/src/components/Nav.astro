@@ -3,7 +3,7 @@ import OrderButton from "./OrderButton.astro";
 ---
 <header class="sticky top-0 z-40 backdrop-blur bg-[color:var(--color-cream)]/85 border-b border-[color:var(--color-border)]">
   <div class="container-x flex items-center justify-between py-3 sm:py-4">
-    <a href="#top" class="flex items-center gap-3 group">
+    <a href="/#top" class="flex items-center gap-3 group">
       <img
         src="/favicon-128x128.png"
         alt="Swiss Bakery emblem"
@@ -20,10 +20,11 @@ import OrderButton from "./OrderButton.astro";
       </span>
     </a>
     <nav class="hidden md:flex items-center gap-7 text-sm font-semibold text-[color:var(--color-charcoal)]">
-      <a href="#menu" class="hover:text-[color:var(--color-orange)] transition">Menu</a>
-      <a href="#featured" class="hover:text-[color:var(--color-orange)] transition">Featured</a>
-      <a href="#about" class="hover:text-[color:var(--color-orange)] transition">About</a>
-      <a href="#contact" class="hover:text-[color:var(--color-orange)] transition">Contact</a>
+      <a href="/#menu" class="hover:text-[color:var(--color-orange)] transition">Menu</a>
+      <a href="/menu" class="hover:text-[color:var(--color-orange)] transition">Full menu</a>
+      <a href="/#featured" class="hover:text-[color:var(--color-orange)] transition">Featured</a>
+      <a href="/#about" class="hover:text-[color:var(--color-orange)] transition">About</a>
+      <a href="/#contact" class="hover:text-[color:var(--color-orange)] transition">Contact</a>
     </nav>
     <div class="flex items-center gap-2">
       <OrderButton label="Order" variant="gold" class="hidden sm:inline-flex" />
@@ -36,10 +37,11 @@ import OrderButton from "./OrderButton.astro";
   </div>
   <div id="mobile-nav" class="md:hidden hidden border-t border-[color:var(--color-border)]">
     <nav class="container-x py-3 flex flex-col gap-1 text-[color:var(--color-charcoal)] font-semibold">
-      <a href="#menu" class="py-2 hover:text-[color:var(--color-orange)]">Menu</a>
-      <a href="#featured" class="py-2 hover:text-[color:var(--color-orange)]">Featured</a>
-      <a href="#about" class="py-2 hover:text-[color:var(--color-orange)]">About</a>
-      <a href="#contact" class="py-2 hover:text-[color:var(--color-orange)]">Contact</a>
+      <a href="/#menu" class="py-2 hover:text-[color:var(--color-orange)]">Menu</a>
+      <a href="/menu" class="py-2 hover:text-[color:var(--color-orange)]">Full menu</a>
+      <a href="/#featured" class="py-2 hover:text-[color:var(--color-orange)]">Featured</a>
+      <a href="/#about" class="py-2 hover:text-[color:var(--color-orange)]">About</a>
+      <a href="/#contact" class="py-2 hover:text-[color:var(--color-orange)]">Contact</a>
       <div class="py-2">
         <OrderButton label="Order Online" variant="gold" />
       </div>

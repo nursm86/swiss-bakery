@@ -1,0 +1,558 @@
+---
+// Public, print-style menu card — a faithful HTML reproduction of the in-store
+// menu the owner exports from the admin Menu builder (Other_resource/
+// Menu_Original.pdf). It reuses the exact orange A4 layout + measurement-based
+// paginator from /admin/menu-preview.html, but sources EVERY active product
+// from the live catalogue instead of the admin's hand-picked localStorage set.
+//
+// The A4 pages render at true size on desktop and scale down to fit the
+// viewport on mobile (same two-page look, just smaller). "Print / Save as PDF"
+// prints them edge-to-edge in orange, exactly like the original PDF.
+import Layout from "../layouts/Layout.astro";
+import Nav from "../components/Nav.astro";
+import Footer from "../components/Footer.astro";
+import { seed } from "../lib/seed";
+
+// Document copy + per-category layout — mirrors the admin Menu builder
+// defaults that produced Menu_Original.pdf (order, columns, photos, units).
+const DOC = {
+  tagline: "Handcrafted daily · Swiss soul, Bengali heart",
+  strapline: "ALL PRICES AUD · DINE-IN & TAKEAWAY",
+  footer: "Baked fresh every morning",
+  location: "SWISS · BAKERY · MINTO",
+};
+
+const CAT_CFG = [
+  { key: "Bakery",    title: "BAKERY & BREADS",    subtitle: "Freshly baked in-house", columns: 2, showPhotos: true, defaultUnit: "" },
+  { key: "Beverages", title: "BEVERAGES & SIDES",  subtitle: "",                        columns: 2, showPhotos: true, defaultUnit: "" },
+  { key: "Savoury",   title: "SAVOURY BITES",      subtitle: "Per piece",               columns: 3, showPhotos: true, defaultUnit: "" },
+  { key: "Sweets",    title: "TRADITIONAL SWEETS", subtitle: "Priced by weight",        columns: 3, showPhotos: true, defaultUnit: "kg" },
+];
+
+const toItem = (p: (typeof seed.products)[number], defaultUnit: string) => ({
+  name: p.name,
+  imagePath: p.imagePath,
+  priceCents: p.priceCents,
+  unit: defaultUnit || p.unit || "",
+  qty: typeof p.qty === "number" && p.qty > 1 ? p.qty : 1,
+});
+
+// Static build-time payload from data/products.seed.json (works with JS off /
+// before the API responds). The client re-fetches /api/products and rebuilds
+// this same shape so the page always reflects the live catalogue.
+const categories = CAT_CFG.map((c) => {
+  const items = seed.products
+    .filter((p) => p.category === c.key && p.isActive)
+    .sort((a, b) => a.sortOrder - b.sortOrder)
+    .map((p) => toItem(p, c.defaultUnit));
+  return { title: c.title, subtitle: c.subtitle, columns: c.columns, showPhotos: c.showPhotos, items };
+}).filter((c) => c.items.length > 0);
+
+const INITIAL = { doc: DOC, categories };
+---
+
+<Layout
+  title="Menu · Swiss Bakery & Sweets · Minto NSW"
+  description="The full Swiss Bakery & Sweets menu — Swiss patisserie, fresh patties and rolls, and traditional Bengali sweets. All prices in AUD, dine-in & takeaway. Baked daily in Minto, NSW."
+>
+  <Nav />
+  <main id="top">
+    <section class="menu-band">
+      <div class="container-x text-center pt-12 sm:pt-16">
+        <span class="chip chip-cream mb-3">The menu</span>
+        <h1 class="section-title text-3xl sm:text-4xl text-[color:var(--color-charcoal)]">
+          Swiss Bakery &amp; Sweets — the full menu
+        </h1>
+        <p class="mt-4 max-w-2xl mx-auto text-[color:var(--color-muted)]">
+          Every active item, priced in AUD. Baked on-site in Minto, NSW.
+        </p>
+        <div class="mt-6 flex flex-wrap justify-center gap-3 print:hidden">
+          <button id="menu-print" type="button" class="btn-primary">Print / Save as PDF</button>
+          <a href="/#menu" class="btn-outline">Browse with photos</a>
+        </div>
+      </div>
+
+      <div id="stage" class="stage" aria-label="Swiss Bakery menu pages">
+        <div class="empty">Loading menu…</div>
+      </div>
+    </section>
+  </main>
+  <Footer />
+
+  <script type="application/json" id="menu-data" set:html={JSON.stringify(INITIAL)}></script>
+
+  <script is:inline>
+    (() => {
+      const PX_PER_MM = 96 / 25.4;
+
+      const fmtPrice = (cents, unit, qty) => {
+        if (cents == null) return { text: "ask staff", muted: true };
+        const dollars = (cents / 100).toFixed(2).replace(/\.00$/, "");
+        const q = Number(qty) > 1 ? Number(qty) : 1;
+        const unitLabel = q > 1 && unit === "piece" ? "pcs" : unit;
+        if (q === 1) {
+          return {
+            text: unit && unit !== "piece" ? `$${dollars}/${unitLabel}` : `$${dollars}`,
+            muted: false,
+          };
+        }
+        return { text: `$${dollars}/${q}${unitLabel}`, muted: false };
+      };
+
+      const escapeHtml = (s) =>
+        String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+
+      const el = (tag, cls, html) => {
+        const n = document.createElement(tag);
+        if (cls) n.className = cls;
+        if (html != null) n.innerHTML = html;
+        return n;
+      };
+
+      const buildItem = (it, showPhoto) => {
+        const item = el("div", "item" + (showPhoto ? " with-photo" : ""));
+        if (showPhoto) {
+          const thumb = el("div", "thumb");
+          if (it.imagePath) thumb.style.backgroundImage = `url('${String(it.imagePath).replace(/'/g, "\\'")}')`;
+          item.appendChild(thumb);
+        }
+        item.appendChild(el("div", "name", escapeHtml(it.name)));
+        const p = fmtPrice(it.priceCents, it.unit, it.qty);
+        item.appendChild(el("div", "price" + (p.muted ? " muted" : ""), escapeHtml(p.text)));
+        return item;
+      };
+
+      const buildCatHead = (title, sub, cont) => {
+        const frag = el("div", "cat-headblock");
+        const head = el("div", "cat-head");
+        head.appendChild(el("div", "rule"));
+        head.appendChild(
+          el("h2", null, escapeHtml(title) + (cont ? ' <span style="font-size:0.6em;font-style:italic;opacity:.75">(cont.)</span>' : "")),
+        );
+        head.appendChild(el("div", "rule"));
+        frag.appendChild(head);
+        if (sub && !cont) frag.appendChild(el("p", "cat-sub", escapeHtml(sub)));
+        return frag;
+      };
+
+      const buildHeader = (doc) => {
+        const h = el("div", "header");
+        h.innerHTML =
+          `<div class="logo"><img src="/swiss_logo.png" alt="Swiss Bakery" onerror="this.style.display='none'" /></div>` +
+          `<p class="tagline">${escapeHtml(doc.tagline ?? "")}</p>` +
+          `<p class="strapline">${escapeHtml(doc.strapline ?? "")}</p>`;
+        const wrap = document.createElement("div");
+        wrap.appendChild(h);
+        wrap.appendChild(el("div", "top-divider"));
+        return wrap;
+      };
+
+      const buildFooter = (doc) => {
+        const f = el("div", "footer");
+        f.appendChild(el("p", "note", escapeHtml(doc.footer ?? "")));
+        f.appendChild(el("div", "loc", escapeHtml(doc.location ?? "")));
+        return f;
+      };
+
+      const newPage = () => {
+        const wrap = el("div", "page-fit");
+        const page = el("article", "page");
+        page.appendChild(el("div", "frame"));
+        const body = el("div", "page-body");
+        page.appendChild(body);
+        wrap.appendChild(page);
+        return { wrap, page, body };
+      };
+
+      // Measurement-based paginator (ported from /admin/menu-preview.html):
+      // fills each A4 page exactly, splitting long categories across pages with
+      // a repeated "(cont.)" header so every page keeps its own orange frame.
+      const paginate = (stage, doc, categories) => {
+        stage.innerHTML = "";
+
+        const probe = newPage();
+        probe.wrap.style.visibility = "hidden";
+        stage.appendChild(probe.wrap);
+        const cs = getComputedStyle(probe.page);
+        const padTop = parseFloat(cs.paddingTop);
+        const padBottom = parseFloat(cs.paddingBottom);
+        const fullContentH = probe.page.clientHeight - padTop - padBottom;
+        stage.removeChild(probe.wrap);
+
+        const pages = [];
+        let cur = null;
+        let curBody = null;
+        let usedH = 0;
+        let limit = 0;
+
+        const startPage = (isFirst) => {
+          const np = newPage();
+          stage.appendChild(np.wrap);
+          cur = np.page;
+          curBody = np.body;
+          usedH = 0;
+          limit = fullContentH;
+          if (isFirst) {
+            const hdr = buildHeader(doc);
+            curBody.appendChild(hdr);
+            usedH += hdr.getBoundingClientRect().height;
+          } else {
+            const spacer = el("div");
+            spacer.style.height = "8mm";
+            curBody.appendChild(spacer);
+            usedH += spacer.getBoundingClientRect().height;
+          }
+          pages.push(np);
+        };
+
+        const remaining = () => limit - usedH;
+
+        startPage(true);
+
+        for (const cat of categories) {
+          const showPhoto = !!cat.showPhotos || !!doc.showPhotos;
+          const cols = cat.columns ?? 2;
+          const items = cat.items || [];
+          if (items.length === 0) continue;
+
+          let placedAny = false;
+          let idx = 0;
+
+          while (idx < items.length) {
+            const headBlock = buildCatHead(cat.title, cat.subtitle, placedAny);
+            curBody.appendChild(headBlock);
+            let headH = headBlock.getBoundingClientRect().height;
+
+            if (remaining() - headH < 40 && usedH > 0) {
+              curBody.removeChild(headBlock);
+              startPage(false);
+              curBody.appendChild(headBlock);
+              headH = headBlock.getBoundingClientRect().height;
+            }
+            usedH += headH;
+
+            const grid = el("div", "items cols-" + cols);
+            curBody.appendChild(grid);
+
+            let overflowed = false;
+            let rowsInGrid = 0;
+            while (idx < items.length) {
+              const rowNodes = [];
+              for (let c = 0; c < cols && idx < items.length; c++, idx++) {
+                const n = buildItem(items[idx], showPhoto);
+                grid.appendChild(n);
+                rowNodes.push(n);
+              }
+              const gridH = grid.getBoundingClientRect().height;
+              if (usedH + gridH > limit && rowsInGrid > 0) {
+                for (const n of rowNodes) grid.removeChild(n);
+                idx -= rowNodes.length;
+                overflowed = true;
+                break;
+              }
+              rowsInGrid++;
+            }
+            usedH += grid.getBoundingClientRect().height;
+            placedAny = true;
+
+            if (overflowed) startPage(false);
+          }
+        }
+
+        const footer = buildFooter(doc);
+        const lastBody = pages[pages.length - 1].body;
+        lastBody.appendChild(footer);
+        const fr = footer.getBoundingClientRect();
+        const lastContent = lastBody.lastElementChild?.previousElementSibling;
+        const contentBottom = lastContent ? lastContent.getBoundingClientRect().bottom : 0;
+        if (contentBottom && fr.top < contentBottom + 6) {
+          lastBody.removeChild(footer);
+          const np = newPage();
+          stage.appendChild(np.wrap);
+          np.body.appendChild(footer);
+        }
+      };
+
+      // Scale each A4 page down to fit the viewport (mobile = same pages,
+      // smaller). Runs AFTER pagination so the paginator always measures the
+      // true, unscaled A4 box. Print resets the transform (see @media print).
+      const fitPages = () => {
+        const stage = document.getElementById("stage");
+        if (!stage) return;
+        const cs = getComputedStyle(stage);
+        const avail = stage.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+        stage.querySelectorAll(".page-fit").forEach((fit) => {
+          const page = fit.querySelector(".page");
+          if (!page) return;
+          page.style.transform = "none";
+          const w = page.offsetWidth || 210 * PX_PER_MM;
+          const h = page.offsetHeight || 297 * PX_PER_MM;
+          const scale = Math.min(1, avail / w);
+          page.style.transformOrigin = "top left";
+          page.style.transform = `scale(${scale})`;
+          fit.style.width = w * scale + "px";
+          fit.style.height = h * scale + "px";
+        });
+      };
+
+      // ---- group live /api/products into the same payload shape ----
+      const DOC = JSON.parse(document.getElementById("menu-data").textContent).doc;
+      const CAT_CFG = [
+        { key: "Bakery",    title: "BAKERY & BREADS",    subtitle: "Freshly baked in-house", columns: 2, showPhotos: true, defaultUnit: "" },
+        { key: "Beverages", title: "BEVERAGES & SIDES",  subtitle: "",                        columns: 2, showPhotos: true, defaultUnit: "" },
+        { key: "Savoury",   title: "SAVOURY BITES",      subtitle: "Per piece",               columns: 3, showPhotos: true, defaultUnit: "" },
+        { key: "Sweets",    title: "TRADITIONAL SWEETS", subtitle: "Priced by weight",        columns: 3, showPhotos: true, defaultUnit: "kg" },
+      ];
+
+      const buildPayload = (products) => {
+        const byCat = new Map();
+        for (const p of products) {
+          if (!p.isActive) continue;
+          if (!byCat.has(p.category)) byCat.set(p.category, []);
+          byCat.get(p.category).push(p);
+        }
+        for (const [, list] of byCat) list.sort((a, b) => a.sortOrder - b.sortOrder);
+        const categories = CAT_CFG.map((c) => {
+          const list = byCat.get(c.key) || [];
+          const items = list.map((p) => ({
+            name: p.name,
+            imagePath: p.imagePath,
+            priceCents: p.priceCents,
+            unit: c.defaultUnit || p.unit || "",
+            qty: Number(p.qty) > 1 ? Number(p.qty) : 1,
+          }));
+          return { title: c.title, subtitle: c.subtitle, columns: c.columns, showPhotos: c.showPhotos, items };
+        }).filter((c) => c.items.length > 0);
+        return { doc: DOC, categories };
+      };
+
+      const render = (payload) => {
+        const stage = document.getElementById("stage");
+        if (!stage) return;
+        if (!payload.categories || payload.categories.length === 0) {
+          stage.innerHTML = '<div class="empty">Menu is being updated — please check back shortly.</div>';
+          return;
+        }
+        paginate(stage, payload.doc, payload.categories);
+        fitPages();
+      };
+
+      const start = () => {
+        let initial;
+        try {
+          initial = JSON.parse(document.getElementById("menu-data").textContent);
+        } catch {
+          initial = { doc: DOC, categories: [] };
+        }
+        render(initial);
+
+        // Refresh from the live catalogue.
+        fetch("/api/products")
+          .then((r) => (r.ok ? r.json() : null))
+          .then((data) => {
+            if (data && Array.isArray(data.products)) render(buildPayload(data.products));
+          })
+          .catch(() => {});
+
+        let rafId = 0;
+        window.addEventListener("resize", () => {
+          cancelAnimationFrame(rafId);
+          rafId = requestAnimationFrame(fitPages);
+        });
+        document.getElementById("menu-print")?.addEventListener("click", () => window.print());
+      };
+
+      if (document.fonts && document.fonts.ready) {
+        document.fonts.ready.then(start).catch(start);
+      } else if (document.readyState !== "loading") {
+        start();
+      } else {
+        document.addEventListener("DOMContentLoaded", start);
+      }
+    })();
+  </script>
+</Layout>
+
+<style is:global>
+  /* Orange A4 menu card — palette & layout ported verbatim from
+     /admin/menu-preview.html so this page matches Menu_Original.pdf. */
+  .menu-band {
+    --paper: #f37020;
+    --ink: #1c1715;
+    --gold: #ffffff;
+    --gold-soft: rgba(255, 255, 255, 0.6);
+    --price: #ffffff;
+    --muted: rgba(28, 23, 21, 0.55);
+    background: #4a4f59;
+    padding-bottom: 4rem;
+  }
+  .menu-band .stage {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+    padding: 28px 16px 16px;
+  }
+  .menu-band .page-fit {
+    position: relative;
+    margin: 0 auto;
+    max-width: 100%;
+  }
+  .menu-band .page {
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: var(--paper);
+    width: 210mm;
+    min-height: 297mm;
+    padding: 18mm 18mm 22mm;
+    box-shadow: 0 14px 40px rgba(0, 0, 0, 0.28);
+    box-sizing: border-box;
+    color: var(--ink);
+    font-family: "Montserrat", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .menu-band .page * { box-sizing: border-box; }
+  .menu-band .frame {
+    position: absolute;
+    inset: 8mm;
+    border: 1.5px solid var(--gold);
+    pointer-events: none;
+  }
+  .menu-band .frame::after {
+    content: "";
+    position: absolute;
+    inset: 2.5mm;
+    border: 0.6px solid var(--gold);
+  }
+  .menu-band .page-body { position: relative; height: 100%; }
+  .menu-band .header { position: relative; text-align: center; padding-top: 4mm; }
+  .menu-band .logo {
+    width: 26mm;
+    height: 26mm;
+    margin: 0 auto 4mm;
+    border-radius: 50%;
+    overflow: hidden;
+    background: #fff;
+    display: grid;
+    place-items: center;
+    box-shadow: 0 2px 6px rgba(26, 42, 79, 0.12);
+  }
+  .menu-band .logo img { width: 100%; height: 100%; object-fit: contain; padding: 1mm; }
+  .menu-band .tagline {
+    font-family: "Playfair Display", serif;
+    font-style: italic;
+    color: var(--ink);
+    font-size: 13pt;
+    margin: 0 0 2mm;
+  }
+  .menu-band .strapline {
+    color: var(--gold);
+    letter-spacing: 0.18em;
+    font-size: 8pt;
+    font-weight: 600;
+  }
+  .menu-band .top-divider { margin: 6mm auto 5mm; height: 1px; background: var(--gold); opacity: 0.5; }
+  .menu-band .cat-headblock { margin: 0 0 1mm; padding-top: 0.1px; }
+  .menu-band .cat-head {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 7mm;
+    margin: 2mm 0 1mm;
+  }
+  .menu-band .cat-head .rule { height: 1px; background: var(--gold); opacity: 0.55; }
+  .menu-band .cat-head h2 {
+    font-family: "Playfair Display", serif;
+    color: var(--ink);
+    font-weight: 700;
+    font-size: 17pt;
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    white-space: nowrap;
+  }
+  .menu-band .cat-sub {
+    font-family: "Playfair Display", serif;
+    font-style: italic;
+    color: var(--gold);
+    text-align: center;
+    font-size: 9pt;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    margin: 0 0 4mm;
+  }
+  .menu-band .items { display: grid; gap: 0.8mm 8mm; }
+  .menu-band .items.cols-1 { grid-template-columns: 1fr; }
+  .menu-band .items.cols-2 { grid-template-columns: 1fr 1fr; }
+  .menu-band .items.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+  .menu-band .items.cols-4 { grid-template-columns: 1fr 1fr 1fr 1fr; }
+  .menu-band .item {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: baseline;
+    gap: 4mm;
+    padding: 0.7mm 0;
+    font-size: 10.5pt;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+  .menu-band .item.with-photo { grid-template-columns: 11mm 1fr auto; align-items: center; }
+  .menu-band .item .thumb {
+    width: 11mm;
+    height: 11mm;
+    background: #fff center / cover no-repeat;
+    border: 0.6px solid var(--gold);
+    border-radius: 50%;
+  }
+  .menu-band .item .name { color: var(--ink); font-weight: 500; }
+  .menu-band .item .price {
+    color: var(--gold);
+    font-weight: 700;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+  }
+  .menu-band .item .price.muted { color: var(--muted); font-style: italic; font-weight: 500; }
+  .menu-band .footer { position: absolute; bottom: 12mm; left: 18mm; right: 18mm; text-align: center; }
+  .menu-band .footer .note {
+    font-family: "Playfair Display", serif;
+    font-style: italic;
+    color: var(--ink);
+    font-size: 10pt;
+    margin: 0 0 1.5mm;
+  }
+  .menu-band .footer .loc { color: var(--gold); letter-spacing: 0.22em; font-size: 8pt; font-weight: 600; }
+  .menu-band .empty {
+    text-align: center;
+    padding: 4rem 1.5rem;
+    color: #fff;
+    font-family: "Playfair Display", serif;
+    font-style: italic;
+  }
+
+  @media print {
+    /* Print only the orange A4 pages, edge-to-edge, like the original PDF. */
+    body { background: var(--paper) !important; }
+    header, footer, .menu-band > .container-x { display: none !important; }
+    .menu-band { background: var(--paper) !important; padding: 0 !important; }
+    .menu-band .stage { padding: 0 !important; gap: 0 !important; display: block !important; }
+    .menu-band .page-fit { width: auto !important; height: auto !important; margin: 0 !important; }
+    .menu-band .page {
+      position: static !important;
+      transform: none !important;
+      box-shadow: none !important;
+      margin: 0 !important;
+      width: 210mm !important;
+      height: 297mm !important;
+      min-height: 297mm !important;
+      page-break-after: always;
+      break-after: page;
+    }
+    .menu-band .page-fit:last-child .page {
+      page-break-after: auto;
+      break-after: auto;
+    }
+  }
+  @page { size: A4 portrait; margin: 0; }
+</style>

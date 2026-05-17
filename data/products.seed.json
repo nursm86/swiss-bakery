@@ -21,11 +21,11 @@
     "schemaTarget": "Matches Prisma model Product in apps/api/prisma/schema.prisma",
     "notes": [
       "May 2026 refresh: prices and names re-aligned to the new in-store price-card set (Other_resource/new_items.pdf). All items present in the PDF are listed first within each category in PDF order.",
-      "Legacy items not in the May 2026 PDF (e.g. malai-cha, firni, rosmalai, beef-roll, popcorn-chicken) are retained at the end of each category; admin can hide them later if desired.",
       "Photos for items that were re-shot in May 2026 live at /uploads/seed/<slug>.jpg.",
       "imagePath:null = no photo yet - admin can upload one or the site shows a fallback tile.",
       "Use the admin 'Restore product listing' button to push this file's contents into the live database (overwrites all fields).",
-      "Quantity (qty) defaults to 1. When qty=1, prices render as '$X/unit' (e.g. '$26/kg'); when qty>1, they render as '$X/<qty><unit>' (e.g. '$7/5pcs', '$24/2kg')."
+      "Quantity (qty) defaults to 1. When qty=1, prices render as '$X/unit' (e.g. '$26/kg'); when qty>1, they render as '$X/<qty><unit>' (e.g. '$7/5pcs', '$24/2kg').",
+      "2026-05-17: Active set gated to Other_resource/Menu_Original.pdf. Items not on that printed menu are isActive:false (kept in the file so admin can re-enable). \"Can Drinks\" appears on the PDF but has no catalogue entry."
     ]
   },
   "products": [
@@ -117,7 +117,7 @@
       "description": "Two slices of soft bread with creamy chicken filling and lettuce. Simple, proper, made fresh.",
       "imagePath": "/uploads/seed/chicken-sandwich.jpg",
       "isFeatured": false,
-      "isActive": true,
+      "isActive": false,
       "sortOrder": 7
     },
     {
@@ -130,7 +130,7 @@
       "description": "Soft bread pocket stuffed with creamy spiced chicken. Lunch-sized and handheld.",
       "imagePath": "/uploads/seed/chicken-pocket.jpg",
       "isFeatured": false,
-      "isActive": true,
+      "isActive": false,
       "sortOrder": 8
     },
     {
@@ -273,7 +273,7 @@
       "description": "Steamed dumplings with seasoned mixed-vegetable filling. Light, juicy, dim-sum style.",
       "imagePath": "/uploads/seed/vegetable-momo.jpg",
       "isFeatured": false,
-      "isActive": true,
+      "isActive": false,
       "sortOrder": 19
     },
     {
@@ -286,7 +286,7 @@
       "description": "Classic Bengali singara with rich chicken-liver filling. A house specialty - the regulars know.",
       "imagePath": "/uploads/seed/liver-singara.jpg",
       "isFeatured": false,
-      "isActive": true,
+      "isActive": false,
       "sortOrder": 20
     },
     {
@@ -299,7 +299,7 @@
       "description": "Flaky pastry filled with spiced tuna and herbs. A lighter take on our bestselling patty.",
       "imagePath": "/uploads/seed/tuna-patty.jpg",
       "isFeatured": false,
-      "isActive": true,
+      "isActive": false,
       "sortOrder": 21
     },
     {
@@ -312,7 +312,7 @@
       "description": "Seasoned mixed-veg filling in buttery pastry - the vegetarian patty favourite.",
       "imagePath": "/uploads/seed/vegetable-patty.jpg",
       "isFeatured": false,
-      "isActive": true,
+      "isActive": false,
       "sortOrder": 22
     },
     {
@@ -325,7 +325,7 @@
       "description": "Tuna mayo with a hint of dill and cracked pepper on soft bread. An easy everyday lunch.",
       "imagePath": "/uploads/seed/tuna-sandwich.jpg",
       "isFeatured": false,
-      "isActive": true,
+      "isActive": false,
       "sortOrder": 23
     },
     {
@@ -351,7 +351,7 @@
       "description": "Soft wrap filled with minced beef, green chilli and coriander. Subtly spiced, always warm.",
       "imagePath": "/uploads/seed/beef-roll.jpg",
       "isFeatured": false,
-      "isActive": true,
+      "isActive": false,
       "sortOrder": 25
     },
     {
@@ -364,7 +364,7 @@
       "description": "Bite-size chicken pieces in our seasoned crispy batter. Ask staff for current portion and pricing.",
       "imagePath": "/uploads/seed/popcorn-chicken.jpg",
       "isFeatured": false,
-      "isActive": true,
+      "isActive": false,
       "sortOrder": 26
     },
     {
@@ -546,7 +546,7 @@
       "description": "Traditional Bengali crisp-fried sweet bread dusted with sugar. Crunchy, light, moreish.",
       "imagePath": "/uploads/seed/kaza.jpg",
       "isFeatured": false,
-      "isActive": true,
+      "isActive": false,
       "sortOrder": 14
     },
     {
@@ -559,7 +559,7 @@
       "description": "Rich butter cake studded with glacé fruits, raisins and walnuts. Available by slice or whole - ask staff.",
       "imagePath": "/uploads/seed/fruit-cake.jpg",
       "isFeatured": false,
-      "isActive": true,
+      "isActive": false,
       "sortOrder": 15
     },
     {
@@ -572,7 +572,7 @@
       "description": "Layered filo pastry with honey and pistachios. A Middle-Eastern classic, baked on rotation.",
       "imagePath": "/uploads/seed/baklava.jpg",
       "isFeatured": false,
-      "isActive": true,
+      "isActive": false,
       "sortOrder": 16
     },
     {
@@ -598,7 +598,7 @@
       "description": "Golden fried rice-flour pastry dipped in jaggery syrup. A winter-festival classic from Bengal.",
       "imagePath": "/uploads/seed/pakon-pitha.jpg",
       "isFeatured": false,
-      "isActive": true,
+      "isActive": false,
       "sortOrder": 18
     },
     {
@@ -611,7 +611,7 @@
       "description": "Half-moon dumplings filled with sweet grated coconut and jaggery, pan-fried to caramelised gold.",
       "imagePath": "/uploads/seed/narikel-puli.jpg",
       "isFeatured": false,
-      "isActive": true,
+      "isActive": false,
       "sortOrder": 19
     },
     {
@@ -832,7 +832,7 @@
       "description": "Slow-cooked split-chickpea halwa finished with roasted hazelnuts. Earthy, nutty, comfort in a bowl.",
       "imagePath": "/uploads/seed/halwa-chana-dal-hazelnut.jpg",
       "isFeatured": false,
-      "isActive": true,
+      "isActive": false,
       "sortOrder": 17
     },
     {
@@ -923,7 +923,7 @@
       "description": "Crisp, flaky paper-thin flatbread - torn and eaten with cha. A Bengali tea-time tradition.",
       "imagePath": "/uploads/seed/poro-roti.jpg",
       "isFeatured": false,
-      "isActive": true,
+      "isActive": false,
       "sortOrder": 2
     },
     {
@@ -936,7 +936,7 @@
       "description": "Sweet corn kernels warmed through with butter and a pinch of salt. A simple, satisfying side.",
       "imagePath": "/uploads/seed/buttered-corn.jpg",
       "isFeatured": false,
-      "isActive": true,
+      "isActive": false,
       "sortOrder": 3
     },
     {
