@@ -177,6 +177,13 @@ const INITIAL = { doc: DOC, categories };
         const padTop = parseFloat(cs.paddingTop);
         const padBottom = parseFloat(cs.paddingBottom);
         const fullContentH = probe.page.clientHeight - padTop - padBottom;
+        // The footer is absolutely positioned at the bottom of every page-body.
+        // Measure it once and reserve that band so in-flow content never grows
+        // into the footer zone — otherwise the footer collides on the last
+        // page and gets pushed onto its own near-empty extra page.
+        const footerProbe = buildFooter(doc);
+        probe.body.appendChild(footerProbe);
+        const footerReserve = footerProbe.getBoundingClientRect().height + 12 * PX_PER_MM + 6;
         stage.removeChild(probe.wrap);
 
         const pages = [];
@@ -191,7 +198,7 @@ const INITIAL = { doc: DOC, categories };
           cur = np.page;
           curBody = np.body;
           usedH = 0;
-          limit = fullContentH;
+          limit = fullContentH - footerReserve;
           if (isFirst) {
             const hdr = buildHeader(doc);
             curBody.appendChild(hdr);
@@ -404,6 +411,11 @@ const INITIAL = { doc: DOC, categories };
     left: 0;
     background: var(--paper);
     width: 210mm;
+    /* Definite height (not just min-height) so .page-body's height:100% resolves
+       and the absolutely-positioned footer pins to the true A4 page bottom — a
+       min-height parent leaves the body content-sized, which mis-pins the footer
+       and forces it onto its own empty extra page. */
+    height: 297mm;
     min-height: 297mm;
     padding: 18mm 18mm 22mm;
     box-shadow: 0 14px 40px rgba(0, 0, 0, 0.28);
