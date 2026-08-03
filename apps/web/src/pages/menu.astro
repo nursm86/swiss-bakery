@@ -23,6 +23,7 @@ const DOC = {
 };
 
 const CAT_CFG = [
+  { key: "Meal",      title: "MEALS & TANDOORI DEALS", subtitle: "Served with a can drink", columns: 2, showPhotos: true, defaultUnit: "" },
   { key: "Bakery",    title: "BAKERY & BREADS",    subtitle: "Freshly baked in-house", columns: 2, showPhotos: true, defaultUnit: "" },
   { key: "Beverages", title: "BEVERAGES & SIDES",  subtitle: "",                        columns: 2, showPhotos: true, defaultUnit: "" },
   { key: "Savoury",   title: "SAVOURY BITES",      subtitle: "Per piece",               columns: 3, showPhotos: true, defaultUnit: "" },
@@ -305,6 +306,7 @@ const INITIAL = { doc: DOC, categories };
       // ---- group live /api/products into the same payload shape ----
       const DOC = JSON.parse(document.getElementById("menu-data").textContent).doc;
       const CAT_CFG = [
+        { key: "Meal",      title: "MEALS & TANDOORI DEALS", subtitle: "Served with a can drink", columns: 2, showPhotos: true, defaultUnit: "" },
         { key: "Bakery",    title: "BAKERY & BREADS",    subtitle: "Freshly baked in-house", columns: 2, showPhotos: true, defaultUnit: "" },
         { key: "Beverages", title: "BEVERAGES & SIDES",  subtitle: "",                        columns: 2, showPhotos: true, defaultUnit: "" },
         { key: "Savoury",   title: "SAVOURY BITES",      subtitle: "Per piece",               columns: 3, showPhotos: true, defaultUnit: "" },

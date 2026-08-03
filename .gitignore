@@ -92,6 +92,10 @@ public/uploads/*
 !public/uploads/seed/
 !public/uploads/.gitkeep
 
+# Raw product artwork dropped in for processing - the processed tiles that the
+# site actually serves are committed under public/uploads/seed/
+data/new_listing/
+
 # Local SQLite dev DB (production uses MySQL - see PROJECT_BRIEF.md §3)
 apps/api/prisma/dev.db
 apps/api/prisma/dev.db-journal

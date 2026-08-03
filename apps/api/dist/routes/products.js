@@ -19,7 +19,7 @@ const seedProductSchema = z.object({
         .max(120)
         .regex(/^[a-z0-9][a-z0-9_-]*$/),
     name: z.string().min(1).max(200),
-    category: z.enum(["Savoury", "Bakery", "Sweets", "Beverages"]),
+    category: z.enum(["Meal", "Savoury", "Bakery", "Sweets", "Beverages"]),
     priceCents: z.number().int().nonnegative().nullable(),
     unit: z.enum(["piece", "pack", "kg", "cup", "pound", "serve"]),
     qty: z.number().int().min(1).max(999).default(1),

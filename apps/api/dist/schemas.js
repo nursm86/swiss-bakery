@@ -10,7 +10,7 @@ export const productCreateSchema = z.object({
         .max(120)
         .regex(/^[a-z0-9][a-z0-9_-]*$/, "lowercase letters, digits, hyphens and underscores only"),
     name: z.string().min(1).max(200),
-    category: z.enum(["Savoury", "Bakery", "Sweets", "Beverages"]),
+    category: z.enum(["Meal", "Savoury", "Bakery", "Sweets", "Beverages"]),
     priceCents: z.number().int().nonnegative().nullable().optional(),
     unit: z.enum(["piece", "pack", "kg", "cup", "pound", "serve"]).default("piece"),
     qty: z.number().int().min(1).max(999).default(1),

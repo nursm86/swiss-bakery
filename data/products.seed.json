@@ -1,7 +1,7 @@
 {
   "_meta": {
-    "generatedAt": "2026-05-14",
-    "source": "Other_resource/new_items.pdf (2026-05) + retained legacy WooCommerce items",
+    "generatedAt": "2026-08-03",
+    "source": "Live database snapshot from https://swissbakery.com.au/api/products?all=1 + the 2026-08 Wraps & Tandoori Deals posters (data/new_listing/)",
     "currency": "AUD",
     "priceConvention": "priceCents is integer Australian cents. null = 'ask staff' / variable / not yet confirmed.",
     "unitVocabulary": [
@@ -13,6 +13,7 @@
       "serve"
     ],
     "categoryVocabulary": [
+      "Meal",
       "Savoury",
       "Bakery",
       "Sweets",
@@ -20,15 +21,264 @@
     ],
     "schemaTarget": "Matches Prisma model Product in apps/api/prisma/schema.prisma",
     "notes": [
-      "May 2026 refresh: prices and names re-aligned to the new in-store price-card set (Other_resource/new_items.pdf). All items present in the PDF are listed first within each category in PDF order.",
-      "Photos for items that were re-shot in May 2026 live at /uploads/seed/<slug>.jpg.",
-      "imagePath:null = no photo yet - admin can upload one or the site shows a fallback tile.",
-      "Use the admin 'Restore product listing' button to push this file's contents into the live database (overwrites all fields).",
+      "2026-08-03: This file was REBUILT from a live database snapshot. The previous version had drifted badly - it predated ~47 admin edits (owner-uploaded photos, price changes, renames, isFeatured flips) and was missing four products the owner had added. Restoring from the old file would have wiped all of that.",
+      "Because every existing product below now carries the exact value it already holds in the live database, the admin 'Restore product listing' button is additive: it creates the new items and rewrites the rest with what they already are.",
+      "Keep it that way. Before editing this file again, re-snapshot the live catalogue first - the admin dashboard is the source of truth, not this file.",
+      "2026-08: Added the Wraps & Tandoori Deals range (18 items). The 5 kebab wraps and the 3 tandoori chicken portions lead the Savoury category; the 10 combo meals form the new 'Meal' category, which renders first across the site.",
+      "Photos for the new range are the shop's own promo posters, converted to webp at /uploads/seed/<slug>.webp. Note the price is printed into the artwork - if a price changes, the photo needs reshooting too.",
       "Quantity (qty) defaults to 1. When qty=1, prices render as '$X/unit' (e.g. '$26/kg'); when qty>1, they render as '$X/<qty><unit>' (e.g. '$7/5pcs', '$24/2kg').",
-      "2026-05-17: Active set gated to Other_resource/Menu_Original.pdf. Items not on that printed menu are isActive:false (kept in the file so admin can re-enable). \"Can Drinks\" appears on the PDF but has no catalogue entry."
+      "imagePath:null = no photo yet - admin can upload one or the site shows a fallback tile.",
+      "imagePath values of the form /uploads/<hash>.webp are owner uploads that live only on the server (public/uploads is gitignored); they will not resolve in local dev."
     ]
   },
   "products": [
+    {
+      "slug": "beef-shikh-wrap-meal",
+      "name": "Beef Shikh Wrap Meal",
+      "category": "Meal",
+      "priceCents": 1000,
+      "unit": "piece",
+      "qty": 1,
+      "description": "Our Bangladeshi-style beef shikh kebab wrap with lettuce, tomato, cucumber and red onion and house sauce. Served with a chilled 375 ml can drink.",
+      "imagePath": "/uploads/seed/beef-shikh-wrap-meal.webp",
+      "isFeatured": false,
+      "isActive": true,
+      "sortOrder": 1
+    },
+    {
+      "slug": "beef-sheesh-wrap-meal",
+      "name": "Beef Sheesh Wrap Meal",
+      "category": "Meal",
+      "priceCents": 1000,
+      "unit": "piece",
+      "qty": 1,
+      "description": "Our minced beef seekh kebab wrap with lettuce, tomato, cucumber and red onion and garlic sauce. Served with a chilled 375 ml can drink.",
+      "imagePath": "/uploads/seed/beef-sheesh-wrap-meal.webp",
+      "isFeatured": false,
+      "isActive": true,
+      "sortOrder": 2
+    },
+    {
+      "slug": "lamb-boti-wrap-meal",
+      "name": "Lamb Boti Wrap Meal",
+      "category": "Meal",
+      "priceCents": 1000,
+      "unit": "piece",
+      "qty": 1,
+      "description": "Our char-grilled lamb boti wrap with lettuce, tomato, cucumber and red onion and creamy garlic sauce. Served with a chilled 375 ml can drink.",
+      "imagePath": "/uploads/seed/lamb-boti-wrap-meal.webp",
+      "isFeatured": false,
+      "isActive": true,
+      "sortOrder": 3
+    },
+    {
+      "slug": "chicken-tikka-wrap-meal",
+      "name": "Chicken Tikka Wrap Meal",
+      "category": "Meal",
+      "priceCents": 1000,
+      "unit": "piece",
+      "qty": 1,
+      "description": "Our tandoori chicken tikka wrap with lettuce, tomato, cucumber and red onion and mint-garlic sauce. Served with a chilled 375 ml can drink.",
+      "imagePath": "/uploads/seed/chicken-tikka-wrap-meal.webp",
+      "isFeatured": false,
+      "isActive": true,
+      "sortOrder": 4
+    },
+    {
+      "slug": "reshmi-kabab-wrap-meal",
+      "name": "Reshmi Kabab Wrap Meal",
+      "category": "Meal",
+      "priceCents": 1000,
+      "unit": "piece",
+      "qty": 1,
+      "description": "Our mild, creamy chicken reshmi kabab wrap with lettuce, tomato, cucumber and red onion and garlic sauce. Served with a chilled 375 ml can drink.",
+      "imagePath": "/uploads/seed/reshmi-kabab-wrap-meal.webp",
+      "isFeatured": false,
+      "isActive": true,
+      "sortOrder": 5
+    },
+    {
+      "slug": "beef-shikh-meal",
+      "name": "Beef Shikh Meal",
+      "category": "Meal",
+      "priceCents": 1400,
+      "unit": "piece",
+      "qty": 1,
+      "description": "Skewers of Bangladeshi-style beef shikh kebab, char-grilled in the tandoor. Served on a plate with a fresh paratha, garden salad, lemon and a chilled 375 ml can drink.",
+      "imagePath": "/uploads/seed/beef-shikh-meal.webp",
+      "isFeatured": false,
+      "isActive": true,
+      "sortOrder": 6
+    },
+    {
+      "slug": "beef-sheesh-meal",
+      "name": "Beef Sheesh Meal",
+      "category": "Meal",
+      "priceCents": 1400,
+      "unit": "piece",
+      "qty": 1,
+      "description": "Five minced beef seekh kebabs, char-grilled in the tandoor. Served on a plate with a fresh paratha, garden salad, lemon and a chilled 375 ml can drink.",
+      "imagePath": "/uploads/seed/beef-sheesh-meal.webp",
+      "isFeatured": false,
+      "isActive": true,
+      "sortOrder": 7
+    },
+    {
+      "slug": "lamb-boti-meal",
+      "name": "Lamb Boti Meal",
+      "category": "Meal",
+      "priceCents": 1400,
+      "unit": "piece",
+      "qty": 1,
+      "description": "Marinated lamb boti with roasted onion, char-grilled in the tandoor. Served on a plate with a fresh paratha, garden salad, lemon and a chilled 375 ml can drink.",
+      "imagePath": "/uploads/seed/lamb-boti-meal.webp",
+      "isFeatured": false,
+      "isActive": true,
+      "sortOrder": 8
+    },
+    {
+      "slug": "reshmi-kabab-meal",
+      "name": "Reshmi Kabab Meal",
+      "category": "Meal",
+      "priceCents": 1400,
+      "unit": "piece",
+      "qty": 1,
+      "description": "Mild, creamy chicken reshmi kabab with roasted onion, grilled in the tandoor. Served on a plate with a fresh paratha, garden salad, lemon and a chilled 375 ml can drink.",
+      "imagePath": "/uploads/seed/reshmi-kabab-meal.webp",
+      "isFeatured": false,
+      "isActive": true,
+      "sortOrder": 9
+    },
+    {
+      "slug": "tandoori-chicken-meal",
+      "name": "Tandoori Chicken Meal",
+      "category": "Meal",
+      "priceCents": 1200,
+      "unit": "piece",
+      "qty": 1,
+      "description": "A quarter of tandoori-marinated chicken, char-grilled in the tandoor. Served on a plate with a fresh paratha, garden salad, lemon and a chilled 375 ml can drink.",
+      "imagePath": "/uploads/seed/tandoori-chicken-meal.webp",
+      "isFeatured": true,
+      "isActive": true,
+      "sortOrder": 10
+    },
+    {
+      "slug": "beef-shikh-wrap",
+      "name": "Beef Shikh Wrap",
+      "category": "Savoury",
+      "priceCents": 800,
+      "unit": "piece",
+      "qty": 1,
+      "description": "Bangladeshi-style beef shikh kebab, char-grilled and rolled into a soft flatbread with lettuce, tomato, cucumber and red onion and creamy house sauce.",
+      "imagePath": "/uploads/seed/beef-shikh-wrap.webp",
+      "isFeatured": true,
+      "isActive": true,
+      "sortOrder": 1
+    },
+    {
+      "slug": "beef-sheesh-wrap",
+      "name": "Beef Sheesh Wrap",
+      "category": "Savoury",
+      "priceCents": 800,
+      "unit": "piece",
+      "qty": 1,
+      "description": "Minced beef seekh kebab off the grill, wrapped with lettuce, tomato, cucumber and red onion and garlic sauce.",
+      "imagePath": "/uploads/seed/beef-sheesh-wrap.webp",
+      "isFeatured": true,
+      "isActive": true,
+      "sortOrder": 2
+    },
+    {
+      "slug": "lamb-boti-wrap",
+      "name": "Lamb Boti Wrap",
+      "category": "Savoury",
+      "priceCents": 800,
+      "unit": "piece",
+      "qty": 1,
+      "description": "Marinated lamb boti, char-grilled and wrapped with lettuce, tomato, cucumber and red onion and creamy garlic sauce.",
+      "imagePath": "/uploads/seed/lamb-boti-wrap.webp",
+      "isFeatured": true,
+      "isActive": true,
+      "sortOrder": 3
+    },
+    {
+      "slug": "chicken-tikka-wrap",
+      "name": "Chicken Tikka Wrap",
+      "category": "Savoury",
+      "priceCents": 800,
+      "unit": "piece",
+      "qty": 1,
+      "description": "Tandoori chicken tikka pieces wrapped with lettuce, tomato, cucumber and red onion and mint-garlic sauce.",
+      "imagePath": "/uploads/seed/chicken-tikka-wrap.webp",
+      "isFeatured": true,
+      "isActive": true,
+      "sortOrder": 4
+    },
+    {
+      "slug": "reshmi-kabab-wrap",
+      "name": "Reshmi Kabab Wrap",
+      "category": "Savoury",
+      "priceCents": 800,
+      "unit": "piece",
+      "qty": 1,
+      "description": "Mild, creamy chicken reshmi kabab wrapped with lettuce, tomato, cucumber and red onion and garlic sauce.",
+      "imagePath": "/uploads/seed/reshmi-kabab-wrap.webp",
+      "isFeatured": true,
+      "isActive": true,
+      "sortOrder": 5
+    },
+    {
+      "slug": "tandoori-chicken-quarter",
+      "name": "Quarter Tandoori Chicken",
+      "category": "Savoury",
+      "priceCents": 800,
+      "unit": "piece",
+      "qty": 1,
+      "description": "A quarter of tandoori-marinated chicken, char-grilled in the tandoor. Served with garden salad and lemon.",
+      "imagePath": "/uploads/seed/tandoori-chicken-quarter.webp",
+      "isFeatured": false,
+      "isActive": true,
+      "sortOrder": 6
+    },
+    {
+      "slug": "tandoori-chicken-half",
+      "name": "Half Tandoori Chicken",
+      "category": "Savoury",
+      "priceCents": 1400,
+      "unit": "piece",
+      "qty": 1,
+      "description": "Half a tandoori-marinated chicken, char-grilled in the tandoor. Served with garden salad and lemon.",
+      "imagePath": "/uploads/seed/tandoori-chicken-half.webp",
+      "isFeatured": false,
+      "isActive": true,
+      "sortOrder": 7
+    },
+    {
+      "slug": "tandoori-chicken-full",
+      "name": "Full Tandoori Chicken",
+      "category": "Savoury",
+      "priceCents": 2000,
+      "unit": "piece",
+      "qty": 1,
+      "description": "A whole tandoori-marinated chicken, char-grilled in the tandoor. Served with garden salad and lemon. Feeds the table.",
+      "imagePath": "/uploads/seed/tandoori-chicken-full.webp",
+      "isFeatured": false,
+      "isActive": true,
+      "sortOrder": 8
+    },
+    {
+      "slug": "chicken_bun",
+      "name": "Chicken Bun",
+      "category": "Savoury",
+      "priceCents": 450,
+      "unit": "piece",
+      "qty": 1,
+      "description": "Freshly baked bun containing an interior with delightful chicken and gratifying vegetables.",
+      "imagePath": "/uploads/mqrjeoji-aca6b66e91034330.webp",
+      "isFeatured": true,
+      "isActive": true,
+      "sortOrder": 9
+    },
     {
       "slug": "veg-singara",
       "name": "Shingara",
@@ -40,7 +290,7 @@
       "imagePath": "/uploads/seed/veg-singara.jpg",
       "isFeatured": true,
       "isActive": true,
-      "sortOrder": 1
+      "sortOrder": 10
     },
     {
       "slug": "chicken-samosa",
@@ -53,7 +303,7 @@
       "imagePath": "/uploads/seed/chicken-samosa.jpg",
       "isFeatured": true,
       "isActive": true,
-      "sortOrder": 2
+      "sortOrder": 11
     },
     {
       "slug": "chicken-roll",
@@ -64,9 +314,9 @@
       "qty": 1,
       "description": "Thin bread wrap filled with spiced shredded chicken and fried onion. A Bengali-style street-food classic.",
       "imagePath": "/uploads/seed/chicken-roll.jpg",
-      "isFeatured": false,
+      "isFeatured": true,
       "isActive": true,
-      "sortOrder": 3
+      "sortOrder": 12
     },
     {
       "slug": "samosa",
@@ -79,7 +329,7 @@
       "imagePath": "/uploads/seed/samosa.jpg",
       "isFeatured": true,
       "isActive": true,
-      "sortOrder": 4
+      "sortOrder": 13
     },
     {
       "slug": "dal-puri",
@@ -90,9 +340,9 @@
       "qty": 1,
       "description": "Puffed flatbread stuffed with spiced yellow lentils. Soft, golden, great on its own or with curry.",
       "imagePath": "/uploads/seed/dal-puri.jpg",
-      "isFeatured": false,
+      "isFeatured": true,
       "isActive": true,
-      "sortOrder": 5
+      "sortOrder": 14
     },
     {
       "slug": "mughlai-paratha",
@@ -105,7 +355,7 @@
       "imagePath": "/uploads/seed/mughlai-paratha.jpg",
       "isFeatured": true,
       "isActive": true,
-      "sortOrder": 6
+      "sortOrder": 15
     },
     {
       "slug": "chicken-sandwich",
@@ -118,20 +368,7 @@
       "imagePath": "/uploads/seed/chicken-sandwich.jpg",
       "isFeatured": false,
       "isActive": false,
-      "sortOrder": 7
-    },
-    {
-      "slug": "chicken-pocket",
-      "name": "Chicken Pocket",
-      "category": "Savoury",
-      "priceCents": 500,
-      "unit": "piece",
-      "qty": 1,
-      "description": "Soft bread pocket stuffed with creamy spiced chicken. Lunch-sized and handheld.",
-      "imagePath": "/uploads/seed/chicken-pocket.jpg",
-      "isFeatured": false,
-      "isActive": false,
-      "sortOrder": 8
+      "sortOrder": 16
     },
     {
       "slug": "chicken-patty",
@@ -144,7 +381,7 @@
       "imagePath": "/uploads/seed/chicken-patty.jpg",
       "isFeatured": true,
       "isActive": true,
-      "sortOrder": 9
+      "sortOrder": 17
     },
     {
       "slug": "beef-patty",
@@ -155,9 +392,9 @@
       "qty": 1,
       "description": "Hand-minced beef, black pepper and onion in a flaky golden pastry. Straight-from-the-oven favourite.",
       "imagePath": "/uploads/seed/beef-patty.jpg",
-      "isFeatured": false,
+      "isFeatured": true,
       "isActive": true,
-      "sortOrder": 10
+      "sortOrder": 18
     },
     {
       "slug": "paneer-patty",
@@ -169,8 +406,8 @@
       "description": "Crumbled paneer, mild spices and fresh herbs wrapped in our signature buttery short-crust pastry.",
       "imagePath": "/uploads/seed/paneer-patty.jpg",
       "isFeatured": false,
-      "isActive": true,
-      "sortOrder": 11
+      "isActive": false,
+      "sortOrder": 19
     },
     {
       "slug": "prawn-onton",
@@ -181,22 +418,22 @@
       "qty": 5,
       "description": "Five hand-folded prawn wontons in seasoned wrappers. Crispy edges, juicy filling.",
       "imagePath": "/uploads/seed/prawn-onton.jpg",
-      "isFeatured": false,
+      "isFeatured": true,
       "isActive": true,
-      "sortOrder": 12
+      "sortOrder": 20
     },
     {
       "slug": "prawn-roll",
-      "name": "Prawn Roll",
+      "name": "Prawn Pocket",
       "category": "Savoury",
       "priceCents": 400,
       "unit": "piece",
       "qty": 1,
       "description": "Hand-rolled pastry with prawns, onion and a light curry spice. Crisp outside, juicy inside.",
-      "imagePath": "/uploads/seed/prawn-roll.jpg",
-      "isFeatured": false,
+      "imagePath": "/uploads/mqrjijwn-6fd125dfdf6a672b.webp",
+      "isFeatured": true,
       "isActive": true,
-      "sortOrder": 13
+      "sortOrder": 21
     },
     {
       "slug": "piyaju",
@@ -204,12 +441,12 @@
       "category": "Savoury",
       "priceCents": 500,
       "unit": "serve",
-      "qty": 1,
+      "qty": 10,
       "description": "A serving of crisp deep-fried lentil-and-onion fritters with green chilli. Perfect with a cup of cha.",
       "imagePath": "/uploads/seed/piyaju.jpg",
-      "isFeatured": false,
+      "isFeatured": true,
       "isActive": true,
-      "sortOrder": 14
+      "sortOrder": 22
     },
     {
       "slug": "chicken-momo",
@@ -217,12 +454,12 @@
       "category": "Savoury",
       "priceCents": 700,
       "unit": "piece",
-      "qty": 1,
+      "qty": 5,
       "description": "Steamed dumplings with spiced minced chicken. Served with a side of chilli dip.",
-      "imagePath": "/uploads/seed/chicken-momo.jpg",
-      "isFeatured": false,
+      "imagePath": "/uploads/mqrjgz10-9bd07bd233bc71a5.webp",
+      "isFeatured": true,
       "isActive": true,
-      "sortOrder": 15
+      "sortOrder": 23
     },
     {
       "slug": "chicken-pie",
@@ -232,10 +469,10 @@
       "unit": "piece",
       "qty": 1,
       "description": "Buttery short-crust pie filled with creamy spiced chicken. Bakery-fresh, golden top.",
-      "imagePath": "/uploads/seed/chicken-pie.jpg",
-      "isFeatured": false,
+      "imagePath": "/uploads/mqrjhc28-7f4607850b25e901.webp",
+      "isFeatured": true,
       "isActive": true,
-      "sortOrder": 16
+      "sortOrder": 24
     },
     {
       "slug": "pakora",
@@ -245,10 +482,10 @@
       "unit": "piece",
       "qty": 1,
       "description": "Crisp gram-flour fritters with onion and green chilli. Hot, savoury, perfect with cha.",
-      "imagePath": "/uploads/seed/pakora.jpg",
-      "isFeatured": false,
+      "imagePath": "/uploads/mqrjkwaw-6ecfcf3307dff70d.webp",
+      "isFeatured": true,
       "isActive": true,
-      "sortOrder": 17
+      "sortOrder": 25
     },
     {
       "slug": "mushroom-pie",
@@ -260,8 +497,8 @@
       "description": "Sautéed mushrooms in a creamy filling, baked into our golden short-crust pastry.",
       "imagePath": "/uploads/seed/mushroom-pie.jpg",
       "isFeatured": false,
-      "isActive": true,
-      "sortOrder": 18
+      "isActive": false,
+      "sortOrder": 26
     },
     {
       "slug": "vegetable-momo",
@@ -274,7 +511,7 @@
       "imagePath": "/uploads/seed/vegetable-momo.jpg",
       "isFeatured": false,
       "isActive": false,
-      "sortOrder": 19
+      "sortOrder": 27
     },
     {
       "slug": "liver-singara",
@@ -287,7 +524,7 @@
       "imagePath": "/uploads/seed/liver-singara.jpg",
       "isFeatured": false,
       "isActive": false,
-      "sortOrder": 20
+      "sortOrder": 28
     },
     {
       "slug": "tuna-patty",
@@ -300,7 +537,7 @@
       "imagePath": "/uploads/seed/tuna-patty.jpg",
       "isFeatured": false,
       "isActive": false,
-      "sortOrder": 21
+      "sortOrder": 29
     },
     {
       "slug": "vegetable-patty",
@@ -313,7 +550,7 @@
       "imagePath": "/uploads/seed/vegetable-patty.jpg",
       "isFeatured": false,
       "isActive": false,
-      "sortOrder": 22
+      "sortOrder": 30
     },
     {
       "slug": "tuna-sandwich",
@@ -326,7 +563,7 @@
       "imagePath": "/uploads/seed/tuna-sandwich.jpg",
       "isFeatured": false,
       "isActive": false,
-      "sortOrder": 23
+      "sortOrder": 31
     },
     {
       "slug": "small-burger",
@@ -338,8 +575,8 @@
       "description": "Mini beef patty, melted cheese, lettuce and house sauce in a toasted milk bun.",
       "imagePath": "/uploads/seed/small-burger.jpg",
       "isFeatured": false,
-      "isActive": true,
-      "sortOrder": 24
+      "isActive": false,
+      "sortOrder": 32
     },
     {
       "slug": "beef-roll",
@@ -352,20 +589,20 @@
       "imagePath": "/uploads/seed/beef-roll.jpg",
       "isFeatured": false,
       "isActive": false,
-      "sortOrder": 25
+      "sortOrder": 33
     },
     {
-      "slug": "popcorn-chicken",
-      "name": "Popcorn Chicken",
+      "slug": "chicken-pocket",
+      "name": "Chicken Pocket",
       "category": "Savoury",
-      "priceCents": null,
+      "priceCents": 500,
       "unit": "piece",
       "qty": 1,
       "description": "Bite-size chicken pieces in our seasoned crispy batter. Ask staff for current portion and pricing.",
-      "imagePath": "/uploads/seed/popcorn-chicken.jpg",
-      "isFeatured": false,
-      "isActive": false,
-      "sortOrder": 26
+      "imagePath": "/uploads/mqrjpqsn-fb809724625bfbd5.webp",
+      "isFeatured": true,
+      "isActive": true,
+      "sortOrder": 34
     },
     {
       "slug": "swiss-short-bread",
@@ -375,7 +612,7 @@
       "unit": "kg",
       "qty": 1,
       "description": "Buttery, crumbly shortbread baked to a pale gold. Sold by the kilo - pairs perfectly with tea.",
-      "imagePath": "/uploads/seed/swiss-short-bread.jpg",
+      "imagePath": "/uploads/mqrjqfd1-0d9837de2baf3b00.webp",
       "isFeatured": true,
       "isActive": true,
       "sortOrder": 1
@@ -401,8 +638,8 @@
       "unit": "kg",
       "qty": 1,
       "description": "Buttery shortcrust biscuit packed with shredded coconut. Crisp, golden, fragrant.",
-      "imagePath": "/uploads/seed/swiss-coconut-biscuit.jpg",
-      "isFeatured": false,
+      "imagePath": "/uploads/mqrjqtni-66da17247d992ce5.webp",
+      "isFeatured": true,
       "isActive": true,
       "sortOrder": 3
     },
@@ -423,7 +660,7 @@
       "slug": "nemokpara",
       "name": "Nemokpara (200g)",
       "category": "Bakery",
-      "priceCents": 500,
+      "priceCents": 550,
       "unit": "pack",
       "qty": 1,
       "description": "Crisp diamond-cut salty biscuits with black seeds. 200g pack, great with cha.",
@@ -440,7 +677,7 @@
       "unit": "kg",
       "qty": 1,
       "description": "Light buttery biscuit with a touch of salt. Sold by the kilo.",
-      "imagePath": "/uploads/seed/salted-biscuit.jpg",
+      "imagePath": "/uploads/mqrjrm7v-66da17247d992ce5.webp",
       "isFeatured": false,
       "isActive": true,
       "sortOrder": 6
@@ -453,7 +690,7 @@
       "unit": "kg",
       "qty": 1,
       "description": "Crumbly butter biscuit studded with roasted peanuts. Sold by the kilo.",
-      "imagePath": "/uploads/seed/peanut-biscuit.jpg",
+      "imagePath": "/uploads/mqrjsnse-1681823b1142c511.webp",
       "isFeatured": false,
       "isActive": true,
       "sortOrder": 7
@@ -479,7 +716,7 @@
       "unit": "kg",
       "qty": 1,
       "description": "Crisp butter biscuit with toasted coconut. Sold by the kilo.",
-      "imagePath": "/uploads/seed/coconut-biscuit.jpg",
+      "imagePath": "/uploads/mqrjt22a-1681823b1142c511.webp",
       "isFeatured": false,
       "isActive": true,
       "sortOrder": 9
@@ -514,12 +751,12 @@
       "slug": "butter-bun",
       "name": "Butter Bun",
       "category": "Bakery",
-      "priceCents": null,
+      "priceCents": 400,
       "unit": "piece",
       "qty": 1,
       "description": "Soft enriched milk bun brushed with butter and lightly glazed. Warm, pillowy, gently sweet.",
       "imagePath": "/uploads/seed/butter-bun.jpg",
-      "isFeatured": false,
+      "isFeatured": true,
       "isActive": true,
       "sortOrder": 12
     },
@@ -527,12 +764,12 @@
       "slug": "cream-roll",
       "name": "Cream Roll",
       "category": "Bakery",
-      "priceCents": null,
+      "priceCents": 400,
       "unit": "piece",
       "qty": 1,
       "description": "Flaky pastry horn filled with fresh whipped vanilla cream. A classic European treat.",
       "imagePath": "/uploads/seed/cream-roll.jpg",
-      "isFeatured": false,
+      "isFeatured": true,
       "isActive": true,
       "sortOrder": 13
     },
@@ -585,20 +822,20 @@
       "description": "Thin Bengali crepe rolled around sweet coconut and date-palm jaggery filling. A seasonal specialty.",
       "imagePath": "/uploads/seed/patishapta.jpg",
       "isFeatured": false,
-      "isActive": true,
+      "isActive": false,
       "sortOrder": 17
     },
     {
-      "slug": "pakon-pitha",
-      "name": "Pakon Pitha",
+      "slug": "swiss-chocolate-shortbread",
+      "name": "Swiss Chocolate Shortbread",
       "category": "Bakery",
-      "priceCents": null,
-      "unit": "piece",
+      "priceCents": 2400,
+      "unit": "kg",
       "qty": 1,
-      "description": "Golden fried rice-flour pastry dipped in jaggery syrup. A winter-festival classic from Bengal.",
-      "imagePath": "/uploads/seed/pakon-pitha.jpg",
-      "isFeatured": false,
-      "isActive": false,
+      "description": "An indulgent chocolate shortbread biscuit, delicately baked using a premium blend of ghee and butter.",
+      "imagePath": "/uploads/mqrt4hnm-51a32434875ed0dc.webp",
+      "isFeatured": true,
+      "isActive": true,
       "sortOrder": 18
     },
     {
@@ -613,6 +850,19 @@
       "isFeatured": false,
       "isActive": false,
       "sortOrder": 19
+    },
+    {
+      "slug": "ovaltin-cake-half-pound",
+      "name": "Ovaltin Cake (½ pound)",
+      "category": "Bakery",
+      "priceCents": 1200,
+      "unit": "piece",
+      "qty": 1,
+      "description": "Rich malt-chocolate sponge cake made with Ovaltine. Moist crumb, mellow cocoa. Half-pound loaf.",
+      "imagePath": "/uploads/seed/ovaltin-cake-half-pound.jpg",
+      "isFeatured": true,
+      "isActive": true,
+      "sortOrder": 20
     },
     {
       "slug": "rasgulla",
@@ -636,7 +886,7 @@
       "qty": 1,
       "description": "Light Bengali milk-sweet, set into soft cubes with a mild cardamom finish.",
       "imagePath": "/uploads/seed/ghazia.jpg",
-      "isFeatured": false,
+      "isFeatured": true,
       "isActive": true,
       "sortOrder": 2
     },
@@ -649,7 +899,7 @@
       "qty": 1,
       "description": "Flaky fried dough rings soaked in sugar syrup. Crisp edges, soft centre, uniquely layered.",
       "imagePath": "/uploads/seed/balu-shai.jpg",
-      "isFeatured": false,
+      "isFeatured": true,
       "isActive": true,
       "sortOrder": 3
     },
@@ -674,8 +924,8 @@
       "unit": "kg",
       "qty": 1,
       "description": "Tiny pearls of saffron-tinted besan bound into a soft, fragrant laddu. By the kilo.",
-      "imagePath": "/uploads/seed/motichur-laddoo.jpg",
-      "isFeatured": false,
+      "imagePath": "/uploads/mqrju6go-8c02423f5a5b2c1a.webp",
+      "isFeatured": true,
       "isActive": true,
       "sortOrder": 5
     },
@@ -701,7 +951,7 @@
       "qty": 1,
       "description": "Bengali coconut-and-jaggery sweet balls. Chewy, fragrant, sold by the kilo.",
       "imagePath": "/uploads/seed/coconut-naru.jpg",
-      "isFeatured": false,
+      "isFeatured": true,
       "isActive": true,
       "sortOrder": 7
     },
@@ -714,7 +964,7 @@
       "qty": 1,
       "description": "Smooth Bengali milk-fudge made with fresh chenna and a hint of cardamom. By the kilo.",
       "imagePath": "/uploads/seed/shondesh.jpg",
-      "isFeatured": false,
+      "isFeatured": true,
       "isActive": true,
       "sortOrder": 8
     },
@@ -722,12 +972,12 @@
       "slug": "amittri",
       "name": "Amittri",
       "category": "Sweets",
-      "priceCents": 2900,
+      "priceCents": 2800,
       "unit": "kg",
       "qty": 1,
       "description": "Spiral-shaped fried sweet soaked in syrup. Crisp outside, syrupy soft inside. By the kilo.",
       "imagePath": "/uploads/seed/amittri.jpg",
-      "isFeatured": false,
+      "isFeatured": true,
       "isActive": true,
       "sortOrder": 9
     },
@@ -739,8 +989,8 @@
       "unit": "kg",
       "qty": 1,
       "description": "Slow-cooked condensed-milk fudge with firm caramel-edged squares. By the kilo.",
-      "imagePath": "/uploads/seed/milk-cake.jpg",
-      "isFeatured": false,
+      "imagePath": "/uploads/mqrjuyel-f93b2bedf895fcf1.webp",
+      "isFeatured": true,
       "isActive": true,
       "sortOrder": 10
     },
@@ -753,7 +1003,7 @@
       "qty": 1,
       "description": "Flaky thread-pastry sweet, light as candyfloss. Crumbles on the tongue. By the kilo.",
       "imagePath": "/uploads/seed/shoan-papri.jpg",
-      "isFeatured": false,
+      "isFeatured": true,
       "isActive": true,
       "sortOrder": 11
     },
@@ -765,8 +1015,8 @@
       "unit": "kg",
       "qty": 1,
       "description": "Soft milk-fudge studded with almonds, set into diamond cuts. By the kilo.",
-      "imagePath": "/uploads/seed/almond-barfi.jpg",
-      "isFeatured": false,
+      "imagePath": "/uploads/mqrjvlg9-0684bc453a75e094.webp",
+      "isFeatured": true,
       "isActive": true,
       "sortOrder": 12
     },
@@ -779,7 +1029,7 @@
       "qty": 1,
       "description": "Khoya-based milk fudge, lightly flavoured with cardamom. Smooth, not too sweet, made in small batches.",
       "imagePath": "/uploads/seed/pera.jpg",
-      "isFeatured": false,
+      "isFeatured": true,
       "isActive": true,
       "sortOrder": 13
     },
@@ -793,19 +1043,19 @@
       "description": "Delicate Bengali milk-sweet moulded into soft, lightly sweetened diamonds. Ask about today's flavour.",
       "imagePath": "/uploads/seed/monsor.jpg",
       "isFeatured": false,
-      "isActive": true,
+      "isActive": false,
       "sortOrder": 14
     },
     {
       "slug": "kodom",
-      "name": "Kodom",
+      "name": "Ros Kodom",
       "category": "Sweets",
-      "priceCents": 3200,
+      "priceCents": 3500,
       "unit": "kg",
       "qty": 1,
       "description": "Round milk-sweet rolled in khoya and finished with saffron. Named for the kadam flower it resembles.",
       "imagePath": "/uploads/seed/kodom.jpg",
-      "isFeatured": false,
+      "isFeatured": true,
       "isActive": true,
       "sortOrder": 15
     },
@@ -819,7 +1069,7 @@
       "description": "Traditional Bangladeshi sweet of slow-cooked milk, sugar and ghee. Rich, fudge-like, nutty finish.",
       "imagePath": "/uploads/seed/aflaton.jpg",
       "isFeatured": false,
-      "isActive": true,
+      "isActive": false,
       "sortOrder": 16
     },
     {
@@ -845,7 +1095,7 @@
       "description": "Bengali paneer-based sweet shaped into soft, syrup-soaked cubes. A richer, denser take on the classic.",
       "imagePath": "/uploads/seed/chana-mukhi.jpg",
       "isFeatured": false,
-      "isActive": true,
+      "isActive": false,
       "sortOrder": 18
     },
     {
@@ -870,8 +1120,8 @@
       "qty": 1,
       "description": "Chenna patties in saffron-cardamom-thickened milk, topped with chopped pistachio. Served chilled.",
       "imagePath": "/uploads/seed/rosmalai.jpg",
-      "isFeatured": true,
-      "isActive": true,
+      "isFeatured": false,
+      "isActive": false,
       "sortOrder": 20
     },
     {
@@ -884,7 +1134,7 @@
       "description": "House specialty milk-sweet, layered and richly set. A Swiss Bakery signature - try once, order again.",
       "imagePath": "/uploads/seed/hafsa.jpg",
       "isFeatured": false,
-      "isActive": true,
+      "isActive": false,
       "sortOrder": 21
     },
     {
@@ -896,9 +1146,22 @@
       "qty": 1,
       "description": "Slow-cooked fragrant rice pudding with milk, cardamom and rose. Chilled, creamy - our signature dessert.",
       "imagePath": "/uploads/seed/firni.jpg",
+      "isFeatured": false,
+      "isActive": false,
+      "sortOrder": 22
+    },
+    {
+      "slug": "can_drinks",
+      "name": "Can Drinks",
+      "category": "Beverages",
+      "priceCents": 300,
+      "unit": "piece",
+      "qty": 1,
+      "description": "A carbonated soft drink of your choice. (Ask staff before selecting one from the fridge)",
+      "imagePath": "/uploads/mp6l6x8s-d56914f4fcde7e06.webp",
       "isFeatured": true,
       "isActive": true,
-      "sortOrder": 22
+      "sortOrder": 1
     },
     {
       "slug": "malai-cha",
@@ -911,7 +1174,7 @@
       "imagePath": "/uploads/seed/malai-cha.jpg",
       "isFeatured": true,
       "isActive": true,
-      "sortOrder": 1
+      "sortOrder": 2
     },
     {
       "slug": "poro-roti",
@@ -924,7 +1187,7 @@
       "imagePath": "/uploads/seed/poro-roti.jpg",
       "isFeatured": false,
       "isActive": false,
-      "sortOrder": 2
+      "sortOrder": 3
     },
     {
       "slug": "buttered-corn",
@@ -937,7 +1200,7 @@
       "imagePath": "/uploads/seed/buttered-corn.jpg",
       "isFeatured": false,
       "isActive": false,
-      "sortOrder": 3
+      "sortOrder": 4
     },
     {
       "slug": "milk-tea",
@@ -947,10 +1210,10 @@
       "unit": "cup",
       "qty": 1,
       "description": "Classic boiled milk tea, hot and strong - the everyday cha that pairs with any patty.",
-      "imagePath": "/uploads/seed/milk-tea.jpg",
-      "isFeatured": false,
+      "imagePath": "/uploads/mqrjw99s-67516c65747d5135.webp",
+      "isFeatured": true,
       "isActive": true,
-      "sortOrder": 4
+      "sortOrder": 5
     },
     {
       "slug": "ginger-tea",
@@ -963,33 +1226,7 @@
       "imagePath": "/uploads/seed/ginger-tea.jpg",
       "isFeatured": false,
       "isActive": true,
-      "sortOrder": 5
-    },
-    {
-      "slug": "morobba-cake-half-pound",
-      "name": "Morobba Cake (½ pound)",
-      "category": "Bakery",
-      "priceCents": 1200,
-      "unit": "piece",
-      "qty": 1,
-      "description": "Soft butter cake studded with sweet preserved fruit (morobba). Half-pound loaf.",
-      "imagePath": "/uploads/seed/morobba-cake-half-pound.jpg",
-      "isFeatured": false,
-      "isActive": true,
-      "sortOrder": 20
-    },
-    {
-      "slug": "ovaltin-cake-half-pound",
-      "name": "Ovaltin Cake (½ pound)",
-      "category": "Bakery",
-      "priceCents": 1200,
-      "unit": "piece",
-      "qty": 1,
-      "description": "Rich malt-chocolate sponge cake made with Ovaltine. Moist crumb, mellow cocoa. Half-pound loaf.",
-      "imagePath": "/uploads/seed/ovaltin-cake-half-pound.jpg",
-      "isFeatured": false,
-      "isActive": true,
-      "sortOrder": 21
+      "sortOrder": 6
     }
   ]
 }

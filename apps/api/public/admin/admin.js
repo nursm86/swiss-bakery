@@ -186,7 +186,7 @@ const renderProducts = () => {
     grouped[p.category] ||= [];
     grouped[p.category].push(p);
   }
-  const order = ["Savoury", "Bakery", "Sweets", "Beverages"];
+  const order = ["Meal", "Savoury", "Bakery", "Sweets", "Beverages"];
   for (const cat of order) {
     const items = grouped[cat];
     if (!items || items.length === 0) continue;
@@ -657,6 +657,7 @@ const UNIT_OPTIONS = [
   { value: "half-pound", label: "½ pound" },
 ];
 const CAT_DEFAULTS = {
+  Meal: { title: "MEALS & TANDOORI DEALS", subtitle: "Served with a can drink", defaultUnit: "" },
   Savoury: { title: "SAVOURY BITES", subtitle: "Per piece", defaultUnit: "" },
   Bakery: { title: "BAKERY & BREADS", subtitle: "Freshly baked in-house", defaultUnit: "" },
   Sweets: { title: "TRADITIONAL SWEETS", subtitle: "Priced by weight", defaultUnit: "kg" },

@@ -3,7 +3,7 @@ import seedJson from "../../../../data/products.seed.json" with { type: "json" }
 export type SeedProduct = {
   slug: string;
   name: string;
-  category: "Savoury" | "Bakery" | "Sweets" | "Beverages";
+  category: "Meal" | "Savoury" | "Bakery" | "Sweets" | "Beverages";
   priceCents: number | null;
   unit: string;
   qty?: number;
@@ -22,6 +22,7 @@ export type SeedFile = {
 export const seed = seedJson as SeedFile;
 
 export const CATEGORY_ORDER = [
+  { key: "Meal", label: "Meals & Tandoori Deals", blurb: "Wrap meals and tandoori plates - served with paratha, salad and a chilled can drink." },
   { key: "Savoury", label: "Savoury Bites", blurb: "Patties, rolls, samosas & more - baked and fried fresh through the day." },
   { key: "Bakery", label: "Bakery & Breads", blurb: "Short breads, buns, cream rolls and Bengali pithas from the oven." },
   { key: "Sweets", label: "Traditional Sweets", blurb: "Rasgulla, rosmalai, laddu and house-made mishti, by the kilo." },
