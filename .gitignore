@@ -172,3 +172,4 @@ scripts/transparent-logos.mjs
 scripts/resize-logos.mjs
 /apps/web/dist
 .claude/settings.json
+/apps/web/dist
