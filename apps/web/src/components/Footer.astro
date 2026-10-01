@@ -41,6 +41,7 @@ const s = DEFAULT_SETTINGS;
       <ul class="mt-3 space-y-2">
         <li id="f-address">{s.address}</li>
         <li><a id="f-phone" href={s.phoneHref} class="hover:text-[color:var(--color-orange)] transition">{s.phone}</a></li>
+        <li>Swiss Bakery – <a id="f-shop-phone" href={s.shopPhoneHref} class="hover:text-[color:var(--color-orange)] transition">{s.shopPhone}</a></li>
         <li><a id="f-email" href={s.emailHref} class="hover:text-[color:var(--color-orange)] transition">{s.email}</a></li>
       </ul>
     </div>
@@ -68,6 +69,11 @@ const s = DEFAULT_SETTINGS;
         const el = byId("f-phone") as HTMLAnchorElement;
         el.textContent = s.phone;
         el.href = `tel:${s.phone.replace(/\s+/g, "")}`;
+      }
+      if (s.shopPhone && byId("f-shop-phone")) {
+        const el = byId("f-shop-phone") as HTMLAnchorElement;
+        el.textContent = s.shopPhone;
+        el.href = `tel:${s.shopPhone.replace(/[^\d+]/g, "")}`;
       }
       if (s.email && byId("f-email")) {
         const el = byId("f-email") as HTMLAnchorElement;

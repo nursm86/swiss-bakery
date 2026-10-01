@@ -94,6 +94,13 @@
         <form id="settings-form" class="stack">
           <label><span>Address</span><input type="text" name="address" maxlength="300" /></label>
           <label><span>Phone</span><input type="text" name="phone" maxlength="60" /></label>
+          <label><span>Swiss Bakery shop phone</span><input type="text" name="shopPhone" maxlength="60" placeholder="02 7245 4418" /></label>
+          <fieldset style="border:1px solid var(--border);border-radius:8px;padding:0.9rem 1rem;">
+            <legend style="padding:0 0.4rem;color:var(--navy);font-weight:600;font-size:0.9rem">GST</legend>
+            <p class="hint" style="margin-top:0">Product prices are entered ex GST. With GST on, every price shows as "$5 + GST" with the "$5.50 inc. GST" total beside it, on the site, /menu and the printed menu.</p>
+            <label><span>Show prices + GST</span><select name="gstEnabled"><option value="true">On</option><option value="false">Off</option></select></label>
+            <label><span>GST rate (%)</span><input type="number" name="gstRate" min="0" max="100" step="0.01" placeholder="10" /></label>
+          </fieldset>
           <label><span>Email</span><input type="email" name="email" maxlength="120" /></label>
           <label><span>Opening hours</span><textarea name="hours" rows="3" maxlength="600"></textarea></label>
           <label><span>Google Map embed URL</span><input type="url" name="mapEmbedUrl" maxlength="1000" /></label>
@@ -217,7 +224,7 @@
             <input type="number" name="qty" min="1" max="999" step="1" value="1" />
           </label>
           <label>
-            <span>Price (AUD)</span>
+            <span>Price (AUD, ex GST)</span>
             <input type="number" name="priceAud" step="0.01" min="0" placeholder="leave empty = 'ask staff'" />
           </label>
         </div>

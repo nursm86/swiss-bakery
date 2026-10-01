@@ -36,6 +36,7 @@ const s = DEFAULT_SETTINGS;
           <div>
             <dt class="text-xs uppercase tracking-[0.18em] text-[color:var(--color-orange)]">Phone</dt>
             <dd class="mt-1"><a id="c-phone" href={s.phoneHref} class="hover:text-[color:var(--color-orange)] transition">{s.phone}</a></dd>
+            <dd class="mt-1">Swiss Bakery – <a id="c-shop-phone" href={s.shopPhoneHref} class="hover:text-[color:var(--color-orange)] transition">{s.shopPhone}</a></dd>
           </div>
         </div>
 
@@ -102,6 +103,11 @@ const s = DEFAULT_SETTINGS;
         }
         const callCta = byId("c-call-cta") as HTMLAnchorElement | null;
         if (callCta) callCta.href = telHref;
+      }
+      if (s.shopPhone && byId("c-shop-phone")) {
+        const el = byId("c-shop-phone") as HTMLAnchorElement;
+        el.textContent = s.shopPhone;
+        el.href = `tel:${s.shopPhone.replace(/[^\d+]/g, "")}`;
       }
       if (s.email && byId("c-email")) {
         const el = byId("c-email") as HTMLAnchorElement;

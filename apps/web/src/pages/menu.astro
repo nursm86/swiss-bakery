@@ -12,6 +12,7 @@ import Layout from "../layouts/Layout.astro";
 import Nav from "../components/Nav.astro";
 import Footer from "../components/Footer.astro";
 import { MENU_CATEGORIES } from "../lib/categories";
+import { parseGstSettings } from "../lib/pricing.js";
 import { seed } from "../lib/seed";
 
 // Document copy + per-category layout — mirrors the admin Menu builder
@@ -53,7 +54,7 @@ const categories = CAT_CFG.map((c) => {
   return { title: c.title, subtitle: c.subtitle, columns: c.columns, showPhotos: c.showPhotos, items };
 }).filter((c) => c.items.length > 0);
 
-const INITIAL = { doc: DOC, categoryConfig: CAT_CFG, categories };
+const INITIAL = { doc: DOC, categoryConfig: CAT_CFG, gst: parseGstSettings(), categories };
 ---
 
 <Layout
@@ -86,23 +87,14 @@ const INITIAL = { doc: DOC, categoryConfig: CAT_CFG, categories };
 
   <script type="application/json" id="menu-data" set:html={JSON.stringify(INITIAL)}></script>
 
-  <script is:inline>
+  <script is:inline type="module">
+    import { formatPriceLines, parseGstSettings } from "/js/pricing.js";
+
     (() => {
       const PX_PER_MM = 96 / 25.4;
 
-      const fmtPrice = (cents, unit, qty) => {
-        if (cents == null) return { text: "ask staff", muted: true };
-        const dollars = (cents / 100).toFixed(2).replace(/\.00$/, "");
-        const q = Number(qty) > 1 ? Number(qty) : 1;
-        const unitLabel = q > 1 && unit === "piece" ? "pcs" : unit;
-        if (q === 1) {
-          return {
-            text: unit && unit !== "piece" ? `$${dollars}/${unitLabel}` : `$${dollars}`,
-            muted: false,
-          };
-        }
-        return { text: `$${dollars}/${q}${unitLabel}`, muted: false };
-      };
+      // Build-time default; replaced by #menu-data, then by the live /api/settings.
+      let gst = parseGstSettings();
 
       const escapeHtml = (s) =>
         String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
@@ -122,8 +114,10 @@ const INITIAL = { doc: DOC, categoryConfig: CAT_CFG, categories };
           item.appendChild(thumb);
         }
         item.appendChild(el("div", "name", escapeHtml(it.name)));
-        const p = fmtPrice(it.priceCents, it.unit, it.qty);
-        item.appendChild(el("div", "price" + (p.muted ? " muted" : ""), escapeHtml(p.text)));
+        const lines = formatPriceLines(it, gst);
+        const price = el("div", "price" + (lines.length === 0 ? " muted" : ""));
+        for (const line of lines.length > 0 ? lines : ["ask staff"]) price.appendChild(el("span", null, escapeHtml(line)));
+        item.appendChild(price);
         return item;
       };
 
@@ -311,6 +305,7 @@ const INITIAL = { doc: DOC, categoryConfig: CAT_CFG, categories };
       const MENU_DATA = JSON.parse(document.getElementById("menu-data").textContent);
       const DOC = MENU_DATA.doc;
       const CAT_CFG = MENU_DATA.categoryConfig;
+      gst = MENU_DATA.gst ?? gst;
 
       const buildPayload = (products) => {
         const byCat = new Map();
@@ -355,9 +350,10 @@ const INITIAL = { doc: DOC, categoryConfig: CAT_CFG, categories };
         render(initial);
 
         // Refresh from the live catalogue.
-        fetch("/api/products")
-          .then((r) => (r.ok ? r.json() : null))
-          .then((data) => {
+        const fetchJson = (url) => fetch(url).then((r) => (r.ok ? r.json() : null)).catch(() => null);
+        Promise.all([fetchJson("/api/products"), fetchJson("/api/settings")])
+          .then(([data, settingsData]) => {
+            if (settingsData?.settings) gst = parseGstSettings(settingsData.settings);
             if (data && Array.isArray(data.products)) render(buildPayload(data.products));
           })
           .catch(() => {});
@@ -527,6 +523,7 @@ const INITIAL = { doc: DOC, categoryConfig: CAT_CFG, categories };
     font-variant-numeric: tabular-nums;
   }
   .menu-band .item .price.muted { color: var(--muted); font-style: italic; font-weight: 500; }
+  .menu-band .item .price span { display: block; text-align: right; }
   .menu-band .footer { position: absolute; bottom: 12mm; left: 18mm; right: 18mm; text-align: center; }
   .menu-band .footer .note {
     font-family: "Playfair Display", serif;

@@ -67,7 +67,16 @@ const settingKey = z.enum([
   "aboutText",
   "gloriafoodCuid",
   "gloriafoodRuid",
+  "shopPhone",
+  "gstEnabled",
+  "gstRate",
 ]);
+
+// Settings with a fixed format. Empty means "use the default" (GST on, 10%).
+const settingValueRules: Partial<Record<z.infer<typeof settingKey>, RegExp>> = {
+  gstEnabled: /^(true|false)?$/,
+  gstRate: /^(\d{1,2}(\.\d{1,2})?|100)?$/,
+};
 
 export const pageCreateSchema = z.object({
   slug: z
@@ -87,6 +96,8 @@ export const settingsUpdateSchema = z
     z.object({
       key: settingKey,
       value: z.string().max(5000),
+    }).refine((item) => settingValueRules[item.key]?.test(item.value) ?? true, {
+      message: "gstEnabled must be true or false; gstRate a number from 0 to 100",
     }),
   )
   .min(1)
@@ -104,4 +115,7 @@ export const PUBLIC_SETTING_KEYS: readonly SettingKey[] = [
   "aboutText",
   "gloriafoodCuid",
   "gloriafoodRuid",
+  "shopPhone",
+  "gstEnabled",
+  "gstRate",
 ];

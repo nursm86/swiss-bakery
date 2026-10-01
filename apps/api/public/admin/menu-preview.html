@@ -228,6 +228,10 @@
         font-style: italic;
         font-weight: 500;
       }
+      .item .price span {
+        display: block;
+        text-align: right;
+      }
       .footer {
         position: absolute;
         bottom: 12mm;
@@ -300,22 +304,11 @@
     </div>
     <div id="stage" class="stage"></div>
 
-    <script>
+    <script type="module">
+      import { formatPriceLines, parseGstSettings } from "/js/pricing.js";
       const KEY = "sb_menu_preview_v1";
-      const fmtPrice = (cents, unit, qty) => {
-        if (cents == null) return { text: "ask staff", muted: true };
-        const dollars = (cents / 100).toFixed(2).replace(/\.00$/, "");
-        const q = Number(qty) > 1 ? Number(qty) : 1;
-        const unitLabel = q > 1 && unit === "piece" ? "pcs" : unit;
-        // qty=1, piece-only items render bare ($X). Anything else gets "/unit" or "/Nunit".
-        if (q === 1) {
-          return {
-            text: unit && unit !== "piece" ? `$${dollars}/${unitLabel}` : `$${dollars}`,
-            muted: false,
-          };
-        }
-        return { text: `$${dollars}/${q}${unitLabel}`, muted: false };
-      };
+      // GST setting comes in with the payload from the admin (see openMenuPreview).
+      let gst = parseGstSettings();
 
       const escapeHtml = (s) =>
         String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
@@ -336,8 +329,10 @@
           item.appendChild(thumb);
         }
         item.appendChild(el("div", "name", escapeHtml(it.name)));
-        const p = fmtPrice(it.priceCents, it.unit, it.qty);
-        item.appendChild(el("div", "price" + (p.muted ? " muted" : ""), escapeHtml(p.text)));
+        const lines = formatPriceLines(it, gst);
+        const price = el("div", "price" + (lines.length === 0 ? " muted" : ""));
+        for (const line of lines.length > 0 ? lines : ["ask staff"]) price.appendChild(el("span", null, escapeHtml(line)));
+        item.appendChild(price);
         return item;
       };
 
@@ -398,6 +393,7 @@
           return;
         }
         const { doc, categories } = payload;
+        gst = payload.gst ?? gst;
         if (!categories || categories.length === 0) {
           stage.innerHTML = `<div class="empty">No products selected.<br/>Tick at least one product in the Menu builder.</div>`;
           return;

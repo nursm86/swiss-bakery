@@ -30,31 +30,6 @@ export const byCategory = (cat: string): SeedProduct[] =>
     .filter((p) => p.category === cat && p.isActive)
     .sort((a, b) => a.sortOrder - b.sortOrder);
 
-// Plural form for the unit when qty > 1.
-const pluralUnit = (unit: string): string => {
-  if (unit === "piece") return "pcs";
-  if (unit === "pack") return "packs";
-  if (unit === "cup") return "cups";
-  if (unit === "serve") return "serves";
-  if (unit === "pound") return "pounds";
-  return unit; // kg stays "kg"
-};
-
-// Full price + unit string, qty-aware:
-//   qty=1, unit=piece  →  "$3.50"          (bare; unit shown separately on card)
-//   qty=1, unit=kg     →  "$26/kg"
-//   qty=5, unit=piece  →  "$7/5pcs"
-//   qty=2, unit=kg     →  "$24/2kg"
-export const formatPrice = (p: SeedProduct): string => {
-  if (p.priceCents == null) return "Visit shop";
-  const dollars = (p.priceCents / 100).toFixed(2).replace(/\.00$/, "");
-  const qty = typeof p.qty === "number" && p.qty > 1 ? p.qty : 1;
-  if (qty === 1) {
-    return p.unit && p.unit !== "piece" ? `$${dollars}/${p.unit}` : `$${dollars}`;
-  }
-  return `$${dollars}/${qty}${pluralUnit(p.unit)}`;
-};
-
 // Render the internal unit slug as something a customer reads as a small label
 // next to the price. For qty>1 the price string already encodes the unit, so
 // the label is suppressed.
@@ -68,6 +43,8 @@ export const DEFAULT_SETTINGS = {
   address: "Shop 3/12 Minto Rd, Minto NSW 2566",
   phone: "+61 0452 626 232",
   phoneHref: "tel:+61452626232",
+  shopPhone: "02 7245 4418",
+  shopPhoneHref: "tel:0272454418",
   email: "contact@swissbakery.com.au",
   emailHref: "mailto:contact@swissbakery.com.au",
   hours: "Tue–Sun 8:00 am – 8:00 pm · Mon closed",

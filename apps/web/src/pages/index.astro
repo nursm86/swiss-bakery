@@ -22,6 +22,8 @@ import Footer from "../components/Footer.astro";
   </main>
   <Footer />
   <script>
+    import { formatPriceLines, parseGstSettings } from "../lib/pricing.js";
+
     const io = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
@@ -47,12 +49,21 @@ import Footer from "../components/Footer.astro";
       isFeatured: boolean;
       isActive: boolean;
       sortOrder: number;
+      qty?: number;
     };
-    const formatPrice = (p: ApiProduct) =>
-      p.priceCents == null ? "Visit shop" : `$${(p.priceCents / 100).toFixed(2)}`;
+    type Gst = ReturnType<typeof parseGstSettings>;
+    const renderPrice = (el: HTMLElement, lines: string[]) =>
+      el.replaceChildren(
+        ...(lines.length > 0 ? lines : ["Visit shop"]).map((line) => {
+          const span = document.createElement("span");
+          span.className = "block";
+          span.textContent = line;
+          return span;
+        }),
+      );
     const formatUnit = (u: string) => (u === "half-pound" ? "½ pound" : u);
 
-    const buildCard = (p: ApiProduct, size: "sm" | "md" = "md"): HTMLElement => {
+    const buildCard = (p: ApiProduct, gst: Gst, size: "sm" | "md" = "md"): HTMLElement => {
       const card = document.createElement("article");
       card.className = "card group flex flex-col" + (size === "sm" ? " min-w-[260px] w-[260px]" : "");
       card.dataset.slug = p.slug;
@@ -94,10 +105,11 @@ import Footer from "../components/Footer.astro";
         body.appendChild(desc);
       }
       const meta = document.createElement("div");
-      meta.className = "mt-auto pt-3 flex items-center justify-between";
+      meta.className = "mt-auto pt-3 flex items-end justify-between gap-2";
       const priceSpan = document.createElement("span");
-      priceSpan.className = "font-[family-name:var(--font-display)] text-lg text-[color:var(--color-navy)]";
-      priceSpan.textContent = formatPrice(p);
+      priceSpan.dataset.price = "";
+      priceSpan.className = "font-[family-name:var(--font-display)] text-lg leading-snug text-[color:var(--color-navy)]";
+      renderPrice(priceSpan, formatPriceLines(p, gst));
       const unitSpan = document.createElement("span");
       unitSpan.className = "text-xs uppercase tracking-[0.12em] text-[color:var(--color-muted)]";
       unitSpan.textContent = formatUnit(p.unit);
@@ -108,10 +120,11 @@ import Footer from "../components/Footer.astro";
       return card;
     };
 
-    fetch("/api/products")
-      .then((r) => (r.ok ? r.json() : null))
-      .then((data) => {
+    const fetchJson = (url: string) => fetch(url).then((r) => (r.ok ? r.json() : null)).catch(() => null);
+    Promise.all([fetchJson("/api/products"), fetchJson("/api/settings")])
+      .then(([data, settingsData]) => {
         if (!data?.products) return;
+        const gst = parseGstSettings(settingsData?.settings);
         const apiList = data.products as ApiProduct[];
         const map = new Map<string, ApiProduct>(apiList.map((p) => [p.slug, p]));
 
@@ -127,8 +140,8 @@ import Footer from "../components/Footer.astro";
           if (title) title.textContent = p.name;
           const desc = card.querySelector("p");
           if (desc && p.description) desc.textContent = p.description;
-          const price = card.querySelector(".p-4 > div span:first-child");
-          if (price) price.textContent = formatPrice(p);
+          const price = card.querySelector<HTMLElement>("[data-price]");
+          if (price) renderPrice(price, formatPriceLines(p, gst));
           const img = card.querySelector("img");
           if (img && p.imagePath) {
             (img as HTMLImageElement).src = p.imagePath;
@@ -152,11 +165,11 @@ import Footer from "../components/Footer.astro";
             const grid = document.querySelector<HTMLElement>(
               `[data-category="${CSS.escape(p.category)}"] > div.grid`,
             );
-            if (grid) grid.appendChild(buildCard(p, "md"));
+            if (grid) grid.appendChild(buildCard(p, gst, "md"));
           }
           if (p.isFeatured && !presentInFeatured.has(p.slug)) {
             const fScroll = document.getElementById("featured-scroll");
-            if (fScroll) fScroll.appendChild(buildCard(p, "sm"));
+            if (fScroll) fScroll.appendChild(buildCard(p, gst, "sm"));
           }
         }
 

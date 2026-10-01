@@ -1,4 +1,6 @@
 // Minimal admin SPA - no framework, vanilla JS.
+import { formatPriceLines, parseGstSettings } from "/js/pricing.js";
+
 const state = {
   accessToken: null,
   accessExpiresAt: 0,
@@ -222,11 +224,8 @@ const renderProducts = () => {
 //   qty=1  →  "$26/kg"
 //   qty>1  →  "$24/2kg"  or  "$7/5pcs"  (piece is pluralised to "pcs")
 const formatProductPrice = (p) => {
-  if (p.priceCents == null) return "Visit shop";
-  const dollars = (p.priceCents / 100).toFixed(2).replace(/\.00$/, "");
-  const qty = Number(p.qty) > 1 ? Number(p.qty) : 1;
-  const unitLabel = qty > 1 && p.unit === "piece" ? "pcs" : p.unit;
-  return qty > 1 ? `$${dollars}/${qty}${unitLabel}` : `$${dollars}/${unitLabel}`;
+  const lines = formatPriceLines(p, parseGstSettings(state.settings));
+  return lines.length > 0 ? lines.join(" · ") : "Visit shop";
 };
 
 const productCard = (p) => {
@@ -564,14 +563,20 @@ const SETTING_KEYS = [
   "aboutText",
   "gloriafoodCuid",
   "gloriafoodRuid",
+  "shopPhone",
+  "gstEnabled",
+  "gstRate",
 ];
+
+// Shown when a setting has never been saved, matching the site's own defaults.
+const SETTING_FORM_DEFAULTS = { gstEnabled: "true" };
 
 const loadSettings = async () => {
   const data = await api("/api/settings");
   state.settings = data.settings;
   const form = document.getElementById("settings-form");
   for (const key of SETTING_KEYS) {
-    if (form[key]) form[key].value = state.settings[key] ?? "";
+    if (form[key]) form[key].value = state.settings[key] ?? SETTING_FORM_DEFAULTS[key] ?? "";
   }
 };
 
@@ -1193,6 +1198,7 @@ const openMenuPreview = () => {
   const productsById = new Map(state.products.map((p) => [p.id, p]));
   const payload = {
     doc: menuConfig.doc,
+    gst: parseGstSettings(state.settings),
     categories: menuConfig.categories
       .map((c) => {
         const items = c.products
