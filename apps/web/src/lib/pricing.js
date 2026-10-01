@@ -1,7 +1,6 @@
 // Price display shared by the web build, the homepage live refresh, /menu and
 // the admin (served as /js/pricing.js by src/pages/js/pricing.js.ts).
-// Stored prices are ex-GST cents. With GST on, a price shows as two lines,
-// "$5 + GST" and "$5.50 inc. GST", the total as prominent as the part-price.
+// Stored prices are ex-GST cents. With GST on, a price shows as "$5 + GST".
 
 export const DEFAULT_GST_RATE_PERCENT = 10;
 const MAX_GST_RATE_PERCENT = 100;
@@ -18,8 +17,6 @@ export const parseGstSettings = (settings = {}) => {
   return { enabled: settings.gstEnabled !== "false" && ratePercent > 0, ratePercent };
 };
 
-export const addGst = (cents, ratePercent) => Math.round((cents * (100 + ratePercent)) / 100);
-
 export const formatDollars = (cents) => `$${(cents / 100).toFixed(2).replace(/\.00$/, "")}`;
 
 export const unitSuffix = (unit, qty) => {
@@ -29,7 +26,7 @@ export const unitSuffix = (unit, qty) => {
 };
 
 /**
- * Display lines for one price: [] when no price is set, otherwise one line (GST off) or two (GST on).
+ * Display lines for one price: [] when no price is set, otherwise one line, with " + GST" when GST is on.
  * @param {{ priceCents: number | null, unit?: string, qty?: number }} item
  * @param {{ enabled: boolean, ratePercent: number }} gst
  * @returns {string[]}
@@ -37,9 +34,5 @@ export const unitSuffix = (unit, qty) => {
 export const formatPriceLines = ({ priceCents, unit, qty }, gst) => {
   if (priceCents == null) return [];
   const suffix = unitSuffix(unit ?? "", Number(qty) > 1 ? Number(qty) : 1);
-  if (!gst?.enabled) return [formatDollars(priceCents) + suffix];
-  return [
-    `${formatDollars(priceCents)}${suffix} + GST`,
-    `${formatDollars(addGst(priceCents, gst.ratePercent))}${suffix} inc. GST`,
-  ];
+  return [`${formatDollars(priceCents)}${suffix}${gst?.enabled ? " + GST" : ""}`];
 };

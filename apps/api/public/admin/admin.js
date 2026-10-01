@@ -565,7 +565,6 @@ const SETTING_KEYS = [
   "gloriafoodRuid",
   "shopPhone",
   "gstEnabled",
-  "gstRate",
 ];
 
 // Shown when a setting has never been saved, matching the site's own defaults.
