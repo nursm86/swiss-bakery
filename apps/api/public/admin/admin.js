@@ -1,5 +1,5 @@
 // Minimal admin SPA - no framework, vanilla JS.
-import { formatPriceLines, parseGstSettings } from "/js/pricing.js";
+import { formatPriceLines, parseGstSettings } from "/js/pricing.js?v=20261001d";
 
 const state = {
   accessToken: null,
@@ -299,10 +299,18 @@ const slugify = (s) =>
     .replace(/_+/g, "_")
     .replace(/^[-_]+|[-_]+$/g, "");
 
+// form.reset() leaves hidden inputs alone (setting .value on a hidden input
+// changes its default), so a "New" dialog would keep the last edited record's
+// id and save over it. Clear them explicitly.
+const resetForm = (form) => {
+  form.reset();
+  for (const input of form.querySelectorAll("input[type=hidden]")) input.value = "";
+};
+
 const openProductDialog = (p) => {
   const dlg = document.getElementById("product-dialog");
   const form = document.getElementById("product-form");
-  form.reset();
+  resetForm(form);
   document.getElementById("product-dialog-title").textContent = p ? `Edit · ${p.name}` : "New product";
   const del = document.getElementById("product-delete");
   del.hidden = !p;
@@ -444,7 +452,7 @@ const wireHero = () => {
 const openHeroDialog = (b) => {
   const dlg = document.getElementById("hero-dialog");
   const form = document.getElementById("hero-form");
-  form.reset();
+  resetForm(form);
   document.getElementById("hero-dialog-title").textContent = b ? `Edit banner` : "New banner";
   document.getElementById("hero-delete").hidden = !b;
   if (b) {
