@@ -13,6 +13,7 @@ import Nav from "../components/Nav.astro";
 import Footer from "../components/Footer.astro";
 import { MENU_CATEGORIES } from "../lib/categories";
 import { parseGstSettings } from "../lib/pricing.js";
+import { PRICING_URL } from "../lib/pricing-asset";
 import { seed } from "../lib/seed";
 
 // Document copy + per-category layout — mirrors the admin Menu builder
@@ -54,7 +55,7 @@ const categories = CAT_CFG.map((c) => {
   return { title: c.title, subtitle: c.subtitle, columns: c.columns, showPhotos: c.showPhotos, items };
 }).filter((c) => c.items.length > 0);
 
-const INITIAL = { doc: DOC, categoryConfig: CAT_CFG, gst: parseGstSettings(), categories };
+const INITIAL = { doc: DOC, categoryConfig: CAT_CFG, gst: parseGstSettings(), pricingUrl: PRICING_URL, categories };
 ---
 
 <Layout
@@ -88,7 +89,8 @@ const INITIAL = { doc: DOC, categoryConfig: CAT_CFG, gst: parseGstSettings(), ca
   <script type="application/json" id="menu-data" set:html={JSON.stringify(INITIAL)}></script>
 
   <script is:inline type="module">
-    import { formatPriceLines, parseGstSettings } from "/js/pricing.js";
+    // Content-hashed URL from #menu-data, so a cached old copy is never used.
+    const { formatPriceLines, parseGstSettings } = await import(JSON.parse(document.getElementById("menu-data").textContent).pricingUrl);
 
     (() => {
       const PX_PER_MM = 96 / 25.4;
