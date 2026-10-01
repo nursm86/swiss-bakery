@@ -171,3 +171,4 @@ Swiss_Bakery_Logo.pdf
 scripts/transparent-logos.mjs
 scripts/resize-logos.mjs
 /apps/web/dist
+.claude/settings.json
