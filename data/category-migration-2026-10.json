@@ -1,17 +1,7 @@
 {
   "_meta": {
-    "about": "October 2026 switch to the 13-category menu. Applied by scripts/migrate-categories.mjs: bySlug first, then byOldCategory for anything not listed (e.g. products added after this file was written). Products are renumbered 1..n inside each new category, keeping their old relative order."
+    "about": "October 2026 switch to the 13-category menu. scripts/migrate-categories.mjs changes only the category of products that move: bySlug first, then byOldCategory for anything not listed (e.g. products added after this file was written)."
   },
-  "oldCategoryOrder": [
-    "Meal",
-    "Savoury",
-    "Bakery",
-    "Sweets",
-    "Beverages",
-    "Biriyani",
-    "Drinks",
-    "Miscellaneous"
-  ],
   "byOldCategory": {
     "Meal": "Kebab",
     "Savoury": "Fried",
@@ -27,14 +17,18 @@
     "beef-patty": "Baked",
     "beef-roll": "Fried",
     "beef-sheesh-wrap": "Kebab",
+    "beef-shikh-wrap": "Kebab",
     "butter-bun": "BreadCake",
     "buttered-corn": "Miscellaneous",
     "can_drinks": "ColdDrinks",
     "chicken-momo": "Miscellaneous",
     "chicken-patty": "Baked",
     "chicken-pie": "Baked",
+    "chicken-pocket": "Fried",
     "chicken-roll": "Fried",
     "chicken-samosa": "Fried",
+    "chicken-sandwich": "Miscellaneous",
+    "chicken-tikka-wrap": "Kebab",
     "chicken_bun": "Baked",
     "coconut-biscuit": "Biscuits",
     "cream-roll": "BreadCake",
@@ -49,15 +43,20 @@
     "milk-tea": "HotDrinks",
     "morobba-cake-small": "BreadCake",
     "mughlai-paratha": "Fried",
+    "mushroom-pie": "Baked",
     "narikel-puli": "Sweets",
     "nemokpara": "Miscellaneous",
     "ovaltin-cake-half-pound": "BreadCake",
     "ovaltin-cake-small": "BreadCake",
+    "pakora": "Fried",
+    "paneer-patty": "Baked",
     "patishapta": "Sweets",
     "peanut-biscuit": "Biscuits",
     "piyaju": "Fried",
     "poro-roti": "Extras",
     "prawn-onton": "Fried",
+    "prawn-roll": "Fried",
+    "reshmi-kabab-wrap": "Kebab",
     "salted-biscuit": "Biscuits",
     "salty-cookies-nimki": "Miscellaneous",
     "samosa": "Fried",
@@ -66,8 +65,13 @@
     "swiss-coconut-biscuit": "Biscuits",
     "swiss-short-bread": "Biscuits",
     "swiss-twister": "Biscuits",
+    "tandoori-chicken-full": "Kebab",
+    "tandoori-chicken-half": "Kebab",
+    "tandoori-chicken-quarter": "Kebab",
+    "tuna-patty": "Baked",
     "tuna-sandwich": "Miscellaneous",
     "veg-singara": "Fried",
+    "vegetable-momo": "Miscellaneous",
     "vegetable-patty": "Baked"
   }
 }

@@ -1,6 +1,6 @@
 // Moves products into the categories of data/categories.json using
-// data/category-migration-2026-10.json, renumbering sortOrder 1..n inside each
-// new category (old relative order kept).
+// data/category-migration-2026-10.json. Only the category of products that
+// actually move is changed; nothing else is touched (sortOrder included).
 //
 //   node scripts/migrate-categories.mjs --seed          rewrite data/products.seed.json
 //   node scripts/migrate-categories.mjs                 live DB, dry run (prints the plan)
@@ -21,25 +21,12 @@ const SEED_PATH = path.join(REPO_ROOT, "data", "products.seed.json");
 
 const readJson = (file) => JSON.parse(readFileSync(file, "utf-8"));
 
-/** Returns [{ slug, from, to, sortOrder }] for every product, plus slugs whose target is unknown. */
+/** Returns the products whose category changes, as [{ slug, from, to }], plus moves to unknown categories. */
 export const planCategoryMoves = (products, mapping, categoryKeys) => {
-  const targetOf = (p) => mapping.bySlug[p.slug] ?? mapping.byOldCategory[p.category] ?? p.category;
-  const oldRank = (category) => {
-    const rank = mapping.oldCategoryOrder.indexOf(category);
-    return rank === -1 ? mapping.oldCategoryOrder.length : rank;
-  };
-  const byTarget = new Map();
-  for (const p of products) {
-    const to = targetOf(p);
-    if (!byTarget.has(to)) byTarget.set(to, []);
-    byTarget.get(to).push(p);
-  }
-  const moves = [];
-  for (const [to, list] of byTarget) {
-    list.sort((a, b) => oldRank(a.category) - oldRank(b.category) || a.sortOrder - b.sortOrder || a.slug.localeCompare(b.slug));
-    list.forEach((p, i) => moves.push({ slug: p.slug, from: p.category, to, sortOrder: i + 1 }));
-  }
-  const unknownTargets = moves.filter((m) => !categoryKeys.includes(m.to));
+  const moves = products
+    .map((p) => ({ slug: p.slug, from: p.category, to: mapping.bySlug[p.slug] ?? mapping.byOldCategory[p.category] ?? p.category }))
+    .filter((m) => m.to !== m.from);
+  const unknownTargets = products.filter((p) => !categoryKeys.includes(mapping.bySlug[p.slug] ?? mapping.byOldCategory[p.category] ?? p.category));
   return { moves, unknownTargets };
 };
 
@@ -61,8 +48,7 @@ const main = async () => {
     const bySlug = new Map(moves.map((m) => [m.slug, m]));
     for (const p of seed.products) {
       const move = bySlug.get(p.slug);
-      p.category = move.to;
-      p.sortOrder = move.sortOrder;
+      if (move) p.category = move.to;
     }
     writeFileSync(SEED_PATH, JSON.stringify(seed, null, 2) + "\n");
     console.log("seed rewritten:", summarise(moves));
@@ -74,19 +60,19 @@ const main = async () => {
   const { PrismaClient } = await import(clientUrl);
   const prisma = new PrismaClient();
   try {
-    const products = await prisma.product.findMany({ select: { id: true, slug: true, category: true, sortOrder: true } });
+    const products = await prisma.product.findMany({ select: { id: true, slug: true, category: true } });
     const { moves, unknownTargets } = planCategoryMoves(products, mapping, categoryKeys);
     if (unknownTargets.length > 0) throw new Error(`no category for: ${unknownTargets.map((m) => m.slug).join(", ")}`);
-    const fallbacks = products.filter((p) => !(p.slug in mapping.bySlug) && p.category !== mapping.byOldCategory[p.category]);
-    console.log("plan:", summarise(moves));
-    if (fallbacks.length > 0) console.log("moved by old-category default (not in bySlug):", fallbacks.map((p) => `${p.slug} (${p.category})`).join(", "));
+    console.log(`plan: ${moves.length} of ${products.length} products change category`, summarise(moves));
+    const defaulted = moves.filter((m) => !(m.slug in mapping.bySlug) && m.from !== "Meal");
+    if (defaulted.length > 0) console.log("moved by old-category default, check these:", defaulted.map((m) => `${m.slug} ${m.from}->${m.to}`).join(", "));
     if (!args.has("--apply")) {
       console.log("dry run - nothing written. Re-run with --apply.");
       return;
     }
     const idBySlug = new Map(products.map((p) => [p.slug, p.id]));
     await prisma.$transaction(
-      moves.map((m) => prisma.product.update({ where: { id: idBySlug.get(m.slug) }, data: { category: m.to, sortOrder: m.sortOrder } })),
+      moves.map((m) => prisma.product.update({ where: { id: idBySlug.get(m.slug) }, data: { category: m.to } })),
     );
     console.log(`applied ${moves.length} updates`);
   } finally {

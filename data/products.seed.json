@@ -165,7 +165,7 @@
     {
       "slug": "beef-shikh-wrap",
       "name": "Beef Shikh Wrap",
-      "category": "Fried",
+      "category": "Kebab",
       "priceCents": 800,
       "unit": "piece",
       "qty": 1,
@@ -186,7 +186,7 @@
       "imagePath": "/uploads/seed/beef-sheesh-wrap.webp",
       "isFeatured": true,
       "isActive": true,
-      "sortOrder": 11
+      "sortOrder": 2
     },
     {
       "slug": "lamb-boti-wrap",
@@ -199,12 +199,12 @@
       "imagePath": "/uploads/seed/lamb-boti-wrap.webp",
       "isFeatured": true,
       "isActive": true,
-      "sortOrder": 12
+      "sortOrder": 3
     },
     {
       "slug": "chicken-tikka-wrap",
       "name": "Chicken Tikka Wrap",
-      "category": "Fried",
+      "category": "Kebab",
       "priceCents": 800,
       "unit": "piece",
       "qty": 1,
@@ -212,12 +212,12 @@
       "imagePath": "/uploads/seed/chicken-tikka-wrap.webp",
       "isFeatured": true,
       "isActive": true,
-      "sortOrder": 2
+      "sortOrder": 4
     },
     {
       "slug": "reshmi-kabab-wrap",
       "name": "Reshmi Kabab Wrap",
-      "category": "Fried",
+      "category": "Kebab",
       "priceCents": 800,
       "unit": "piece",
       "qty": 1,
@@ -225,12 +225,12 @@
       "imagePath": "/uploads/seed/reshmi-kabab-wrap.webp",
       "isFeatured": true,
       "isActive": true,
-      "sortOrder": 3
+      "sortOrder": 5
     },
     {
       "slug": "tandoori-chicken-quarter",
       "name": "Quarter Tandoori Chicken",
-      "category": "Fried",
+      "category": "Kebab",
       "priceCents": 800,
       "unit": "piece",
       "qty": 1,
@@ -238,12 +238,12 @@
       "imagePath": "/uploads/seed/tandoori-chicken-quarter.webp",
       "isFeatured": false,
       "isActive": true,
-      "sortOrder": 4
+      "sortOrder": 6
     },
     {
       "slug": "tandoori-chicken-half",
       "name": "Half Tandoori Chicken",
-      "category": "Fried",
+      "category": "Kebab",
       "priceCents": 1400,
       "unit": "piece",
       "qty": 1,
@@ -251,12 +251,12 @@
       "imagePath": "/uploads/seed/tandoori-chicken-half.webp",
       "isFeatured": false,
       "isActive": true,
-      "sortOrder": 5
+      "sortOrder": 7
     },
     {
       "slug": "tandoori-chicken-full",
       "name": "Full Tandoori Chicken",
-      "category": "Fried",
+      "category": "Kebab",
       "priceCents": 2000,
       "unit": "piece",
       "qty": 1,
@@ -264,7 +264,7 @@
       "imagePath": "/uploads/seed/tandoori-chicken-full.webp",
       "isFeatured": false,
       "isActive": true,
-      "sortOrder": 6
+      "sortOrder": 8
     },
     {
       "slug": "chicken_bun",
@@ -277,7 +277,7 @@
       "imagePath": "/uploads/mqrjeoji-aca6b66e91034330.webp",
       "isFeatured": true,
       "isActive": true,
-      "sortOrder": 1
+      "sortOrder": 9
     },
     {
       "slug": "veg-singara",
@@ -290,7 +290,7 @@
       "imagePath": "/uploads/seed/veg-singara.jpg",
       "isFeatured": true,
       "isActive": true,
-      "sortOrder": 7
+      "sortOrder": 10
     },
     {
       "slug": "chicken-samosa",
@@ -303,7 +303,7 @@
       "imagePath": "/uploads/seed/chicken-samosa.jpg",
       "isFeatured": true,
       "isActive": true,
-      "sortOrder": 8
+      "sortOrder": 11
     },
     {
       "slug": "chicken-roll",
@@ -316,7 +316,7 @@
       "imagePath": "/uploads/seed/chicken-roll.jpg",
       "isFeatured": true,
       "isActive": true,
-      "sortOrder": 9
+      "sortOrder": 12
     },
     {
       "slug": "samosa",
@@ -329,7 +329,7 @@
       "imagePath": "/uploads/seed/samosa.jpg",
       "isFeatured": true,
       "isActive": true,
-      "sortOrder": 10
+      "sortOrder": 13
     },
     {
       "slug": "dal-puri",
@@ -342,7 +342,7 @@
       "imagePath": "/uploads/seed/dal-puri.jpg",
       "isFeatured": true,
       "isActive": true,
-      "sortOrder": 11
+      "sortOrder": 14
     },
     {
       "slug": "mughlai-paratha",
@@ -355,12 +355,12 @@
       "imagePath": "/uploads/seed/mughlai-paratha.jpg",
       "isFeatured": true,
       "isActive": true,
-      "sortOrder": 12
+      "sortOrder": 15
     },
     {
       "slug": "chicken-sandwich",
       "name": "Chicken Sandwich",
-      "category": "Fried",
+      "category": "Miscellaneous",
       "priceCents": 500,
       "unit": "piece",
       "qty": 1,
@@ -368,7 +368,7 @@
       "imagePath": "/uploads/seed/chicken-sandwich.jpg",
       "isFeatured": false,
       "isActive": false,
-      "sortOrder": 13
+      "sortOrder": 16
     },
     {
       "slug": "chicken-patty",
@@ -381,7 +381,7 @@
       "imagePath": "/uploads/seed/chicken-patty.jpg",
       "isFeatured": true,
       "isActive": true,
-      "sortOrder": 2
+      "sortOrder": 17
     },
     {
       "slug": "beef-patty",
@@ -394,12 +394,12 @@
       "imagePath": "/uploads/seed/beef-patty.jpg",
       "isFeatured": true,
       "isActive": true,
-      "sortOrder": 3
+      "sortOrder": 18
     },
     {
       "slug": "paneer-patty",
       "name": "Paneer Patties",
-      "category": "Fried",
+      "category": "Baked",
       "priceCents": 350,
       "unit": "piece",
       "qty": 1,
@@ -407,7 +407,7 @@
       "imagePath": "/uploads/seed/paneer-patty.jpg",
       "isFeatured": false,
       "isActive": false,
-      "sortOrder": 14
+      "sortOrder": 19
     },
     {
       "slug": "prawn-onton",
@@ -420,7 +420,7 @@
       "imagePath": "/uploads/seed/prawn-onton.jpg",
       "isFeatured": true,
       "isActive": true,
-      "sortOrder": 15
+      "sortOrder": 20
     },
     {
       "slug": "prawn-roll",
@@ -433,7 +433,7 @@
       "imagePath": "/uploads/mqrjijwn-6fd125dfdf6a672b.webp",
       "isFeatured": true,
       "isActive": true,
-      "sortOrder": 16
+      "sortOrder": 21
     },
     {
       "slug": "piyaju",
@@ -446,7 +446,7 @@
       "imagePath": "/uploads/seed/piyaju.jpg",
       "isFeatured": true,
       "isActive": true,
-      "sortOrder": 17
+      "sortOrder": 22
     },
     {
       "slug": "chicken-momo",
@@ -459,7 +459,7 @@
       "imagePath": "/uploads/mqrjgz10-9bd07bd233bc71a5.webp",
       "isFeatured": true,
       "isActive": true,
-      "sortOrder": 1
+      "sortOrder": 23
     },
     {
       "slug": "chicken-pie",
@@ -472,7 +472,7 @@
       "imagePath": "/uploads/mqrjhc28-7f4607850b25e901.webp",
       "isFeatured": true,
       "isActive": true,
-      "sortOrder": 4
+      "sortOrder": 24
     },
     {
       "slug": "pakora",
@@ -485,12 +485,12 @@
       "imagePath": "/uploads/mqrjkwaw-6ecfcf3307dff70d.webp",
       "isFeatured": true,
       "isActive": true,
-      "sortOrder": 18
+      "sortOrder": 25
     },
     {
       "slug": "mushroom-pie",
       "name": "Mushroom Pie",
-      "category": "Fried",
+      "category": "Baked",
       "priceCents": 450,
       "unit": "piece",
       "qty": 1,
@@ -498,12 +498,12 @@
       "imagePath": "/uploads/seed/mushroom-pie.jpg",
       "isFeatured": false,
       "isActive": false,
-      "sortOrder": 19
+      "sortOrder": 26
     },
     {
       "slug": "vegetable-momo",
       "name": "Vegetable Momo",
-      "category": "Fried",
+      "category": "Miscellaneous",
       "priceCents": 700,
       "unit": "piece",
       "qty": 1,
@@ -511,7 +511,7 @@
       "imagePath": "/uploads/seed/vegetable-momo.jpg",
       "isFeatured": false,
       "isActive": false,
-      "sortOrder": 20
+      "sortOrder": 27
     },
     {
       "slug": "liver-singara",
@@ -524,12 +524,12 @@
       "imagePath": "/uploads/seed/liver-singara.jpg",
       "isFeatured": false,
       "isActive": false,
-      "sortOrder": 21
+      "sortOrder": 28
     },
     {
       "slug": "tuna-patty",
       "name": "Tuna Patty",
-      "category": "Fried",
+      "category": "Baked",
       "priceCents": 350,
       "unit": "piece",
       "qty": 1,
@@ -537,7 +537,7 @@
       "imagePath": "/uploads/seed/tuna-patty.jpg",
       "isFeatured": false,
       "isActive": false,
-      "sortOrder": 22
+      "sortOrder": 29
     },
     {
       "slug": "vegetable-patty",
@@ -550,7 +550,7 @@
       "imagePath": "/uploads/seed/vegetable-patty.jpg",
       "isFeatured": false,
       "isActive": false,
-      "sortOrder": 5
+      "sortOrder": 30
     },
     {
       "slug": "tuna-sandwich",
@@ -563,7 +563,7 @@
       "imagePath": "/uploads/seed/tuna-sandwich.jpg",
       "isFeatured": false,
       "isActive": false,
-      "sortOrder": 2
+      "sortOrder": 31
     },
     {
       "slug": "small-burger",
@@ -576,7 +576,7 @@
       "imagePath": "/uploads/seed/small-burger.jpg",
       "isFeatured": false,
       "isActive": false,
-      "sortOrder": 3
+      "sortOrder": 32
     },
     {
       "slug": "beef-roll",
@@ -589,7 +589,7 @@
       "imagePath": "/uploads/seed/beef-roll.jpg",
       "isFeatured": false,
       "isActive": false,
-      "sortOrder": 23
+      "sortOrder": 33
     },
     {
       "slug": "chicken-pocket",
@@ -602,7 +602,7 @@
       "imagePath": "/uploads/mqrjpqsn-fb809724625bfbd5.webp",
       "isFeatured": true,
       "isActive": true,
-      "sortOrder": 24
+      "sortOrder": 34
     },
     {
       "slug": "swiss-short-bread",
@@ -680,7 +680,7 @@
       "imagePath": "/uploads/mqrjrm7v-66da17247d992ce5.webp",
       "isFeatured": false,
       "isActive": true,
-      "sortOrder": 4
+      "sortOrder": 6
     },
     {
       "slug": "peanut-biscuit",
@@ -693,7 +693,7 @@
       "imagePath": "/uploads/mqrjsnse-1681823b1142c511.webp",
       "isFeatured": false,
       "isActive": true,
-      "sortOrder": 5
+      "sortOrder": 7
     },
     {
       "slug": "danish-biscuit",
@@ -706,7 +706,7 @@
       "imagePath": "/uploads/seed/danish-biscuit.jpg",
       "isFeatured": false,
       "isActive": true,
-      "sortOrder": 6
+      "sortOrder": 8
     },
     {
       "slug": "coconut-biscuit",
@@ -719,7 +719,7 @@
       "imagePath": "/uploads/mqrjt22a-1681823b1142c511.webp",
       "isFeatured": false,
       "isActive": true,
-      "sortOrder": 7
+      "sortOrder": 9
     },
     {
       "slug": "morobba-cake-small",
@@ -732,7 +732,7 @@
       "imagePath": "/uploads/seed/morobba-cake-small.jpg",
       "isFeatured": false,
       "isActive": true,
-      "sortOrder": 1
+      "sortOrder": 10
     },
     {
       "slug": "ovaltin-cake-small",
@@ -745,7 +745,7 @@
       "imagePath": "/uploads/seed/ovaltin-cake-small.jpg",
       "isFeatured": false,
       "isActive": true,
-      "sortOrder": 2
+      "sortOrder": 11
     },
     {
       "slug": "butter-bun",
@@ -758,7 +758,7 @@
       "imagePath": "/uploads/seed/butter-bun.jpg",
       "isFeatured": true,
       "isActive": true,
-      "sortOrder": 3
+      "sortOrder": 12
     },
     {
       "slug": "cream-roll",
@@ -771,7 +771,7 @@
       "imagePath": "/uploads/seed/cream-roll.jpg",
       "isFeatured": true,
       "isActive": true,
-      "sortOrder": 4
+      "sortOrder": 13
     },
     {
       "slug": "kaza",
@@ -784,7 +784,7 @@
       "imagePath": "/uploads/seed/kaza.jpg",
       "isFeatured": false,
       "isActive": false,
-      "sortOrder": 1
+      "sortOrder": 14
     },
     {
       "slug": "fruit-cake",
@@ -797,7 +797,7 @@
       "imagePath": "/uploads/seed/fruit-cake.jpg",
       "isFeatured": false,
       "isActive": false,
-      "sortOrder": 5
+      "sortOrder": 15
     },
     {
       "slug": "baklava",
@@ -810,7 +810,7 @@
       "imagePath": "/uploads/seed/baklava.jpg",
       "isFeatured": false,
       "isActive": false,
-      "sortOrder": 2
+      "sortOrder": 16
     },
     {
       "slug": "patishapta",
@@ -823,7 +823,7 @@
       "imagePath": "/uploads/seed/patishapta.jpg",
       "isFeatured": false,
       "isActive": false,
-      "sortOrder": 3
+      "sortOrder": 17
     },
     {
       "slug": "swiss-chocolate-shortbread",
@@ -836,7 +836,7 @@
       "imagePath": "/uploads/mqrt4hnm-51a32434875ed0dc.webp",
       "isFeatured": true,
       "isActive": true,
-      "sortOrder": 8
+      "sortOrder": 18
     },
     {
       "slug": "narikel-puli",
@@ -849,7 +849,7 @@
       "imagePath": "/uploads/seed/narikel-puli.jpg",
       "isFeatured": false,
       "isActive": false,
-      "sortOrder": 4
+      "sortOrder": 19
     },
     {
       "slug": "ovaltin-cake-half-pound",
@@ -862,7 +862,7 @@
       "imagePath": "/uploads/seed/ovaltin-cake-half-pound.jpg",
       "isFeatured": true,
       "isActive": true,
-      "sortOrder": 6
+      "sortOrder": 20
     },
     {
       "slug": "rasgulla",
@@ -875,7 +875,7 @@
       "imagePath": "/uploads/seed/rasgulla.jpg",
       "isFeatured": true,
       "isActive": true,
-      "sortOrder": 5
+      "sortOrder": 1
     },
     {
       "slug": "ghazia",
@@ -888,7 +888,7 @@
       "imagePath": "/uploads/seed/ghazia.jpg",
       "isFeatured": true,
       "isActive": true,
-      "sortOrder": 6
+      "sortOrder": 2
     },
     {
       "slug": "balu-shai",
@@ -901,7 +901,7 @@
       "imagePath": "/uploads/seed/balu-shai.jpg",
       "isFeatured": true,
       "isActive": true,
-      "sortOrder": 7
+      "sortOrder": 3
     },
     {
       "slug": "bondia",
@@ -914,7 +914,7 @@
       "imagePath": "/uploads/seed/bondia.jpg",
       "isFeatured": false,
       "isActive": true,
-      "sortOrder": 8
+      "sortOrder": 4
     },
     {
       "slug": "motichur-laddoo",
@@ -927,7 +927,7 @@
       "imagePath": "/uploads/mqrju6go-8c02423f5a5b2c1a.webp",
       "isFeatured": true,
       "isActive": true,
-      "sortOrder": 9
+      "sortOrder": 5
     },
     {
       "slug": "laddu-three-varieties",
@@ -940,7 +940,7 @@
       "imagePath": "/uploads/seed/laddu-three-varieties.jpg",
       "isFeatured": true,
       "isActive": true,
-      "sortOrder": 10
+      "sortOrder": 6
     },
     {
       "slug": "coconut-naru",
@@ -953,7 +953,7 @@
       "imagePath": "/uploads/seed/coconut-naru.jpg",
       "isFeatured": true,
       "isActive": true,
-      "sortOrder": 11
+      "sortOrder": 7
     },
     {
       "slug": "shondesh",
@@ -966,7 +966,7 @@
       "imagePath": "/uploads/seed/shondesh.jpg",
       "isFeatured": true,
       "isActive": true,
-      "sortOrder": 12
+      "sortOrder": 8
     },
     {
       "slug": "amittri",
@@ -979,7 +979,7 @@
       "imagePath": "/uploads/seed/amittri.jpg",
       "isFeatured": true,
       "isActive": true,
-      "sortOrder": 13
+      "sortOrder": 9
     },
     {
       "slug": "milk-cake",
@@ -992,7 +992,7 @@
       "imagePath": "/uploads/mqrjuyel-f93b2bedf895fcf1.webp",
       "isFeatured": true,
       "isActive": true,
-      "sortOrder": 14
+      "sortOrder": 10
     },
     {
       "slug": "shoan-papri",
@@ -1005,7 +1005,7 @@
       "imagePath": "/uploads/seed/shoan-papri.jpg",
       "isFeatured": true,
       "isActive": true,
-      "sortOrder": 15
+      "sortOrder": 11
     },
     {
       "slug": "almond-barfi",
@@ -1018,7 +1018,7 @@
       "imagePath": "/uploads/mqrjvlg9-0684bc453a75e094.webp",
       "isFeatured": true,
       "isActive": true,
-      "sortOrder": 16
+      "sortOrder": 12
     },
     {
       "slug": "pera",
@@ -1031,7 +1031,7 @@
       "imagePath": "/uploads/seed/pera.jpg",
       "isFeatured": true,
       "isActive": true,
-      "sortOrder": 17
+      "sortOrder": 13
     },
     {
       "slug": "monsor",
@@ -1044,7 +1044,7 @@
       "imagePath": "/uploads/seed/monsor.jpg",
       "isFeatured": false,
       "isActive": false,
-      "sortOrder": 18
+      "sortOrder": 14
     },
     {
       "slug": "kodom",
@@ -1057,7 +1057,7 @@
       "imagePath": "/uploads/seed/kodom.jpg",
       "isFeatured": true,
       "isActive": true,
-      "sortOrder": 19
+      "sortOrder": 15
     },
     {
       "slug": "aflaton",
@@ -1070,7 +1070,7 @@
       "imagePath": "/uploads/seed/aflaton.jpg",
       "isFeatured": false,
       "isActive": false,
-      "sortOrder": 20
+      "sortOrder": 16
     },
     {
       "slug": "halwa-chana-dal-hazelnut",
@@ -1083,7 +1083,7 @@
       "imagePath": "/uploads/seed/halwa-chana-dal-hazelnut.jpg",
       "isFeatured": false,
       "isActive": false,
-      "sortOrder": 21
+      "sortOrder": 17
     },
     {
       "slug": "chana-mukhi",
@@ -1096,7 +1096,7 @@
       "imagePath": "/uploads/seed/chana-mukhi.jpg",
       "isFeatured": false,
       "isActive": false,
-      "sortOrder": 22
+      "sortOrder": 18
     },
     {
       "slug": "cham-cham",
@@ -1109,7 +1109,7 @@
       "imagePath": "/uploads/seed/cham-cham.jpg",
       "isFeatured": false,
       "isActive": true,
-      "sortOrder": 23
+      "sortOrder": 19
     },
     {
       "slug": "rosmalai",
@@ -1122,7 +1122,7 @@
       "imagePath": "/uploads/seed/rosmalai.jpg",
       "isFeatured": false,
       "isActive": false,
-      "sortOrder": 24
+      "sortOrder": 20
     },
     {
       "slug": "hafsa",
@@ -1135,7 +1135,7 @@
       "imagePath": "/uploads/seed/hafsa.jpg",
       "isFeatured": false,
       "isActive": false,
-      "sortOrder": 25
+      "sortOrder": 21
     },
     {
       "slug": "firni",
@@ -1148,7 +1148,7 @@
       "imagePath": "/uploads/seed/firni.jpg",
       "isFeatured": false,
       "isActive": false,
-      "sortOrder": 26
+      "sortOrder": 22
     },
     {
       "slug": "can_drinks",
@@ -1174,7 +1174,7 @@
       "imagePath": "/uploads/seed/malai-cha.jpg",
       "isFeatured": true,
       "isActive": true,
-      "sortOrder": 1
+      "sortOrder": 2
     },
     {
       "slug": "poro-roti",
@@ -1187,7 +1187,7 @@
       "imagePath": "/uploads/seed/poro-roti.jpg",
       "isFeatured": false,
       "isActive": false,
-      "sortOrder": 1
+      "sortOrder": 3
     },
     {
       "slug": "buttered-corn",
@@ -1200,7 +1200,7 @@
       "imagePath": "/uploads/seed/buttered-corn.jpg",
       "isFeatured": false,
       "isActive": false,
-      "sortOrder": 6
+      "sortOrder": 4
     },
     {
       "slug": "milk-tea",
@@ -1213,7 +1213,7 @@
       "imagePath": "/uploads/mqrjw99s-67516c65747d5135.webp",
       "isFeatured": true,
       "isActive": true,
-      "sortOrder": 2
+      "sortOrder": 5
     },
     {
       "slug": "ginger-tea",
@@ -1226,7 +1226,7 @@
       "imagePath": "/uploads/seed/ginger-tea.jpg",
       "isFeatured": false,
       "isActive": true,
-      "sortOrder": 3
+      "sortOrder": 6
     }
   ]
 }
