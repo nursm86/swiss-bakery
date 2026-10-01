@@ -3,6 +3,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { Router } from "express";
 import { z } from "zod";
+import { CATEGORY_KEYS } from "../categories.js";
 import { parseIdParam } from "../lib/ids.js";
 import { logger } from "../lib/logger.js";
 import { prisma } from "../lib/prisma.js";
@@ -21,7 +22,7 @@ const seedProductSchema = z.object({
     .max(120)
     .regex(/^[a-z0-9][a-z0-9_-]*$/),
   name: z.string().min(1).max(200),
-  category: z.enum(["Meal", "Biriyani", "Savoury", "Bakery", "Sweets", "Beverages", "Drinks", "Miscellaneous"]),
+  category: z.enum(CATEGORY_KEYS),
   priceCents: z.number().int().nonnegative().nullable(),
   unit: z.enum(["piece", "pack", "kg", "cup", "pound", "serve"]),
   qty: z.number().int().min(1).max(999).default(1),

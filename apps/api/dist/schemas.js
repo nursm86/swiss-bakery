@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { CATEGORY_KEYS } from "./categories.js";
 export const loginSchema = z.object({
     email: z.string().email().max(255),
     password: z.string().min(1).max(200),
@@ -10,7 +11,7 @@ export const productCreateSchema = z.object({
         .max(120)
         .regex(/^[a-z0-9][a-z0-9_-]*$/, "lowercase letters, digits, hyphens and underscores only"),
     name: z.string().min(1).max(200),
-    category: z.enum(["Meal", "Biriyani", "Savoury", "Bakery", "Sweets", "Beverages", "Drinks", "Miscellaneous"]),
+    category: z.enum(CATEGORY_KEYS),
     priceCents: z.number().int().nonnegative().nullable().optional(),
     unit: z.enum(["piece", "pack", "kg", "cup", "pound", "serve"]).default("piece"),
     qty: z.number().int().min(1).max(999).default(1),

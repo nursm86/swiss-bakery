@@ -11,6 +11,7 @@
 import Layout from "../layouts/Layout.astro";
 import Nav from "../components/Nav.astro";
 import Footer from "../components/Footer.astro";
+import { MENU_CATEGORIES } from "../lib/categories";
 import { seed } from "../lib/seed";
 
 // Document copy + per-category layout — mirrors the admin Menu builder
@@ -22,16 +23,16 @@ const DOC = {
   location: "SWISS · BAKERY · MINTO",
 };
 
-const CAT_CFG = [
-  { key: "Meal",      title: "MEALS & TANDOORI DEALS", subtitle: "Served with a can drink", columns: 2, showPhotos: true, defaultUnit: "" },
-  { key: "Biriyani",  title: "BIRIYANI",           subtitle: "",                        columns: 2, showPhotos: true, defaultUnit: "" },
-  { key: "Bakery",    title: "BAKERY & BREADS",    subtitle: "Freshly baked in-house", columns: 2, showPhotos: true, defaultUnit: "" },
-  { key: "Beverages", title: "BEVERAGES & SIDES",  subtitle: "",                        columns: 2, showPhotos: true, defaultUnit: "" },
-  { key: "Drinks",    title: "DRINKS",             subtitle: "",                        columns: 2, showPhotos: true, defaultUnit: "" },
-  { key: "Savoury",   title: "SAVOURY BITES",      subtitle: "Per piece",               columns: 3, showPhotos: true, defaultUnit: "" },
-  { key: "Sweets",    title: "TRADITIONAL SWEETS", subtitle: "Priced by weight",        columns: 3, showPhotos: true, defaultUnit: "kg" },
-  { key: "Miscellaneous", title: "MISCELLANEOUS",  subtitle: "",                        columns: 2, showPhotos: true, defaultUnit: "" },
-];
+// Order, titles, columns and units per category come from data/categories.json.
+// The client script below reads this same list from #menu-data.
+const CAT_CFG = MENU_CATEGORIES.map((c) => ({
+  key: c.key,
+  title: c.menu.title,
+  subtitle: c.menu.subtitle,
+  columns: c.menu.columns,
+  showPhotos: true,
+  defaultUnit: c.menu.defaultUnit,
+}));
 
 const toItem = (p: (typeof seed.products)[number], defaultUnit: string) => ({
   name: p.name,
@@ -52,7 +53,7 @@ const categories = CAT_CFG.map((c) => {
   return { title: c.title, subtitle: c.subtitle, columns: c.columns, showPhotos: c.showPhotos, items };
 }).filter((c) => c.items.length > 0);
 
-const INITIAL = { doc: DOC, categories };
+const INITIAL = { doc: DOC, categoryConfig: CAT_CFG, categories };
 ---
 
 <Layout
@@ -307,17 +308,9 @@ const INITIAL = { doc: DOC, categories };
       };
 
       // ---- group live /api/products into the same payload shape ----
-      const DOC = JSON.parse(document.getElementById("menu-data").textContent).doc;
-      const CAT_CFG = [
-        { key: "Meal",      title: "MEALS & TANDOORI DEALS", subtitle: "Served with a can drink", columns: 2, showPhotos: true, defaultUnit: "" },
-        { key: "Biriyani",  title: "BIRIYANI",           subtitle: "",                        columns: 2, showPhotos: true, defaultUnit: "" },
-        { key: "Bakery",    title: "BAKERY & BREADS",    subtitle: "Freshly baked in-house", columns: 2, showPhotos: true, defaultUnit: "" },
-        { key: "Beverages", title: "BEVERAGES & SIDES",  subtitle: "",                        columns: 2, showPhotos: true, defaultUnit: "" },
-        { key: "Drinks",    title: "DRINKS",             subtitle: "",                        columns: 2, showPhotos: true, defaultUnit: "" },
-        { key: "Savoury",   title: "SAVOURY BITES",      subtitle: "Per piece",               columns: 3, showPhotos: true, defaultUnit: "" },
-        { key: "Sweets",    title: "TRADITIONAL SWEETS", subtitle: "Priced by weight",        columns: 3, showPhotos: true, defaultUnit: "kg" },
-        { key: "Miscellaneous", title: "MISCELLANEOUS",  subtitle: "",                        columns: 2, showPhotos: true, defaultUnit: "" },
-      ];
+      const MENU_DATA = JSON.parse(document.getElementById("menu-data").textContent);
+      const DOC = MENU_DATA.doc;
+      const CAT_CFG = MENU_DATA.categoryConfig;
 
       const buildPayload = (products) => {
         const byCat = new Map();

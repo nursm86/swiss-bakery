@@ -12,6 +12,7 @@ import { logger } from "./lib/logger.js";
 import { authRequired } from "./middleware/authRequired.js";
 import { errorHandler } from "./middleware/errorHandler.js";
 import { authRouter } from "./routes/auth.js";
+import { categoriesRouter } from "./routes/categories.js";
 import { heroRouter } from "./routes/hero.js";
 import { noticeRouter } from "./routes/notice.js";
 import { pagesRouter } from "./routes/pages.js";
@@ -124,6 +125,7 @@ app.get("/api/health", (_req, res) => {
 });
 
 app.use("/api/auth", authRouter);
+app.use("/api/categories", categoriesRouter);
 app.use("/api/products", productsRouter);
 app.use("/api/hero", heroRouter);
 app.use("/api/notice", noticeRouter);

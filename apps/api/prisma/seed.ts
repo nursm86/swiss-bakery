@@ -12,7 +12,7 @@ const SEED_JSON = path.join(REPO_ROOT, "data", "products.seed.json");
 type SeedProduct = {
   slug: string;
   name: string;
-  category: "Meal" | "Biriyani" | "Savoury" | "Bakery" | "Sweets" | "Beverages" | "Drinks" | "Miscellaneous";
+  category: string;
   priceCents: number | null;
   unit: string;
   qty: number;

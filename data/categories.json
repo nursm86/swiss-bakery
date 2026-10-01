@@ -1,0 +1,65 @@
+{
+  "_meta": {
+    "about": "The one list of product categories. The API validates Product.category against these keys, the admin builds its category dropdown from GET /api/categories, and the web build renders the homepage sections, footer links and /menu from it.",
+    "keys": "key is what is stored in Product.category. Renaming or removing a key orphans every product that uses it, so move those products first.",
+    "order": "Array order is the homepage and admin order. menu.order is the order on the printable /menu card."
+  },
+  "categories": [
+    {
+      "key": "Meal",
+      "label": "Meals & Tandoori Deals",
+      "slug": "meal",
+      "blurb": "Wrap meals and tandoori plates - served with paratha, salad and a chilled can drink.",
+      "menu": { "title": "MEALS & TANDOORI DEALS", "subtitle": "Served with a can drink", "columns": 2, "order": 1, "defaultUnit": "" }
+    },
+    {
+      "key": "Biriyani",
+      "label": "Biriyani",
+      "slug": "biriyani",
+      "blurb": "Biriyani from the Swiss Bakery kitchen.",
+      "menu": { "title": "BIRIYANI", "subtitle": "", "columns": 2, "order": 2, "defaultUnit": "" }
+    },
+    {
+      "key": "Savoury",
+      "label": "Savoury Bites",
+      "slug": "savoury",
+      "blurb": "Patties, rolls, samosas & more - baked and fried fresh through the day.",
+      "menu": { "title": "SAVOURY BITES", "subtitle": "Per piece", "columns": 3, "order": 6, "defaultUnit": "" }
+    },
+    {
+      "key": "Bakery",
+      "label": "Bakery & Breads",
+      "slug": "bakery",
+      "blurb": "Short breads, buns, cream rolls and Bengali pithas from the oven.",
+      "menu": { "title": "BAKERY & BREADS", "subtitle": "Freshly baked in-house", "columns": 2, "order": 3, "defaultUnit": "" }
+    },
+    {
+      "key": "Sweets",
+      "label": "Traditional Sweets",
+      "slug": "sweets",
+      "blurb": "Rasgulla, rosmalai, laddu and house-made mishti, by the kilo.",
+      "menu": { "title": "TRADITIONAL SWEETS", "subtitle": "Priced by weight", "columns": 3, "order": 7, "defaultUnit": "kg" }
+    },
+    {
+      "key": "Beverages",
+      "label": "Beverages & Sides",
+      "slug": "beverages",
+      "blurb": "Malai cha, poro roti and seasonal sides - the perfect pairing.",
+      "menu": { "title": "BEVERAGES & SIDES", "subtitle": "", "columns": 2, "order": 4, "defaultUnit": "" }
+    },
+    {
+      "key": "Drinks",
+      "label": "Drinks",
+      "slug": "drinks",
+      "blurb": "Cold drinks to go with your order.",
+      "menu": { "title": "DRINKS", "subtitle": "", "columns": 2, "order": 5, "defaultUnit": "" }
+    },
+    {
+      "key": "Miscellaneous",
+      "label": "Miscellaneous",
+      "slug": "miscellaneous",
+      "blurb": "Everything else from the shop.",
+      "menu": { "title": "MISCELLANEOUS", "subtitle": "", "columns": 2, "order": 8, "defaultUnit": "" }
+    }
+  ]
+}

@@ -150,7 +150,7 @@ import Footer from "../components/Footer.astro";
           if (!p.isActive) continue;
           if (!presentInMenu.has(p.slug)) {
             const grid = document.querySelector<HTMLElement>(
-              `#cat-${p.category.toLowerCase()} > div.grid`,
+              `[data-category="${CSS.escape(p.category)}"] > div.grid`,
             );
             if (grid) grid.appendChild(buildCard(p, "md"));
           }

@@ -2,6 +2,7 @@
 const state = {
   accessToken: null,
   accessExpiresAt: 0,
+  categories: [],
   products: [],
   heroes: [],
   notice: null,
@@ -145,6 +146,7 @@ export const boot = async () => {
   wireSettings();
   wirePages();
   wireMenu();
+  await loadCategories(); // products render grouped by these, so load them first
   await Promise.all([loadProducts(), loadHero(), loadNotice(), loadSettings(), loadPages()]);
   loadMenu();
 };
@@ -178,6 +180,16 @@ const loadProducts = async () => {
   renderProducts();
 };
 
+/* ---------- Categories (data/categories.json via GET /api/categories) ---------- */
+const loadCategories = async () => {
+  const data = await api("/api/categories");
+  state.categories = data.categories;
+  const select = document.querySelector("#product-form select[name=category]");
+  select.replaceChildren(...state.categories.map((c) => new Option(c.label, c.key)));
+};
+
+const categoryLabel = (key) => state.categories.find((c) => c.key === key)?.label ?? key;
+
 const renderProducts = () => {
   const root = document.getElementById("products-list");
   root.innerHTML = "";
@@ -186,12 +198,15 @@ const renderProducts = () => {
     grouped[p.category] ||= [];
     grouped[p.category].push(p);
   }
-  const order = ["Meal", "Biriyani", "Savoury", "Bakery", "Sweets", "Beverages", "Drinks", "Miscellaneous"];
-  for (const cat of order) {
+  // Known categories first, in their configured order. A product whose category
+  // was removed from the list still shows (under its old key) so it can be moved.
+  const knownKeys = state.categories.map((c) => c.key);
+  const orphanKeys = Object.keys(grouped).filter((key) => !knownKeys.includes(key));
+  for (const cat of [...knownKeys, ...orphanKeys]) {
     const items = grouped[cat];
     if (!items || items.length === 0) continue;
     const header = document.createElement("h3");
-    header.textContent = cat;
+    header.textContent = knownKeys.includes(cat) ? categoryLabel(cat) : `${cat} (category no longer exists - move these)`;
     header.style.gridColumn = "1 / -1";
     header.style.fontFamily = "Playfair Display, serif";
     header.style.color = "var(--navy)";
@@ -656,15 +671,11 @@ const UNIT_OPTIONS = [
   { value: "pound", label: "pound" },
   { value: "half-pound", label: "½ pound" },
 ];
-const CAT_DEFAULTS = {
-  Meal: { title: "MEALS & TANDOORI DEALS", subtitle: "Served with a can drink", defaultUnit: "" },
-  Savoury: { title: "SAVOURY BITES", subtitle: "Per piece", defaultUnit: "" },
-  Bakery: { title: "BAKERY & BREADS", subtitle: "Freshly baked in-house", defaultUnit: "" },
-  Sweets: { title: "TRADITIONAL SWEETS", subtitle: "Priced by weight", defaultUnit: "kg" },
-  Beverages: { title: "BEVERAGES & SIDES", subtitle: "", defaultUnit: "" },
-  Biriyani: { title: "BIRIYANI", subtitle: "", defaultUnit: "" },
-  Drinks: { title: "DRINKS", subtitle: "", defaultUnit: "" },
-  Miscellaneous: { title: "MISCELLANEOUS", subtitle: "", defaultUnit: "" },
+const categoryMenuDefaults = (key) => {
+  const category = state.categories.find((c) => c.key === key);
+  if (!category) return { title: key.toUpperCase(), subtitle: "", defaultUnit: "" };
+  const { title, subtitle, defaultUnit } = category.menu;
+  return { title, subtitle, defaultUnit };
 };
 
 const defaultMenu = () => ({
@@ -735,7 +746,7 @@ const reconcileMenu = (cfg, products) => {
   }
   for (const [key, items] of byCat) {
     if (seen.has(key)) continue;
-    const def = CAT_DEFAULTS[key] ?? { title: key.toUpperCase(), subtitle: "", defaultUnit: "" };
+    const def = categoryMenuDefaults(key);
     cats.push({
       key,
       title: def.title,
