@@ -170,3 +170,4 @@ run-dev.command
 Swiss_Bakery_Logo.pdf
 scripts/transparent-logos.mjs
 scripts/resize-logos.mjs
+/apps/web/dist
