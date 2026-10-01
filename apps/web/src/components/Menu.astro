@@ -19,6 +19,7 @@ import ProductCard from "./ProductCard.astro";
       {CATEGORY_ORDER.map((c) => (
         <a
           href={`#cat-${c.key.toLowerCase()}`}
+          hidden={byCategory(c.key).length === 0}
           class="px-4 py-2 rounded-full border border-[color:var(--color-cream-200)] hover:bg-[color:var(--color-cream)] transition text-[color:var(--color-navy)] font-medium"
         >
           {c.label}
@@ -26,11 +27,12 @@ import ProductCard from "./ProductCard.astro";
       ))}
     </nav>
 
+    {/* Empty categories still render (hidden) so the live /api/products refresh
+        in index.astro has a grid to drop admin-added products into. */}
     {CATEGORY_ORDER.map((c) => {
       const items = byCategory(c.key);
-      if (items.length === 0) return null;
       return (
-        <div id={`cat-${c.key.toLowerCase()}`} class="mt-16 scroll-mt-24">
+        <div id={`cat-${c.key.toLowerCase()}`} hidden={items.length === 0} class="mt-16 scroll-mt-24">
           <div class="flex items-end justify-between gap-3 flex-wrap">
             <div>
               <h3 class="font-[family-name:var(--font-display)] text-2xl sm:text-3xl text-[color:var(--color-navy)]">{c.label}</h3>

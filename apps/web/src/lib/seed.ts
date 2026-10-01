@@ -3,7 +3,7 @@ import seedJson from "../../../../data/products.seed.json" with { type: "json" }
 export type SeedProduct = {
   slug: string;
   name: string;
-  category: "Meal" | "Savoury" | "Bakery" | "Sweets" | "Beverages";
+  category: "Meal" | "Biriyani" | "Savoury" | "Bakery" | "Sweets" | "Beverages" | "Drinks" | "Miscellaneous";
   priceCents: number | null;
   unit: string;
   qty?: number;
@@ -23,10 +23,13 @@ export const seed = seedJson as SeedFile;
 
 export const CATEGORY_ORDER = [
   { key: "Meal", label: "Meals & Tandoori Deals", blurb: "Wrap meals and tandoori plates - served with paratha, salad and a chilled can drink." },
+  { key: "Biriyani", label: "Biriyani", blurb: "Biriyani from the Swiss Bakery kitchen." },
   { key: "Savoury", label: "Savoury Bites", blurb: "Patties, rolls, samosas & more - baked and fried fresh through the day." },
   { key: "Bakery", label: "Bakery & Breads", blurb: "Short breads, buns, cream rolls and Bengali pithas from the oven." },
   { key: "Sweets", label: "Traditional Sweets", blurb: "Rasgulla, rosmalai, laddu and house-made mishti, by the kilo." },
   { key: "Beverages", label: "Beverages & Sides", blurb: "Malai cha, poro roti and seasonal sides - the perfect pairing." },
+  { key: "Drinks", label: "Drinks", blurb: "Cold drinks to go with your order." },
+  { key: "Miscellaneous", label: "Miscellaneous", blurb: "Everything else from the shop." },
 ] as const;
 
 export const featured: SeedProduct[] = seed.products

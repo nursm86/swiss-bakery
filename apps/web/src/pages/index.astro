@@ -167,8 +167,11 @@ import Footer from "../components/Footer.astro";
           const count = grid.querySelectorAll("article.card").length;
           const badge = section.querySelector<HTMLElement>("span.text-xs.uppercase");
           if (badge) badge.textContent = `${count} items`;
-          // Hide section if it ended up empty.
-          if (count === 0) section.style.display = "none";
+          // Show/hide the section and its nav pill to match the live catalogue,
+          // so a category that was empty at build time appears once it has items.
+          section.hidden = count === 0;
+          const pill = document.querySelector<HTMLElement>(`#menu nav a[href="#${section.id}"]`);
+          if (pill) pill.hidden = count === 0;
         });
       })
       .catch(() => {});

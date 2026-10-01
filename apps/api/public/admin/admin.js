@@ -186,7 +186,7 @@ const renderProducts = () => {
     grouped[p.category] ||= [];
     grouped[p.category].push(p);
   }
-  const order = ["Meal", "Savoury", "Bakery", "Sweets", "Beverages"];
+  const order = ["Meal", "Biriyani", "Savoury", "Bakery", "Sweets", "Beverages", "Drinks", "Miscellaneous"];
   for (const cat of order) {
     const items = grouped[cat];
     if (!items || items.length === 0) continue;
@@ -662,6 +662,9 @@ const CAT_DEFAULTS = {
   Bakery: { title: "BAKERY & BREADS", subtitle: "Freshly baked in-house", defaultUnit: "" },
   Sweets: { title: "TRADITIONAL SWEETS", subtitle: "Priced by weight", defaultUnit: "kg" },
   Beverages: { title: "BEVERAGES & SIDES", subtitle: "", defaultUnit: "" },
+  Biriyani: { title: "BIRIYANI", subtitle: "", defaultUnit: "" },
+  Drinks: { title: "DRINKS", subtitle: "", defaultUnit: "" },
+  Miscellaneous: { title: "MISCELLANEOUS", subtitle: "", defaultUnit: "" },
 };
 
 const defaultMenu = () => ({

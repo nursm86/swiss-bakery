@@ -24,10 +24,13 @@ const DOC = {
 
 const CAT_CFG = [
   { key: "Meal",      title: "MEALS & TANDOORI DEALS", subtitle: "Served with a can drink", columns: 2, showPhotos: true, defaultUnit: "" },
+  { key: "Biriyani",  title: "BIRIYANI",           subtitle: "",                        columns: 2, showPhotos: true, defaultUnit: "" },
   { key: "Bakery",    title: "BAKERY & BREADS",    subtitle: "Freshly baked in-house", columns: 2, showPhotos: true, defaultUnit: "" },
   { key: "Beverages", title: "BEVERAGES & SIDES",  subtitle: "",                        columns: 2, showPhotos: true, defaultUnit: "" },
+  { key: "Drinks",    title: "DRINKS",             subtitle: "",                        columns: 2, showPhotos: true, defaultUnit: "" },
   { key: "Savoury",   title: "SAVOURY BITES",      subtitle: "Per piece",               columns: 3, showPhotos: true, defaultUnit: "" },
   { key: "Sweets",    title: "TRADITIONAL SWEETS", subtitle: "Priced by weight",        columns: 3, showPhotos: true, defaultUnit: "kg" },
+  { key: "Miscellaneous", title: "MISCELLANEOUS",  subtitle: "",                        columns: 2, showPhotos: true, defaultUnit: "" },
 ];
 
 const toItem = (p: (typeof seed.products)[number], defaultUnit: string) => ({
@@ -307,10 +310,13 @@ const INITIAL = { doc: DOC, categories };
       const DOC = JSON.parse(document.getElementById("menu-data").textContent).doc;
       const CAT_CFG = [
         { key: "Meal",      title: "MEALS & TANDOORI DEALS", subtitle: "Served with a can drink", columns: 2, showPhotos: true, defaultUnit: "" },
+        { key: "Biriyani",  title: "BIRIYANI",           subtitle: "",                        columns: 2, showPhotos: true, defaultUnit: "" },
         { key: "Bakery",    title: "BAKERY & BREADS",    subtitle: "Freshly baked in-house", columns: 2, showPhotos: true, defaultUnit: "" },
         { key: "Beverages", title: "BEVERAGES & SIDES",  subtitle: "",                        columns: 2, showPhotos: true, defaultUnit: "" },
+        { key: "Drinks",    title: "DRINKS",             subtitle: "",                        columns: 2, showPhotos: true, defaultUnit: "" },
         { key: "Savoury",   title: "SAVOURY BITES",      subtitle: "Per piece",               columns: 3, showPhotos: true, defaultUnit: "" },
         { key: "Sweets",    title: "TRADITIONAL SWEETS", subtitle: "Priced by weight",        columns: 3, showPhotos: true, defaultUnit: "kg" },
+        { key: "Miscellaneous", title: "MISCELLANEOUS",  subtitle: "",                        columns: 2, showPhotos: true, defaultUnit: "" },
       ];
 
       const buildPayload = (products) => {
