@@ -801,3 +801,23 @@ button.small-btn {
     display: none;
   }
 }
+
+/* ---------- "Powered by" credit (dashboard footer and login card) ---------- */
+.admin-credit {
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--muted);
+  padding: 1.5rem 1rem 2rem;
+  margin: 0;
+}
+.card .admin-credit {
+  padding: 1.25rem 0 0;
+}
+.admin-credit a {
+  color: var(--navy);
+  font-weight: 600;
+  text-decoration: none;
+}
+.admin-credit a:hover {
+  text-decoration: underline;
+}
