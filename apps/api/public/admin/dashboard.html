@@ -22,6 +22,7 @@
 
     <nav class="tabs" role="tablist">
       <button class="tab active" data-tab="products" role="tab">Products</button>
+      <button class="tab" data-tab="categories" role="tab">Categories</button>
       <button class="tab" data-tab="hero" role="tab">Hero banner</button>
       <button class="tab" data-tab="notice" role="tab">Notice strip</button>
       <button class="tab" data-tab="settings" role="tab">Site info</button>
@@ -41,6 +42,17 @@
           </div>
         </div>
         <div id="products-list" class="product-grid"></div>
+      </section>
+
+      <section id="tab-categories" class="panel">
+        <div class="panel-head">
+          <h2>Categories</h2>
+          <button id="new-category-btn" class="primary">+ New category</button>
+        </div>
+        <p class="hint cat-panel-hint">
+          The order here is the order on the website and the menu card. Categories without active products stay hidden on the website.
+        </p>
+        <div id="categories-list" class="cat-list"></div>
       </section>
 
       <section id="tab-hero" class="panel">
@@ -207,6 +219,12 @@
             <span>Category</span>
             <select name="category" required></select>
           </label>
+          <label id="product-subcategory-field" hidden>
+            <span>Subcategory</span>
+            <select name="subcategoryId"></select>
+          </label>
+        </div>
+        <div class="row">
           <label>
             <span>Unit</span>
             <select name="unit">
@@ -279,9 +297,48 @@
       </form>
     </dialog>
 
-    <script type="module" src="/admin/admin.js?v=20261001d"></script>
+    <dialog id="category-dialog">
+      <form id="category-form" class="stack">
+        <h3 id="category-dialog-title">New category</h3>
+        <input type="hidden" name="key" />
+        <label>
+          <span>Name</span>
+          <input type="text" name="label" required maxlength="80" placeholder="e.g. Breakfast Deals" />
+        </label>
+        <label>
+          <span>Short description <span class="hint" style="font-weight:normal">(shown under the name on the website)</span></span>
+          <input type="text" name="blurb" maxlength="300" />
+        </label>
+        <div class="row">
+          <label>
+            <span>Menu card note <span class="hint" style="font-weight:normal">(optional)</span></span>
+            <input type="text" name="menuSubtitle" maxlength="120" placeholder="e.g. Priced by weight" />
+          </label>
+          <div class="field" role="radiogroup" aria-labelledby="cat-cols-caption">
+            <span id="cat-cols-caption">Columns on the menu card</span>
+            <div class="menu-cols-row">
+              <input type="radio" name="menuColumns" id="cat-cols-1" value="1" /><label for="cat-cols-1" class="menu-cols-pill">1</label>
+              <input type="radio" name="menuColumns" id="cat-cols-2" value="2" checked /><label for="cat-cols-2" class="menu-cols-pill">2</label>
+              <input type="radio" name="menuColumns" id="cat-cols-3" value="3" /><label for="cat-cols-3" class="menu-cols-pill">3</label>
+            </div>
+          </div>
+        </div>
+        <fieldset class="sub-editor">
+          <legend>Subcategories <span class="hint">(optional; they group the products inside this category)</span></legend>
+          <ol id="subcategory-rows" class="sub-rows"></ol>
+          <button type="button" id="add-subcategory-btn" class="ghost small-btn">+ Add subcategory</button>
+        </fieldset>
+        <div class="actions">
+          <button type="button" class="ghost" data-close>Cancel</button>
+          <button type="button" class="danger" id="category-delete" hidden>Delete</button>
+          <button type="submit" class="primary">Save</button>
+        </div>
+      </form>
+    </dialog>
+
+    <script type="module" src="/admin/admin.js?v=20261002a"></script>
     <script type="module">
-      import { boot } from "/admin/admin.js?v=20261001d";
+      import { boot } from "/admin/admin.js?v=20261002a";
       boot();
     </script>
   </body>

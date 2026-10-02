@@ -1,5 +1,6 @@
 // Minimal admin SPA - no framework, vanilla JS.
-import { formatPriceLines, parseGstSettings } from "/js/pricing.js?v=20261001d";
+import { groupBySubcategory } from "/js/menu-model.js?v=20261002a";
+import { formatPriceLines, parseGstSettings } from "/js/pricing.js?v=20261002a";
 
 const state = {
   accessToken: null,
@@ -10,6 +11,8 @@ const state = {
   notice: null,
   settings: {},
 };
+
+const plural = (count, singular, pluralForm = `${singular}s`) => `${count} ${count === 1 ? singular : pluralForm}`;
 
 const api = async (path, { method = "GET", body, form } = {}) => {
   const headers = { Accept: "application/json" };
@@ -148,6 +151,7 @@ export const boot = async () => {
   wireSettings();
   wirePages();
   wireMenu();
+  wireCategories();
   await loadCategories(); // products render grouped by these, so load them first
   await Promise.all([loadProducts(), loadHero(), loadNotice(), loadSettings(), loadPages()]);
   loadMenu();
@@ -180,17 +184,215 @@ const loadProducts = async () => {
   const data = await api("/api/products?all=1");
   state.products = data.products;
   renderProducts();
+  renderCategories(); // product counts per category
 };
 
-/* ---------- Categories (data/categories.json via GET /api/categories) ---------- */
+/* ---------- Categories (database, via /api/categories) ---------- */
 const loadCategories = async () => {
   const data = await api("/api/categories");
-  state.categories = data.categories;
-  const select = document.querySelector("#product-form select[name=category]");
-  select.replaceChildren(...state.categories.map((c) => new Option(c.label, c.key)));
+  applyCategories(data.categories);
 };
 
-const categoryLabel = (key) => state.categories.find((c) => c.key === key)?.label ?? key;
+// Every category change returns the fresh list: refresh everything that shows it.
+const applyCategories = (categories) => {
+  state.categories = categories;
+  const select = document.querySelector("#product-form select[name=category]");
+  const selected = select.value;
+  select.replaceChildren(...state.categories.map((c) => new Option(c.label, c.key)));
+  if (selected) select.value = selected;
+  renderCategories();
+  renderProducts();
+};
+
+const findCategory = (key) => state.categories.find((c) => c.key === key);
+const categoryLabel = (key) => findCategory(key)?.label ?? key;
+const countProductsInSubcategory = (id) => state.products.filter((p) => p.subcategoryId === id).length;
+
+const renderCategories = () => {
+  const root = document.getElementById("categories-list");
+  if (!root) return;
+  const productCounts = new Map();
+  for (const p of state.products) productCounts.set(p.category, (productCounts.get(p.category) ?? 0) + 1);
+  root.replaceChildren(
+    ...state.categories.map((category, index) => categoryCard(category, index, productCounts.get(category.key) ?? 0)),
+  );
+};
+
+const categoryCard = (category, index, productCount) => {
+  const card = document.createElement("article");
+  card.className = "cat-card";
+
+  const order = document.createElement("div");
+  order.className = "menu-order-btns";
+  const up = mkBtn("↑", "ghost small icon", () => moveCategory(index, -1));
+  const down = mkBtn("↓", "ghost small icon", () => moveCategory(index, 1));
+  up.disabled = index === 0;
+  down.disabled = index === state.categories.length - 1;
+  up.setAttribute("aria-label", `Move ${category.label} up`);
+  down.setAttribute("aria-label", `Move ${category.label} down`);
+  order.append(up, down);
+
+  const info = document.createElement("div");
+  info.className = "cat-card-info";
+  const name = document.createElement("div");
+  name.className = "cat-card-name";
+  name.textContent = category.label;
+  const meta = document.createElement("div");
+  meta.className = "cat-card-meta";
+  meta.textContent = `${plural(productCount, "product")} · ${plural(category.subcategories.length, "subcategory", "subcategories")}`;
+  info.append(name, meta);
+  if (category.subcategories.length > 0) {
+    const chips = document.createElement("div");
+    chips.className = "cat-card-subs";
+    for (const subcategory of category.subcategories) {
+      const chip = document.createElement("span");
+      chip.className = "cat-sub-chip";
+      chip.textContent = subcategory.label;
+      chips.append(chip);
+    }
+    info.append(chips);
+  }
+
+  const edit = mkBtn("Edit", "ghost", () => openCategoryDialog(category));
+  edit.setAttribute("aria-label", `Edit ${category.label}`);
+  card.append(order, info, edit);
+  return card;
+};
+
+const moveCategory = async (index, step) => {
+  const keys = state.categories.map((c) => c.key);
+  const target = index + step;
+  if (target < 0 || target >= keys.length) return;
+  [keys[index], keys[target]] = [keys[target], keys[index]];
+  try {
+    const data = await api("/api/categories/order", { method: "PUT", body: { keys } });
+    applyCategories(data.categories);
+  } catch (e) {
+    alert(e.message || "Couldn't change the order");
+  }
+};
+
+const wireCategories = () => {
+  document.getElementById("new-category-btn")?.addEventListener("click", () => openCategoryDialog(null));
+  const dialog = document.getElementById("category-dialog");
+  dialog.querySelectorAll("[data-close]").forEach((b) => b.addEventListener("click", () => dialog.close()));
+  document.getElementById("category-form").addEventListener("submit", onCategorySubmit);
+  document.getElementById("category-delete").addEventListener("click", onCategoryDelete);
+  document.getElementById("add-subcategory-btn").addEventListener("click", () => {
+    const row = subcategoryRow(null);
+    document.getElementById("subcategory-rows").append(row);
+    row.querySelector("input").focus();
+  });
+};
+
+// One editable subcategory line in the category dialog. Existing ones carry
+// their id, so the API renames them instead of creating new ones.
+const subcategoryRow = (subcategory) => {
+  const row = document.createElement("li");
+  row.className = "sub-row";
+  if (subcategory) row.dataset.id = String(subcategory.id);
+
+  const order = document.createElement("div");
+  order.className = "menu-order-btns";
+  const moveRow = (step) => {
+    const neighbour = step < 0 ? row.previousElementSibling : row.nextElementSibling;
+    if (!neighbour) return;
+    if (step < 0) neighbour.before(row);
+    else neighbour.after(row);
+    row.querySelector("input").focus();
+  };
+  const up = mkBtn("↑", "ghost small icon", () => moveRow(-1));
+  const down = mkBtn("↓", "ghost small icon", () => moveRow(1));
+  up.setAttribute("aria-label", "Move up");
+  down.setAttribute("aria-label", "Move down");
+  order.append(up, down);
+
+  const input = document.createElement("input");
+  input.type = "text";
+  input.maxLength = 60;
+  input.value = subcategory?.label ?? "";
+  input.placeholder = "e.g. Hot drinks";
+  input.setAttribute("aria-label", "Subcategory name");
+
+  const count = document.createElement("span");
+  count.className = "hint sub-row-count";
+  count.textContent = subcategory ? plural(countProductsInSubcategory(subcategory.id), "product") : "new";
+
+  const remove = mkBtn("✕", "ghost small-btn", () => row.remove());
+  remove.setAttribute("aria-label", "Remove subcategory");
+  remove.title = "Remove";
+  row.append(order, input, count, remove);
+  return row;
+};
+
+const openCategoryDialog = (category) => {
+  const form = document.getElementById("category-form");
+  resetForm(form);
+  document.getElementById("category-dialog-title").textContent = category ? `Edit · ${category.label}` : "New category";
+  document.getElementById("category-delete").hidden = !category;
+  form.key.value = category?.key ?? "";
+  form.label.value = category?.label ?? "";
+  form.blurb.value = category?.blurb ?? "";
+  form.menuSubtitle.value = category?.menu.subtitle ?? "";
+  const columns = String(category?.menu.columns ?? 2);
+  for (const radio of form.querySelectorAll("input[name=menuColumns]")) radio.checked = radio.value === columns;
+  document.getElementById("subcategory-rows").replaceChildren(...(category?.subcategories ?? []).map(subcategoryRow));
+  document.getElementById("category-dialog").showModal();
+};
+
+const onCategorySubmit = async (ev) => {
+  ev.preventDefault();
+  const form = ev.target;
+  const key = form.key.value;
+  const subcategories = [...document.querySelectorAll("#subcategory-rows .sub-row")]
+    .map((row) => ({
+      ...(row.dataset.id ? { id: Number(row.dataset.id) } : {}),
+      label: row.querySelector("input").value.trim(),
+    }))
+    .filter((s) => s.label !== "");
+
+  // Products in a removed subcategory stay in the category with no subcategory: say so first.
+  const keptIds = new Set(subcategories.flatMap((s) => (s.id ? [s.id] : [])));
+  const removed = (findCategory(key)?.subcategories ?? []).filter((s) => !keptIds.has(s.id));
+  const affected = removed.reduce((sum, s) => sum + countProductsInSubcategory(s.id), 0);
+  if (affected > 0) {
+    const names = removed.map((s) => `"${s.label}"`).join(", ");
+    if (!confirm(`Removing ${names} moves ${plural(affected, "product")} to no subcategory. Continue?`)) return;
+  }
+
+  const body = {
+    label: form.label.value.trim(),
+    blurb: form.blurb.value.trim(),
+    menuSubtitle: form.menuSubtitle.value.trim(),
+    menuColumns: Number(form.querySelector("input[name=menuColumns]:checked")?.value ?? 2),
+    subcategories,
+  };
+  await withBusy(form, "Saving…", async () => {
+    try {
+      const data = key
+        ? await api(`/api/categories/${encodeURIComponent(key)}`, { method: "PATCH", body })
+        : await api("/api/categories", { method: "POST", body });
+      document.getElementById("category-dialog").close();
+      if (removed.length > 0) await loadProducts(); // their products lost the subcategory
+      applyCategories(data.categories);
+    } catch (e) {
+      alert(e.message || "Save failed");
+    }
+  });
+};
+
+const onCategoryDelete = async () => {
+  const category = findCategory(document.getElementById("category-form").key.value);
+  if (!category) return;
+  if (!confirm(`Delete the category "${category.label}"? This cannot be undone.`)) return;
+  try {
+    const data = await api(`/api/categories/${encodeURIComponent(category.key)}`, { method: "DELETE" });
+    document.getElementById("category-dialog").close();
+    applyCategories(data.categories);
+  } catch (e) {
+    alert(e.message || "Delete failed");
+  }
+};
 
 const renderProducts = () => {
   const root = document.getElementById("products-list");
@@ -208,14 +410,18 @@ const renderProducts = () => {
     const items = grouped[cat];
     if (!items || items.length === 0) continue;
     const header = document.createElement("h3");
+    header.className = "products-cat-head";
     header.textContent = knownKeys.includes(cat) ? categoryLabel(cat) : `${cat} (category no longer exists - move these)`;
-    header.style.gridColumn = "1 / -1";
-    header.style.fontFamily = "Playfair Display, serif";
-    header.style.color = "var(--navy)";
-    header.style.margin = "1.25rem 0 0.25rem";
     root.appendChild(header);
-    for (const p of items.sort((a, b) => a.sortOrder - b.sortOrder)) {
-      root.appendChild(productCard(p));
+    const sorted = items.sort((a, b) => a.sortOrder - b.sortOrder);
+    for (const group of groupBySubcategory(sorted, findCategory(cat)?.subcategories)) {
+      if (group.subcategory) {
+        const subHeader = document.createElement("h4");
+        subHeader.className = "products-sub-head";
+        subHeader.textContent = group.subcategory.label;
+        root.appendChild(subHeader);
+      }
+      for (const p of group.products) root.appendChild(productCard(p));
     }
   }
 };
@@ -250,7 +456,9 @@ const wireProducts = () => {
   document.getElementById("new-product-btn")?.addEventListener("click", () => openProductDialog(null));
   const dlg = document.getElementById("product-dialog");
   dlg.querySelectorAll("[data-close]").forEach((b) => b.addEventListener("click", () => dlg.close()));
-  document.getElementById("product-form").addEventListener("submit", onProductSubmit);
+  const form = document.getElementById("product-form");
+  form.addEventListener("submit", onProductSubmit);
+  form.category.addEventListener("change", () => fillSubcategorySelect(form.category.value, null));
   document.getElementById("product-delete").addEventListener("click", onProductDelete);
   document.getElementById("products-restore-btn")?.addEventListener("click", onProductsRestore);
 };
@@ -307,6 +515,15 @@ const resetForm = (form) => {
   for (const input of form.querySelectorAll("input[type=hidden]")) input.value = "";
 };
 
+// The Subcategory select lists the chosen category's subcategories; hidden when it has none.
+const fillSubcategorySelect = (categoryKey, selectedId) => {
+  const select = document.querySelector("#product-form select[name=subcategoryId]");
+  const subcategories = findCategory(categoryKey)?.subcategories ?? [];
+  select.replaceChildren(new Option("— None —", ""), ...subcategories.map((s) => new Option(s.label, String(s.id))));
+  select.value = subcategories.some((s) => s.id === selectedId) ? String(selectedId) : "";
+  document.getElementById("product-subcategory-field").hidden = subcategories.length === 0;
+};
+
 const openProductDialog = (p) => {
   const dlg = document.getElementById("product-dialog");
   const form = document.getElementById("product-form");
@@ -331,6 +548,7 @@ const openProductDialog = (p) => {
     form.isActive.checked = true;
     if (form.qty) form.qty.value = 1;
   }
+  fillSubcategorySelect(form.category.value, p?.subcategoryId ?? null);
 
   // Auto-fill slug from name. Stops once user types in the slug field directly.
   let autoSlug = !p; // only auto-fill for new products
@@ -372,6 +590,7 @@ const onProductSubmit = async (ev) => {
         slug: form.slug.value.trim(),
         name: form.name.value.trim(),
         category: form.category.value,
+        subcategoryId: form.subcategoryId.value ? Number(form.subcategoryId.value) : null,
         unit: form.unit.value,
         qty: Math.max(1, Math.floor(Number(form.qty?.value) || 1)),
         priceCents: priceStr === "" ? null : Math.round(parseFloat(priceStr) * 100),
@@ -684,10 +903,8 @@ const UNIT_OPTIONS = [
   { value: "half-pound", label: "½ pound" },
 ];
 const categoryMenuDefaults = (key) => {
-  const category = state.categories.find((c) => c.key === key);
-  if (!category) return { title: key.toUpperCase(), subtitle: "", defaultUnit: "" };
-  const { title, subtitle, defaultUnit } = category.menu;
-  return { title, subtitle, defaultUnit };
+  const category = findCategory(key);
+  return { title: category?.menu.title ?? key.toUpperCase(), subtitle: category?.menu.subtitle ?? "", defaultUnit: "" };
 };
 
 const defaultMenu = () => ({
@@ -756,8 +973,12 @@ const reconcileMenu = (cfg, products) => {
     }
     cats.push({ ...c, products: productEntries });
   }
-  for (const [key, items] of byCat) {
-    if (seen.has(key)) continue;
+  // Categories new to the builder join at the end, in the site's category order.
+  const categoryPosition = new Map(state.categories.map((c, i) => [c.key, i]));
+  const positionOf = (key) => categoryPosition.get(key) ?? Number.MAX_SAFE_INTEGER;
+  const unseenKeys = [...byCat.keys()].filter((key) => !seen.has(key)).sort((a, b) => positionOf(a) - positionOf(b));
+  for (const key of unseenKeys) {
+    const items = byCat.get(key);
     const def = categoryMenuDefaults(key);
     cats.push({
       key,
@@ -1085,6 +1306,13 @@ const renderProductRow = (cat, entry, idx, p) => {
   const name = document.createElement("div");
   name.className = "menu-prod-name";
   name.textContent = p.name;
+  const subcategory = findCategory(cat.key)?.subcategories.find((s) => s.id === p.subcategoryId);
+  if (subcategory) {
+    const tag = document.createElement("span");
+    tag.className = "menu-prod-sub";
+    tag.textContent = subcategory.label;
+    name.append(" ", tag);
+  }
 
   const priceWrap = document.createElement("div");
   priceWrap.className = "menu-prod-price";
@@ -1219,10 +1447,16 @@ const openMenuPreview = () => {
               priceCents: e.priceCents,
               unit: e.unitOverride || c.defaultUnit || p.unit || "",
               qty: p.qty ?? 1,
+              subcategoryId: p.subcategoryId,
             };
           })
           .filter(Boolean);
-        return { ...c, items };
+        // Same grouping as the website; the builder's own order holds inside each group.
+        const groups = groupBySubcategory(items, findCategory(c.key)?.subcategories).map((g) => ({
+          label: g.subcategory?.label ?? null,
+          items: g.products,
+        }));
+        return { ...c, items, groups };
       })
       .filter((c) => c.items.length > 0),
   };

@@ -638,3 +638,166 @@ dialog h3 {
     grid-template-columns: 1fr;
   }
 }
+
+/* ---------- Categories tab ---------- */
+.cat-panel-hint {
+  margin: -0.5rem 0 1rem;
+}
+.cat-list {
+  display: grid;
+  gap: 0.75rem;
+}
+.cat-card {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 1rem;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 0.85rem 1rem;
+}
+.cat-card .menu-order-btns {
+  flex-direction: column;
+  gap: 0.25rem;
+}
+.cat-card-info {
+  display: grid;
+  gap: 0.3rem;
+  min-width: 0;
+}
+.cat-card-name {
+  font-family: "Playfair Display", serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--navy);
+}
+.cat-card-meta {
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+.cat-card-subs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-top: 0.15rem;
+}
+.cat-sub-chip {
+  padding: 0.15rem 0.6rem;
+  border-radius: 999px;
+  background: var(--cream);
+  border: 1px solid var(--border);
+  color: var(--navy);
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+/* ---------- Category dialog ---------- */
+.field {
+  display: grid;
+  gap: 0.3rem;
+  font-size: 0.9rem;
+  color: var(--navy);
+  font-weight: 600;
+}
+.sub-editor {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.75rem 0.9rem 0.9rem;
+  margin: 0;
+  display: grid;
+  gap: 0.6rem;
+}
+.sub-editor legend {
+  padding: 0 0.35rem;
+  font-weight: 700;
+  color: var(--navy);
+  font-size: 0.9rem;
+}
+.sub-rows {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.45rem;
+}
+.sub-rows:empty {
+  display: none;
+}
+.sub-row {
+  display: grid;
+  grid-template-columns: auto 1fr auto auto;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.5rem;
+  border-radius: 8px;
+  background: #fcfaf3;
+}
+.sub-row input[type="text"] {
+  padding: 0.5rem 0.65rem;
+}
+.sub-row-count {
+  min-width: 4.5rem;
+  text-align: right;
+  font-size: 0.8rem;
+}
+button.small-btn {
+  padding: 0.4rem 0.75rem;
+  font-size: 0.85rem;
+  justify-self: start;
+}
+
+/* ---------- Products tab: category and subcategory headings ---------- */
+.products-cat-head {
+  grid-column: 1 / -1;
+  font-family: "Playfair Display", serif;
+  color: var(--navy);
+  margin: 1.25rem 0 0.25rem;
+}
+.products-sub-head {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 0.4rem 0 -0.2rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+.products-sub-head::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+/* ---------- Menu builder: subcategory tag on a product row ---------- */
+.menu-prod-sub {
+  display: inline-block;
+  margin-left: 0.35rem;
+  padding: 0.05rem 0.45rem;
+  border-radius: 999px;
+  background: var(--cream);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 0.7rem;
+  font-weight: 600;
+  vertical-align: middle;
+}
+
+@media (max-width: 540px) {
+  .cat-card {
+    grid-template-columns: auto 1fr;
+  }
+  .cat-card > button {
+    grid-column: 1 / -1;
+  }
+  .sub-row {
+    grid-template-columns: auto 1fr auto;
+  }
+  .sub-row-count {
+    display: none;
+  }
+}
