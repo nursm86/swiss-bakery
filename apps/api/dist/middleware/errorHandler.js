@@ -1,11 +1,10 @@
 import { ZodError } from "zod";
 import { logger } from "../lib/logger.js";
 // Map Prisma error codes that have an obvious HTTP equivalent.
-// P2025 = "Record to update/delete not found" → 404
-// P2002 = "Unique constraint failed"           → 409
-const prismaCodeToStatus = {
-    P2025: 404,
-    P2002: 409,
+const prismaErrors = {
+    P2025: { status: 404, message: "Not found" }, // record to update/delete not found
+    P2002: { status: 409, message: "Conflict (already exists)" }, // unique constraint
+    P2003: { status: 409, message: "Conflict (linked to another record)" }, // foreign key
 };
 export const errorHandler = (err, _req, res, _next) => {
     if (err instanceof ZodError) {
@@ -22,14 +21,9 @@ export const errorHandler = (err, _req, res, _next) => {
         "code" in err &&
         typeof err.code === "string") {
         const code = err.code;
-        const mapped = prismaCodeToStatus[code];
+        const mapped = prismaErrors[code];
         if (mapped) {
-            const msg = mapped === 404
-                ? "Not found"
-                : mapped === 409
-                    ? "Conflict (already exists)"
-                    : "Database error";
-            res.status(mapped).json({ error: msg, code });
+            res.status(mapped.status).json({ error: mapped.message, code });
             return;
         }
     }

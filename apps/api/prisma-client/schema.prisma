@@ -39,8 +39,48 @@ model Product {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
+  // category holds Category.key (no foreign key: the API checks it exists).
+  // subcategoryId is optional and must belong to that category.
+  subcategoryId Int?
+  subcategory   Subcategory? @relation(fields: [subcategoryId], references: [id], onDelete: SetNull)
+
   @@index([category, sortOrder])
   @@index([isFeatured])
+  @@index([subcategoryId])
+}
+
+// Product categories, edited in the admin. key is what Product.category stores
+// and slug is the #cat-<slug> anchor on the homepage; neither changes after
+// creation, so renaming the label never orphans products or breaks links.
+model Category {
+  id            Int           @id @default(autoincrement())
+  key           String        @unique @db.VarChar(40)
+  label         String        @db.VarChar(80)
+  slug          String        @unique @db.VarChar(80)
+  blurb         String        @default("") @db.VarChar(300)
+  menuSubtitle  String        @default("") @db.VarChar(120)
+  menuColumns   Int           @default(2)
+  sortOrder     Int           @default(0)
+  subcategories Subcategory[]
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  @@index([sortOrder])
+}
+
+model Subcategory {
+  id         Int       @id @default(autoincrement())
+  categoryId Int
+  category   Category  @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  label      String    @db.VarChar(60)
+  slug       String    @db.VarChar(80)
+  sortOrder  Int       @default(0)
+  products   Product[]
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  @@unique([categoryId, slug])
+  @@index([categoryId, sortOrder])
 }
 
 model HeroBanner {

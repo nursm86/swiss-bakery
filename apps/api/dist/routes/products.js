@@ -3,7 +3,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { Router } from "express";
 import { z } from "zod";
-import { CATEGORY_KEYS } from "../categories.js";
+import { resolveProductPlacement } from "../categories.js";
 import { parseIdParam } from "../lib/ids.js";
 import { logger } from "../lib/logger.js";
 import { prisma } from "../lib/prisma.js";
@@ -20,7 +20,7 @@ const seedProductSchema = z.object({
         .max(120)
         .regex(/^[a-z0-9][a-z0-9_-]*$/),
     name: z.string().min(1).max(200),
-    category: z.enum(CATEGORY_KEYS),
+    category: z.string().min(1).max(40),
     priceCents: z.number().int().nonnegative().nullable(),
     unit: z.enum(["piece", "pack", "kg", "cup", "pound", "serve"]),
     qty: z.number().int().min(1).max(999).default(1),
@@ -63,7 +63,8 @@ productsRouter.get("/:id", async (req, res, next) => {
 productsRouter.post("/", authRequired, async (req, res, next) => {
     try {
         const data = productCreateSchema.parse(req.body);
-        const product = await prisma.product.create({ data });
+        const placement = await resolveProductPlacement(data.category, data.subcategoryId ?? null);
+        const product = await prisma.product.create({ data: { ...data, ...placement } });
         res.status(201).json({ product });
     }
     catch (e) {
@@ -74,6 +75,16 @@ productsRouter.patch("/:id", authRequired, async (req, res, next) => {
     try {
         const id = parseIdParam(req.params.id);
         const data = productUpdateSchema.parse(req.body);
+        if (data.category !== undefined || data.subcategoryId !== undefined) {
+            const current = await prisma.product.findUnique({ where: { id }, select: { category: true, subcategoryId: true } });
+            if (!current)
+                throw new HttpError(404, "Not found");
+            const category = data.category ?? current.category;
+            // Moving to another category drops the old subcategory unless a new one is sent.
+            const isMovingCategory = data.category !== undefined && data.category !== current.category;
+            const subcategoryId = data.subcategoryId !== undefined ? data.subcategoryId : isMovingCategory ? null : current.subcategoryId;
+            Object.assign(data, await resolveProductPlacement(category, subcategoryId));
+        }
         const product = await prisma.product.update({ where: { id }, data });
         res.json({ product });
     }
@@ -117,6 +128,11 @@ productsRouter.post("/restore", authRequired, async (_req, res, next) => {
             throw new HttpError(500, "Seed file failed validation");
         }
         const items = result.data.products;
+        const knownKeys = new Set((await prisma.category.findMany({ select: { key: true } })).map((c) => c.key));
+        const unknownKeys = [...new Set(items.map((p) => p.category))].filter((key) => !knownKeys.has(key));
+        if (unknownKeys.length > 0) {
+            throw new HttpError(409, `The seed file uses categories that no longer exist: ${unknownKeys.join(", ")}`);
+        }
         let created = 0;
         let updated = 0;
         for (const p of items) {
@@ -135,6 +151,8 @@ productsRouter.post("/restore", authRequired, async (_req, res, next) => {
                     isFeatured: p.isFeatured,
                     isActive: p.isActive,
                     sortOrder: p.sortOrder,
+                    // The seed has no subcategories: keep the product's one unless it changes category.
+                    ...(existing && existing.category !== p.category ? { subcategoryId: null } : {}),
                 },
             });
             if (existing)

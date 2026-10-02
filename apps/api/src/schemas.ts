@@ -1,5 +1,4 @@
 import { z } from "zod";
-import { CATEGORY_KEYS } from "./categories.js";
 
 export const loginSchema = z.object({
   email: z.string().email().max(255),
@@ -13,7 +12,9 @@ export const productCreateSchema = z.object({
     .max(120)
     .regex(/^[a-z0-9][a-z0-9_-]*$/, "lowercase letters, digits, hyphens and underscores only"),
   name: z.string().min(1).max(200),
-  category: z.enum(CATEGORY_KEYS),
+  // Checked against the Category table by resolveProductPlacement (categories.ts).
+  category: z.string().trim().min(1).max(40),
+  subcategoryId: z.number().int().positive().nullable().optional(),
   priceCents: z.number().int().nonnegative().nullable().optional(),
   unit: z.enum(["piece", "pack", "kg", "cup", "pound", "serve"]).default("piece"),
   qty: z.number().int().min(1).max(999).default(1),
@@ -25,6 +26,27 @@ export const productCreateSchema = z.object({
 });
 
 export const productUpdateSchema = productCreateSchema.partial();
+
+const MAX_MENU_COLUMNS = 3;
+const MAX_SUBCATEGORIES = 30;
+
+export const categoryCreateSchema = z.object({
+  label: z.string().trim().min(1).max(80),
+  blurb: z.string().trim().max(300).default(""),
+  menuSubtitle: z.string().trim().max(120).default(""),
+  menuColumns: z.number().int().min(1).max(MAX_MENU_COLUMNS).default(2),
+  // The full list in display order; an entry with an id keeps that subcategory.
+  subcategories: z
+    .array(z.object({ id: z.number().int().positive().optional(), label: z.string().trim().min(1).max(60) }))
+    .max(MAX_SUBCATEGORIES)
+    .default([]),
+});
+
+export const categoryUpdateSchema = categoryCreateSchema.partial();
+
+export const categoryOrderSchema = z.object({
+  keys: z.array(z.string().min(1).max(40)).min(1).max(200),
+});
 
 export const heroCreateSchema = z.object({
   heading: z.string().min(1).max(200),

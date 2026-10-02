@@ -1,8 +1,7 @@
 {
   "_meta": {
-    "about": "The one list of product categories. The API validates Product.category against these keys, the admin builds its category dropdown from GET /api/categories, and the web build renders the homepage sections, footer links and /menu from it.",
-    "keys": "key is what is stored in Product.category. Renaming or removing a key orphans every product that uses it, so move those products first.",
-    "order": "Array order is the homepage and admin order. menu.order is the order on the printable /menu card."
+    "about": "Build-time snapshot only. Since October 2026 the live categories and subcategories are in the database and edited in the admin (Categories tab). The homepage, footer and /menu show this snapshot first, then re-render from GET /api/categories.",
+    "seeded": "Migration 20261002120000_categories_in_db copied these 14 categories into the Category table. Editing this file does not change the live site."
   },
   "categories": [
     {

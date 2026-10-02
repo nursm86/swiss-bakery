@@ -135,6 +135,30 @@ exports.Prisma.ProductScalarFieldEnum = {
   isActive: 'isActive',
   sortOrder: 'sortOrder',
   createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  subcategoryId: 'subcategoryId'
+};
+
+exports.Prisma.CategoryScalarFieldEnum = {
+  id: 'id',
+  key: 'key',
+  label: 'label',
+  slug: 'slug',
+  blurb: 'blurb',
+  menuSubtitle: 'menuSubtitle',
+  menuColumns: 'menuColumns',
+  sortOrder: 'sortOrder',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.SubcategoryScalarFieldEnum = {
+  id: 'id',
+  categoryId: 'categoryId',
+  label: 'label',
+  slug: 'slug',
+  sortOrder: 'sortOrder',
+  createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
 
@@ -202,6 +226,19 @@ exports.Prisma.ProductOrderByRelevanceFieldEnum = {
   imagePath: 'imagePath'
 };
 
+exports.Prisma.CategoryOrderByRelevanceFieldEnum = {
+  key: 'key',
+  label: 'label',
+  slug: 'slug',
+  blurb: 'blurb',
+  menuSubtitle: 'menuSubtitle'
+};
+
+exports.Prisma.SubcategoryOrderByRelevanceFieldEnum = {
+  label: 'label',
+  slug: 'slug'
+};
+
 exports.Prisma.HeroBannerOrderByRelevanceFieldEnum = {
   heading: 'heading',
   subheading: 'subheading',
@@ -234,6 +271,8 @@ exports.Prisma.PageOrderByRelevanceFieldEnum = {
 
 exports.Prisma.ModelName = {
   Product: 'Product',
+  Category: 'Category',
+  Subcategory: 'Subcategory',
   HeroBanner: 'HeroBanner',
   Notice: 'Notice',
   SiteSetting: 'SiteSetting',
