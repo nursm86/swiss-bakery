@@ -30,15 +30,6 @@ export const byCategory = (cat: string): SeedProduct[] =>
     .filter((p) => p.category === cat && p.isActive)
     .sort((a, b) => a.sortOrder - b.sortOrder);
 
-// Render the internal unit slug as something a customer reads as a small label
-// next to the price. For qty>1 the price string already encodes the unit, so
-// the label is suppressed.
-export const formatUnit = (p: SeedProduct): string => {
-  const qty = typeof p.qty === "number" && p.qty > 1 ? p.qty : 1;
-  if (qty > 1) return ""; // already in the price string (e.g. "/5pcs")
-  return p.unit;
-};
-
 export const DEFAULT_SETTINGS = {
   address: "Shop 3/12 Minto Rd, Minto NSW 2566",
   phone: "+61 0452 626 232",

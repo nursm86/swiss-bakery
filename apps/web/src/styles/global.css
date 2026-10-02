@@ -191,6 +191,53 @@
     border: 1px solid rgba(255, 255, 255, 0.14);
   }
 
+  /* ----- Subcategory filter chips (homepage menu, lib/menu-html.js) ----- */
+  .menu-sub-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-shrink: 0;
+    white-space: nowrap;
+    padding: 0.45rem 0.6rem 0.45rem 1rem;
+    border-radius: 999px;
+    border: 1px solid var(--color-cream-200);
+    background: #fff;
+    color: var(--color-charcoal);
+    font-size: 0.875rem;
+    font-weight: 600;
+    transition:
+      background 0.15s ease,
+      color 0.15s ease,
+      border-color 0.15s ease;
+  }
+  .menu-sub-chip:hover {
+    border-color: var(--color-orange);
+  }
+  .menu-sub-chip[aria-pressed="true"] {
+    background: var(--color-charcoal);
+    border-color: var(--color-charcoal);
+    color: #fff;
+  }
+  .menu-sub-chip-count {
+    min-width: 1.5rem;
+    padding: 0.05rem 0.45rem;
+    border-radius: 999px;
+    background: var(--color-cream);
+    color: var(--color-muted);
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-align: center;
+  }
+  .menu-sub-chip[aria-pressed="true"] .menu-sub-chip-count {
+    background: rgba(255, 255, 255, 0.16);
+    color: #fff;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .menu-sub-group {
+      animation: menu-sub-in 0.25s ease both;
+    }
+  }
+
   /* ----- Section title with gradient underline ----- */
   .section-title {
     position: relative;
@@ -529,6 +576,17 @@
     animation-duration: 0.01ms !important;
   }
   .reveal {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes menu-sub-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
     opacity: 1;
     transform: none;
   }

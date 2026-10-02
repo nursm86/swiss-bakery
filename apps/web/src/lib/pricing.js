@@ -1,5 +1,5 @@
 // Price display shared by the web build, the homepage live refresh, /menu and
-// the admin (served as /js/pricing.js by src/pages/js/pricing.js.ts).
+// the admin (published unbundled as /js/pricing.js by lib/published-modules.ts).
 // Stored prices are ex-GST cents. With GST on, a price shows as "$5 + GST".
 
 export const DEFAULT_GST_RATE_PERCENT = 10;

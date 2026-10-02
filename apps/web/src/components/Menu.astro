@@ -1,7 +1,13 @@
 ---
 import { CATEGORIES } from "../lib/categories";
-import { byCategory } from "../lib/seed";
-import ProductCard from "./ProductCard.astro";
+import { buildMenuModel } from "../lib/menu-model.js";
+import { renderMenuNav, renderMenuSections } from "../lib/menu-html.js";
+import { parseGstSettings } from "../lib/pricing.js";
+import { seed } from "../lib/seed";
+
+// Build-time snapshot (data/categories.json + data/products.seed.json). The
+// homepage script re-renders the pills and sections from the live API.
+const model = buildMenuModel({ categories: CATEGORIES, products: seed.products });
 ---
 <section id="menu" class="py-14 sm:py-20 bg-white">
   <div class="container-x">
@@ -16,36 +22,7 @@ import ProductCard from "./ProductCard.astro";
       </div>
     </div>
 
-    <nav class="mt-10 flex flex-wrap justify-center gap-2 text-sm">
-      {CATEGORIES.map((c) => (
-        <a
-          href={`#cat-${c.slug}`}
-          hidden={byCategory(c.key).length === 0}
-          class="px-4 py-2 rounded-full border border-[color:var(--color-cream-200)] hover:bg-[color:var(--color-cream)] transition text-[color:var(--color-navy)] font-medium"
-        >
-          {c.label}
-        </a>
-      ))}
-    </nav>
-
-    {/* Empty categories still render (hidden) so the live /api/products refresh
-        in index.astro has a grid to drop admin-added products into. */}
-    {CATEGORIES.map((c) => {
-      const items = byCategory(c.key);
-      return (
-        <div id={`cat-${c.slug}`} data-category={c.key} hidden={items.length === 0} class="mt-16 scroll-mt-24">
-          <div class="flex items-end justify-between gap-3 flex-wrap">
-            <div>
-              <h3 class="font-[family-name:var(--font-display)] text-2xl sm:text-3xl text-[color:var(--color-navy)]">{c.label}</h3>
-              <p class="text-[color:var(--color-muted)] mt-1 max-w-xl">{c.blurb}</p>
-            </div>
-            <span class="text-xs uppercase tracking-[0.18em] text-[color:var(--color-muted)]">{items.length} items</span>
-          </div>
-          <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-            {items.map((p) => <ProductCard product={p} />)}
-          </div>
-        </div>
-      );
-    })}
+    <nav id="menu-nav" class="mt-10 flex flex-wrap justify-center gap-2 text-sm" set:html={renderMenuNav(model)} />
+    <div id="menu-sections" set:html={renderMenuSections(model, parseGstSettings())} />
   </div>
 </section>

@@ -1,23 +1,17 @@
-// Product categories, from the same data/categories.json the API validates
-// against. Array order is the homepage order; menu.order is the /menu card order.
+// Build-time snapshot of the product categories (data/categories.json). The
+// live list is in the database, edited in the admin's Categories tab; the
+// homepage, footer and /menu re-render from GET /api/categories on load.
 import categoriesJson from "../../../../data/categories.json" with { type: "json" };
 
-export type CategoryMenuConfig = {
-  title: string;
-  subtitle: string;
-  columns: number;
-  order: number;
-  defaultUnit: string;
-};
+export type Subcategory = { id: number; label: string; slug: string; sortOrder: number };
 
 export type Category = {
   key: string;
   label: string;
   slug: string;
   blurb: string;
-  menu: CategoryMenuConfig;
+  menu: { title: string; subtitle: string; columns: number };
+  subcategories?: Subcategory[];
 };
 
 export const CATEGORIES: readonly Category[] = categoriesJson.categories;
-
-export const MENU_CATEGORIES: readonly Category[] = [...CATEGORIES].sort((a, b) => a.menu.order - b.menu.order);

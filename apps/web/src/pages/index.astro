@@ -22,7 +22,10 @@ import Footer from "../components/Footer.astro";
   </main>
   <Footer />
   <script>
-    import { formatPriceLines, parseGstSettings } from "../lib/pricing.js";
+    import { fetchLiveJson } from "../lib/live-api.js";
+    import { renderMenuNav, renderMenuSections, renderProductCard } from "../lib/menu-html.js";
+    import { buildMenuModel, featuredProducts } from "../lib/menu-model.js";
+    import { parseGstSettings } from "../lib/pricing.js";
 
     const io = new IntersectionObserver(
       (entries) => {
@@ -37,156 +40,44 @@ import Footer from "../components/Footer.astro";
     );
     document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
 
-    // Live-refresh product grid on initial load if API has newer data.
-    type ApiProduct = {
-      slug: string;
-      name: string;
-      category: string;
-      priceCents: number | null;
-      unit: string;
-      description: string | null;
-      imagePath: string | null;
-      isFeatured: boolean;
-      isActive: boolean;
-      sortOrder: number;
-      qty?: number;
-    };
-    type Gst = ReturnType<typeof parseGstSettings>;
-    const renderPrice = (el: HTMLElement, lines: string[]) =>
-      el.replaceChildren(
-        ...(lines.length > 0 ? lines : ["Visit shop"]).map((line) => {
-          const span = document.createElement("span");
-          span.className = "block";
-          span.textContent = line;
-          return span;
-        }),
-      );
-    const formatUnit = (u: string) => (u === "half-pound" ? "½ pound" : u);
+    // Subcategory chips: show one subcategory of a category, or all of it.
+    document.getElementById("menu-sections")?.addEventListener("click", (event) => {
+      const chip = (event.target as HTMLElement).closest<HTMLButtonElement>("[data-sub-filter]");
+      const section = chip?.closest("[data-category]");
+      if (!chip || !section) return;
+      const filter = chip.dataset.subFilter ?? "";
+      section.querySelectorAll("[data-sub-filter]").forEach((c) => c.setAttribute("aria-pressed", String(c === chip)));
+      section.querySelectorAll<HTMLElement>("[data-sub-group]").forEach((group) => {
+        group.hidden = filter !== "" && group.dataset.subGroup !== filter;
+      });
+    });
 
-    const buildCard = (p: ApiProduct, gst: Gst, size: "sm" | "md" = "md"): HTMLElement => {
-      const card = document.createElement("article");
-      card.className = "card group flex flex-col" + (size === "sm" ? " min-w-[260px] w-[260px]" : "");
-      card.dataset.slug = p.slug;
-
-      const top = document.createElement("div");
-      top.className = "relative aspect-square bg-[color:var(--color-cream-200)] overflow-hidden";
-      if (p.imagePath) {
-        const img = document.createElement("img");
-        img.src = p.imagePath;
-        img.alt = p.name;
-        img.loading = "lazy";
-        img.decoding = "async";
-        img.className = "h-full w-full object-cover transition duration-500 group-hover:scale-[1.04]";
-        top.appendChild(img);
-      } else {
-        const ph = document.createElement("div");
-        ph.className =
-          "h-full w-full grid place-items-center text-[color:var(--color-gold)] font-[family-name:var(--font-display)] text-4xl";
-        ph.textContent = "⚜";
-        top.appendChild(ph);
-      }
-      if (p.isFeatured) {
-        const chip = document.createElement("span");
-        chip.className = "absolute top-3 left-3 chip chip-gold";
-        chip.textContent = "House favourite";
-        top.appendChild(chip);
-      }
-
-      const body = document.createElement("div");
-      body.className = "p-4 flex flex-col gap-1.5 flex-1";
-      const h3 = document.createElement("h3");
-      h3.className = "text-lg font-semibold text-[color:var(--color-navy)] leading-snug";
-      h3.textContent = p.name;
-      body.appendChild(h3);
-      if (p.description) {
-        const desc = document.createElement("p");
-        desc.className = "text-sm text-[color:var(--color-muted)] leading-relaxed line-clamp-3";
-        desc.textContent = p.description;
-        body.appendChild(desc);
-      }
-      const meta = document.createElement("div");
-      meta.className = "mt-auto pt-3 flex items-end justify-between gap-2";
-      const priceSpan = document.createElement("span");
-      priceSpan.dataset.price = "";
-      priceSpan.className = "font-[family-name:var(--font-display)] text-lg leading-snug text-[color:var(--color-navy)]";
-      renderPrice(priceSpan, formatPriceLines(p, gst));
-      const unitSpan = document.createElement("span");
-      unitSpan.className = "text-xs uppercase tracking-[0.12em] text-[color:var(--color-muted)]";
-      unitSpan.textContent = formatUnit(p.unit);
-      meta.append(priceSpan, unitSpan);
-      body.appendChild(meta);
-
-      card.append(top, body);
-      return card;
-    };
-
-    const fetchJson = (url: string) => fetch(url).then((r) => (r.ok ? r.json() : null)).catch(() => null);
-    Promise.all([fetchJson("/api/products"), fetchJson("/api/settings")])
-      .then(([data, settingsData]) => {
-        if (!data?.products) return;
+    // Re-render the featured strip and the whole menu from the live catalogue:
+    // the static HTML is a build-time snapshot, and categories, subcategories
+    // and products are all edited in the admin since then.
+    Promise.all([fetchLiveJson("/api/categories"), fetchLiveJson("/api/products"), fetchLiveJson("/api/settings")]).then(
+      ([categoriesData, productsData, settingsData]) => {
+        if (!Array.isArray(productsData?.products)) return;
         const gst = parseGstSettings(settingsData?.settings);
-        const apiList = data.products as ApiProduct[];
-        const map = new Map<string, ApiProduct>(apiList.map((p) => [p.slug, p]));
-
-        // 1. Patch or remove existing static cards.
-        document.querySelectorAll<HTMLElement>("article.card[data-slug]").forEach((card) => {
-          const slug = card.dataset.slug!;
-          const p = map.get(slug);
-          if (!p || !p.isActive) {
-            card.remove();
-            return;
-          }
-          const title = card.querySelector("h3");
-          if (title) title.textContent = p.name;
-          const desc = card.querySelector("p");
-          if (desc && p.description) desc.textContent = p.description;
-          const price = card.querySelector<HTMLElement>("[data-price]");
-          if (price) renderPrice(price, formatPriceLines(p, gst));
-          const img = card.querySelector("img");
-          if (img && p.imagePath) {
-            (img as HTMLImageElement).src = p.imagePath;
-            (img as HTMLImageElement).alt = p.name;
-          }
-        });
-
-        // 2. Append cards for products that weren't in the static build.
-        const presentInMenu = new Set<string>();
-        document.querySelectorAll<HTMLElement>('[id^="cat-"] article.card[data-slug]').forEach((c) =>
-          presentInMenu.add(c.dataset.slug!),
-        );
-        const presentInFeatured = new Set<string>();
-        document
-          .querySelectorAll<HTMLElement>("#featured-scroll article.card[data-slug]")
-          .forEach((c) => presentInFeatured.add(c.dataset.slug!));
-
-        for (const p of apiList) {
-          if (!p.isActive) continue;
-          if (!presentInMenu.has(p.slug)) {
-            const grid = document.querySelector<HTMLElement>(
-              `[data-category="${CSS.escape(p.category)}"] > div.grid`,
-            );
-            if (grid) grid.appendChild(buildCard(p, gst, "md"));
-          }
-          if (p.isFeatured && !presentInFeatured.has(p.slug)) {
-            const fScroll = document.getElementById("featured-scroll");
-            if (fScroll) fScroll.appendChild(buildCard(p, gst, "sm"));
-          }
+        const featuredScroll = document.getElementById("featured-scroll");
+        if (featuredScroll) {
+          featuredScroll.innerHTML = featuredProducts(productsData.products)
+            .map((p) => renderProductCard(p, gst, { size: "sm" }))
+            .join("");
         }
 
-        // 3. Refresh per-category "X items" badges.
-        document.querySelectorAll<HTMLElement>('[id^="cat-"]').forEach((section) => {
-          const grid = section.querySelector<HTMLElement>(":scope > div.grid");
-          if (!grid) return;
-          const count = grid.querySelectorAll("article.card").length;
-          const badge = section.querySelector<HTMLElement>("span.text-xs.uppercase");
-          if (badge) badge.textContent = `${count} items`;
-          // Show/hide the section and its nav pill to match the live catalogue,
-          // so a category that was empty at build time appears once it has items.
-          section.hidden = count === 0;
-          const pill = document.querySelector<HTMLElement>(`#menu nav a[href="#${section.id}"]`);
-          if (pill) pill.hidden = count === 0;
-        });
-      })
-      .catch(() => {});
+        const nav = document.getElementById("menu-nav");
+        const sections = document.getElementById("menu-sections");
+        if (!nav || !sections || !Array.isArray(categoriesData?.categories)) return;
+        // A link to a category that only exists live (#cat-new-thing) has nothing
+        // to scroll to until the render below, so scroll once it's there.
+        const hashTarget = location.hash.slice(1);
+        const isHashPending = hashTarget !== "" && !document.getElementById(hashTarget);
+        const model = buildMenuModel({ categories: categoriesData.categories, products: productsData.products });
+        nav.innerHTML = renderMenuNav(model);
+        sections.innerHTML = renderMenuSections(model, gst, { isInteractive: true });
+        if (isHashPending) document.getElementById(hashTarget)?.scrollIntoView();
+      },
+    );
   </script>
 </Layout>
