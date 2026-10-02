@@ -6,6 +6,19 @@
   },
   "categories": [
     {
+      "key": "BreakfastDeals",
+      "label": "Breakfast Deals",
+      "slug": "breakfast-deals",
+      "blurb": "Breakfast deals from the shop.",
+      "menu": {
+        "title": "BREAKFAST DEALS",
+        "subtitle": "",
+        "columns": 2,
+        "order": 1,
+        "defaultUnit": ""
+      }
+    },
+    {
       "key": "Fried",
       "label": "Fried Items",
       "slug": "fried",
@@ -14,7 +27,7 @@
         "title": "FRIED ITEMS",
         "subtitle": "",
         "columns": 2,
-        "order": 1,
+        "order": 2,
         "defaultUnit": ""
       }
     },
@@ -27,7 +40,7 @@
         "title": "BAKED ITEMS",
         "subtitle": "",
         "columns": 2,
-        "order": 2,
+        "order": 3,
         "defaultUnit": ""
       }
     },
@@ -40,7 +53,7 @@
         "title": "BISCUIT ITEMS",
         "subtitle": "Priced by weight",
         "columns": 2,
-        "order": 3,
+        "order": 4,
         "defaultUnit": ""
       }
     },
@@ -53,7 +66,7 @@
         "title": "BREAD & CAKE ITEMS",
         "subtitle": "",
         "columns": 2,
-        "order": 4,
+        "order": 5,
         "defaultUnit": ""
       }
     },
@@ -66,7 +79,7 @@
         "title": "KEBAB ITEMS",
         "subtitle": "",
         "columns": 2,
-        "order": 5,
+        "order": 6,
         "defaultUnit": ""
       }
     },
@@ -79,7 +92,7 @@
         "title": "SWEET ITEMS",
         "subtitle": "Priced by weight",
         "columns": 2,
-        "order": 6,
+        "order": 7,
         "defaultUnit": ""
       }
     },
@@ -92,7 +105,7 @@
         "title": "TV SNACKS / MISCELLANEOUS",
         "subtitle": "",
         "columns": 2,
-        "order": 7,
+        "order": 8,
         "defaultUnit": ""
       }
     },
@@ -105,7 +118,7 @@
         "title": "BIRIANI ITEMS",
         "subtitle": "",
         "columns": 2,
-        "order": 8,
+        "order": 9,
         "defaultUnit": ""
       }
     },
@@ -118,7 +131,7 @@
         "title": "EXTRAS",
         "subtitle": "",
         "columns": 2,
-        "order": 9,
+        "order": 10,
         "defaultUnit": ""
       }
     },
@@ -131,7 +144,7 @@
         "title": "SPECIAL - EVENING (5.00PM - 9.00PM)",
         "subtitle": "",
         "columns": 2,
-        "order": 10,
+        "order": 11,
         "defaultUnit": ""
       }
     },
@@ -144,7 +157,7 @@
         "title": "DRINKS",
         "subtitle": "",
         "columns": 2,
-        "order": 11,
+        "order": 12,
         "defaultUnit": ""
       }
     },
@@ -157,7 +170,7 @@
         "title": "HOT DRINKS",
         "subtitle": "",
         "columns": 2,
-        "order": 12,
+        "order": 13,
         "defaultUnit": ""
       }
     },
@@ -170,7 +183,7 @@
         "title": "COLD DRINKS",
         "subtitle": "",
         "columns": 2,
-        "order": 13,
+        "order": 14,
         "defaultUnit": ""
       }
     }
