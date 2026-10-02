@@ -1153,7 +1153,7 @@
     {
       "slug": "can_drinks",
       "name": "Can Drinks",
-      "category": "ColdDrinks",
+      "category": "Drinks",
       "priceCents": 300,
       "unit": "piece",
       "qty": 1,
@@ -1166,7 +1166,7 @@
     {
       "slug": "malai-cha",
       "name": "Malai Cha - small cup",
-      "category": "HotDrinks",
+      "category": "Drinks",
       "priceCents": 350,
       "unit": "cup",
       "qty": 1,
@@ -1205,7 +1205,7 @@
     {
       "slug": "milk-tea",
       "name": "Milk Tea",
-      "category": "HotDrinks",
+      "category": "Drinks",
       "priceCents": 300,
       "unit": "cup",
       "qty": 1,
@@ -1218,7 +1218,7 @@
     {
       "slug": "ginger-tea",
       "name": "Ginger Tea",
-      "category": "HotDrinks",
+      "category": "Drinks",
       "priceCents": 300,
       "unit": "cup",
       "qty": 1,

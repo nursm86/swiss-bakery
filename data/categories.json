@@ -1,7 +1,8 @@
 {
   "_meta": {
     "about": "Build-time snapshot only. Since October 2026 the live categories and subcategories are in the database and edited in the admin (Categories tab). The homepage, footer and /menu show this snapshot first, then re-render from GET /api/categories.",
-    "seeded": "Migration 20261002120000_categories_in_db copied these 14 categories into the Category table. Editing this file does not change the live site."
+    "seeded": "Migration 20261002120000_categories_in_db copied these 14 categories into the Category table. Editing this file does not change the live site.",
+    "folded": "Hot Drinks and Cold Drinks became subcategories of Drinks on 2 Oct 2026."
   },
   "categories": [
     {
@@ -157,32 +158,6 @@
         "subtitle": "",
         "columns": 2,
         "order": 12,
-        "defaultUnit": ""
-      }
-    },
-    {
-      "key": "HotDrinks",
-      "label": "Hot Drinks",
-      "slug": "hot-drinks",
-      "blurb": "Malai cha, milk tea and ginger tea.",
-      "menu": {
-        "title": "HOT DRINKS",
-        "subtitle": "",
-        "columns": 2,
-        "order": 13,
-        "defaultUnit": ""
-      }
-    },
-    {
-      "key": "ColdDrinks",
-      "label": "Cold Drinks",
-      "slug": "cold-drinks",
-      "blurb": "Chilled can drinks.",
-      "menu": {
-        "title": "COLD DRINKS",
-        "subtitle": "",
-        "columns": 2,
-        "order": 14,
         "defaultUnit": ""
       }
     }
